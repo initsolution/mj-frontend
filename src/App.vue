@@ -46,10 +46,15 @@
   </div> -->
   <v-app>
     <v-main class="container align-center px-1">
-      <EditAttendance
+      <!-- <EditAttendance
         :dialogEditAttendance.sync="dialogEditAttendancelocal"
         :dataAttendance="dataAttendance"
         @userInfo="getUserData($event)"
+      /> -->
+      <EditAttendance
+        :dialogEditAttendance.sync="dialogEditAttendancelocal"
+        :dataAttendance="dataAttendance"
+        :type_overtime="type_overtime"
       />
       <v-card class="mx-auto" tile>
         <v-card-title>
@@ -66,7 +71,7 @@
 
           <v-col cols="4" md="20">
             <v-btn @click="onChange" class="mt-3"> Upload </v-btn>
-            <v-btn @click="save" class="mt-3"> Save </v-btn>
+            <v-btn @click="payslip" class="mt-3"> PlaySlip </v-btn>
           </v-col>
           <!-- <v-col cols="4" md="2">
           <v-btn @click="updateUser">Update</v-btn>
@@ -78,14 +83,33 @@
         <v-card-text>
           <v-data-table
             :headers="this.headers"
-            :items="this.getCheckAttendance"
+            :items="getDataAllAttendance"
             class="elevation-1"
           >
-            <!-- <template v-slot:[`item.total_leave`]="{ item }">
-              <v-chip :color="getColor(item.total_leave)" dark>
-                {{ item.total_leave }}
-              </v-chip>
-            </template> -->
+            <template v-slot:[`item.attendance_date`]="{ item }">
+              {{ convertDate(item.attendance_date) }}
+            </template>
+            <template v-slot:[`item.time_check_in`]="{ item }">
+              {{ convertTime(item.time_check_in) }}
+            </template>
+            <template v-slot:[`item.time_check_out`]="{ item }">
+              {{ convertTime(item.time_check_out) }}
+            </template>
+            <template v-slot:[`item.time_start_for_break`]="{ item }">
+              {{ convertTime(item.time_start_for_break) }}
+            </template>
+            <template v-slot:[`item.time_end_for_break`]="{ item }">
+              {{ convertTime(item.time_end_for_break) }}
+            </template>
+            <template v-slot:[`item.time_arrive_home`]="{ item }">
+              {{ convertTime(item.time_arrive_home) }}
+            </template>
+            <template v-slot:[`item.time_start_for_left`]="{ item }">
+              {{ convertTime(item.time_start_for_left) }}
+            </template>
+            <template v-slot:[`item.time_end_for_left`]="{ item }">
+              {{ convertTime(item.time_end_for_left) }}
+            </template>
             <template v-slot:[`item.overtime`]="{ item }">
               <div class="text-center">
                 <v-menu open-on-hover top offset-y>
@@ -218,7 +242,7 @@ export default {
           sortable: false,
           value: "employee.id",
         },
-        { text: "Nama", value: "name" },
+        { text: "Nama", value: "employee.name" },
         { text: "Date", value: "attendance_date" },
         { text: "CheckIn", value: "time_check_in" },
         { text: "CheckOut", value: "time_check_out" },
@@ -234,15 +258,32 @@ export default {
       dialogEditAttendancelocal: false,
       dataAttendance: null,
       selectedItem: null,
+      type_overtime: null,
     };
   },
   name: "App",
   components: {
     EditAttendance,
   },
+  created() {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, "0");
+    var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+    var yyyy = today.getFullYear();
+
+    today = yyyy + "/" + mm + "/" + dd;
+    // today = "18/11/2022"
+    console.log(today);
+    this.actionGetAllAttendence(today);
+  },
   methods: {
-    ...mapActions(["saveAttendance", "saveBulkAttendance", "checkAttendance"]),
-    save() {
+    ...mapActions([
+      "saveAttendance",
+      "saveBulkAttendance",
+      "checkAttendance",
+      "actionGetAllAttendence",
+    ]),
+    payslip() {
       // console.log()
       // console.log(this.getCheckAttendance);
       // this.saveBulkAttendance({'bulk' : this.getCheckAttendance});
@@ -252,7 +293,6 @@ export default {
       var bulk = [];
       for (var i = 0; i < this.datalist.length; i++) {
         const data = {
-          idx: i,
           employee: {
             id: this.datalist[i].id,
           },
@@ -272,7 +312,9 @@ export default {
         };
         bulk.push(data);
       }
-      this.checkAttendance({ bulk: bulk });
+      console.log(bulk);
+      // this.checkAttendance({ bulk: bulk });
+      this.saveBulkAttendance({ bulk: bulk });
     },
 
     onChange(event) {
@@ -316,11 +358,12 @@ export default {
             }
 
             var date = datarow[2].split("/");
-            var year = 2000 + Number.parseInt(date[2]);
+            var year = date[2]
             var month = Number.parseInt(date[0]);
             var days = Number.parseInt(date[1]);
             //date
-            datarow[2] = year + "-" + month + "-" + days;
+            datarow[2] = year + "-" + days + "-" + month;
+            console.log("year : " + datarow[2] );
 
             //get Week Of Day
             var getDate = new Date(datarow[2]);
@@ -350,13 +393,21 @@ export default {
 
         reader.onloadend = (e) => {
           console.log("datalist len = " + this.datalist.length);
+          console.log(this.datalist)
           this.uploadAttendance();
         };
       }
     },
 
-    convertToDate(date) {
-      return new Date(date);
+    convertDate(date) {
+      return date.substring(0, 10);
+    },
+
+    convertTime(time) {
+      if (time == null) {
+        return;
+      }
+      return time.substring(0, 5);
     },
 
     diff(
@@ -465,22 +516,22 @@ export default {
 
     confirmOvertime(item, type) {
       // console.log("overtime : "+ this.getCheckAttendance[index].overtime);
-      this.selectedItem = item;
-      if (type == "early") {
-        // console.log("EARLY OVERTIME");
-      } else if (type == "late") {
-        // console.log("OVERTIME");
-        this.dialogEditAttendancelocal = true;
-        this.dataAttendance = item.overtime;
-      }
+      // this.selectedItem = item;
+      // if (type == "early") {
+      //   // console.log("EARLY OVERTIME");
+      // } else if (type == "late") {
+      //   // console.log("OVERTIME");
+      //   this.dialogEditAttendancelocal = true;
+      //   this.dataAttendance = item;
+      // }
+      this.type_overtime = type;
+      this.dialogEditAttendancelocal = true;
+      this.dataAttendance = item;
     },
 
     getUserData(value) {
-      console.log("getuserdata : "+value)
-      this.selectedItem.overtime = value;
-      this.$set(this.getCheckAttendance, this.selectedItem.idx, this.selectedItem);
-      
-      console.log(this.getCheckAttendance);
+      console.log(value);
+      // getCheckAttendance();
     },
 
     handleClick(value) {
@@ -499,12 +550,50 @@ export default {
       this.dialogEditAttendancelocal = true;
       this.dataAttendance = value.total_leave;
     },
+
+    getResAddAttendance() {
+      const status = this.getBulkAttendance;
+      console.log("getResAddAttendance : " + status.data);
+      // if (status.actions == 201) {
+      //   if (status.status == "Created") {
+      //     title = "Sukses Update data";
+      //     text = "Data User berhasil diupdate";
+      //     icon = "OK";
+      //   } else {
+      //     title = "Gagal simpan data";
+      //     text = "Data personal tidak berhasil ditambahkan";
+      //     icon = "error";
+      //   }
+      // } else if (status.actions == 200) {
+      //   if (status.status == "OK") {
+      //     title = "Sukses update data";
+      //     text = "Data personal berhasil diupdate";
+      //     icon = "OK";
+      //   } else {
+      //     title = "Gagal update data";
+      //     text = "Data personal tidak berhasil diupdate";
+      //     icon = "error";
+      //   }
+      // }
+    },
   },
 
   computed: {
-    ...mapGetters(["getStatusAttendance"]),
-    getCheckAttendance() {
-      return this.getStatusAttendance.data;
+    ...mapGetters([
+      "getStatusAttendance",
+      "getBulkAttendance",
+      "getDataAllAttendance",
+    ]),
+    // getCheckAttendance() {
+    //   return this.getStatusAttendance.data;
+    // },
+  },
+
+  watch: {
+    getBulkAttendance: {
+      handler() {
+        this.getResAddAttendance();
+      },
     },
   },
 };

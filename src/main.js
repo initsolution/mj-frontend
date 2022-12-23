@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import App from './App.vue'
+import App from './components/Payslip.vue'
 import store from './store'
 import vuetify from '@/plugins/vuetify'
 import VueSweetalert2 from 'vue-sweetalert2'

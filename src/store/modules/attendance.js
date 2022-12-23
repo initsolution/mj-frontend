@@ -6,12 +6,38 @@ const apiName = 'attendance'
 const state = {
     data: [],
     status: {},
+    update: {},
 }
 
 const actions = {
-    async actionGetAllUsers({ commit }, param) {
-        const res = await httpCommons.get(apiName, { params: param })
-        commit('SET_DATA_USERS', res.data)
+    async actionGetAllAttendence({ commit }, date) {
+        if(date == null) {
+            console.log("date kosong");
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, "0");
+            var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+            var yyyy = today.getFullYear();
+
+            today = yyyy + "/" + mm + "/" + dd;
+            // today = "18/11/2022"
+            // console.log(today);
+            date = today;
+        }
+        // param =  { s: { overtime: 30 } } 
+        // const searching = new URLSearchParams([['overtime', 90]]);
+        // const res = await httpCommons.get(apiName+'?s=%7B%22overtime%22%3A90%7D')
+        // const searching = new URLSearchParams([["overtime", 90]]);
+        // const param1 = {
+        //     "overtime": 90
+        //   };
+        // var datx = encodeURIComponent(searching);
+        // var v = 90
+        // const res = await httpCommons.get(apiName, {params : {s : datx}})
+        const filter = encodeURIComponent(`{"attendance_date":"${date}"}`)
+        const path = `?s=${filter}`
+        // const res = await httpCommons.get(apiName + path)
+        const res = await httpCommons.get(apiName)
+        commit('SET_GET_DATA_ATTENDANCE', res.data)
     },
 
     async saveAttendance({ commit, dispatch }, data) {
@@ -21,14 +47,14 @@ const actions = {
                 status: res.statusText,
                 actions: res.status
             }
-            commit('SET_RES_REGISTER_USER', result)
+            commit('SET_CHECK_ATTENDANCE', result)
             
         } catch (error) {
             const result = {
                 status: 'duplicate',
                 actions: 201
             }
-            commit('SET_RES_REGISTER_USER', result)
+            commit('SET_CHECK_ATTENDANCE', result)
         }
     },
 
@@ -41,18 +67,40 @@ const actions = {
                 data : res.data,
             }
             console.log(result);
-            commit('SET_RES_REGISTER_USER', result)
-            
+            commit('SET_CHECK_ATTENDANCE', result)
+            dispatch('actionGetAllAttendence')
         } catch (error) {
             const result = {
                 status: 'duplicate',
                 actions: 201
             }
-            commit('SET_RES_REGISTER_USER', result)
+            commit('SET_CHECK_ATTENDANCE', result)
+        }
+    },
+
+    async updateOvertime({ commit, dispatch }, data) {
+        try {
+            const res = await httpCommons.patch(apiName + `/${data.id}`, data)
+            console.log(res);
+            const result = {
+                status: res.statusText,
+                actions: res.status,
+                data : res.data,
+            }
+            console.log("overtime_update : "+result)
+            commit('SET_UPDATE_ATTENDANCE', result)
+            dispatch('actionGetAllAttendence')
+        } catch (error) {
+            const result = {
+                status: 'duplicate',
+                actions: 201
+            }
+            commit('SET_UPDATE_ATTENDANCE', result)
         }
     },
 
     async checkAttendance({ commit, dispatch }, data) {
+        console.log(data);
         try {
             const res = await httpCommons.post(apiName + "/checkAttendance", data)
             const result = {
@@ -75,21 +123,24 @@ const actions = {
 }
 
 const mutations = {
-    SET_DATA_USERS(state, rows) {
+    SET_GET_DATA_ATTENDANCE(state, rows) {
         state.data = rows
     },
-    SET_RES_REGISTER_USER(state, status) {
+   
+    SET_CHECK_ATTENDANCE(state, status) {
         state.status = status
     },
-    SET_CHECK_ATTENDANCE(state, status) {
+
+    SET_UPDATE_ATTENDANCE(state, status) {
         state.status = status
     }
 }
 
 const getters = {
-    getDataAllUsers: state => state.data,
-    getResRegisterUser: state => state.status,
+    getDataAllAttendance: state => state.data,
     getStatusAttendance: state => state.status,
+    getBulkAttendance: state => state.status,
+    
 }
 
 export default {

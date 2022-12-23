@@ -4,7 +4,7 @@
       <v-card>
         <v-card-title>
           <span class="headline">Update</span>
-          {{ (dataAttendance_ = dataAttendance) }}
+          <!-- {{ (dataAttendance_ = dataAttendance) }} -->
         </v-card-title>
 
         <v-card-text>
@@ -18,7 +18,8 @@
                   label="Combobox"
                   outlined
                   dense
-                ></v-combobox>
+                >
+                </v-combobox>
               </v-col>
             </v-row>
           </v-container>
@@ -33,6 +34,7 @@
 </template>
   
   <script>
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "EditAttendance",
   props: {
@@ -40,77 +42,182 @@ export default {
       default: false,
     },
     dataAttendance: null,
+    type_overtime: null,
   },
   data() {
     return {
       total_leave: 0,
       label_overtime: [
-        "30 Menit",
-        "1 Jam",
-        "1 Jam 30 Menit",
-        "2 Jam",
-        "2 Jam 30 Menit",
-        "3 Jam",
-        "3 Jam 30 Menit",
-        "4 Jam",
-        "4 Jam 30 Menit",
-        "5 Jam",
-        "5 Jam 30 Menit",
-        "6 Jam",
-        "6 Jam 30 Menit",
-        "7 Jam",
-        "7 Jam 30 Menit",
-        "8 Jam",
-        "8 Jam 30 Menit",
-        "9 Jam",
-        "9 Jam 30 Menit",
-        "10 Jam",
+        {
+          text: "30 Menit",
+          value: "30",
+        },
+        {
+          text: "1 Jam",
+          value: "60",
+        },
+        {
+          text: "1 Jam 30 Menit",
+          value: "90",
+        },
+        {
+          text: "2 Jam",
+          value: "120",
+        },
+        {
+          text: "2 Jam 30 Menit",
+          value: "150",
+        },
+        {
+          text: "3 Jam",
+          value: "180",
+        },
+        {
+          text: "3 Jam 30 Menit",
+          value: "210",
+        },
+        {
+          text: "4 Jam",
+          value: "240",
+        },
+        {
+          text: "4 Jam 30 Menit",
+          value: "270",
+        },
+        {
+          text: "5 Jam",
+          value: "300",
+        },
+        {
+          text: "5 Jam 30 Menit",
+          value: "330",
+        },
+        {
+          text: "6 Jam",
+          value: "360",
+        },
+        {
+          text: "6 Jam 30 Menit",
+          value: "390",
+        },
+        {
+          text: "7 Jam",
+          value: "420",
+        },
+        {
+          text: "7 Jam 30 Menit",
+          value: "450",
+        },
+        {
+          text: "8 Jam",
+          value: "480",
+        },
+        {
+          text: "8 Jam 30 Menit",
+          value: "510",
+        },
+        {
+          text: "9 Jam",
+          value: "540",
+        },
+        {
+          text: "9 Jam 30 Menit",
+          value: "570",
+        },
+        {
+          text: "10 Jam",
+          value: "600",
+        },
       ],
-      hasil: this.convertTime(this.dataAttendance),
+      hasil: null,
     };
   },
   methods: {
+    ...mapActions(["updateOvertime"]),
     update() {
-      console.log(this.hasil);
-      var data = 1999;
+      if (this.hasil == null) {
+        this.hasil = this.dataAttendance.overtime;
+      }
+      console.log("hasil : " + this.hasil);
+      console.log("type_overtime : " + this.type_overtime);
+      var data = null;
+      if (this.type_overtime == "early") {
+        data = {
+          id: this.dataAttendance.id,
+          early_overtime: this.hasil,
+        };
+      } else if (this.type_overtime == "late") {
+        data = {
+          id: this.dataAttendance.id,
+          overtime: this.hasil,
+        };
+      }
+
+      this.updateOvertime(data);
+      this.close();
       // this.$emit("update:total_leave", total_leave);
-      this.$emit("update:dialogEditAttendance", false);
-      this.$emit("userInfo", data);
+      // this.$emit("update:dialogEditAttendance", false);
+      // this.$emit("userInfo", this.hasil);
     },
+
+    convertToMinutes() {},
     close() {
       this.total_leave = "";
       this.$emit("update:dialogEditAttendance", false);
-    },
-
-    convertTime(dataAttendance) {
-      console.log("dataAttendance : "+dataAttendance);
-      var jam = parseInt(dataAttendance / 60);
-      var menit = parseInt(dataAttendance % 60);
-      // console.log("menit = "+menit);
-      var isPass = false;
-      if (jam > 0) {
-        isPass = true;
-        this.hasil = jam + " Jam";
-      }
-      if (menit > 0) {
-        if (isPass) {
-          this.hasil = this.hasil + " ";
-        }
-        this.hasil = this.hasil + (menit + " Menit");
-      }
+      // this.dataAttendance = null;
+      // this.type_overtime = null;
     },
   },
 
   computed: {
     select: {
-      set(value) {
-        this.convertTime(value);
+      get: function () {
+        if (this.dataAttendance == null) {
+          return "";
+        }
+        var result = "";
+        for (var i = 0; i < this.label_overtime.length; i++) {
+          if (this.dataAttendance.overtime == this.label_overtime[i].value ||
+              this.dataAttendance.early_overtime == this.label_overtime[i].value) {
+            result = this.label_overtime[i].text;
+          }
+        }
+        return result;
+        // console.log(this.dataAttendance.overtime);
+        // var jam = parseInt(this.dataAttendance.overtime / 60);
+        // var menit = parseInt(this.dataAttendance.overtime % 60);
+        // // console.log("menit = "+menit);
+        // var isPass = false;
+        // var result = "";
+        // if (jam > 0) {
+        //   isPass = true;
+        //   result = jam + " Jam";
+        // }
+        // if (menit > 0) {
+        //   if (isPass) {
+        //     result = result + " ";
+        //   }
+        //   result = result + (menit + " Menit");
+        // }
+        // return result;
       },
-      get() {
-        console.log("hasil get : "+this.dataAttendance);
-        return this.hasil;
+      // setter
+      set: function (newValue) {
+        // your setter here
+        console.log("new value : " + newValue.value);
+        this.hasil = newValue.value;
       },
     },
+
+    // select: {
+    //   set(value) {
+    //     this.convertTime(value);
+    //   },
+    //   get() {
+    //     console.log("hasil get : "+this.dataAttendance);
+    //     return this.hasil;
+    //   },
+    // },
     // select() {
     //   var jam = parseInt(this.dataAttendance / 60);
     //   var menit = parseInt(this.dataAttendance % 60);
