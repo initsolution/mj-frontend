@@ -1,5 +1,6 @@
 <template>
   <v-app>
+    <ViewPayslip :dialogViewPayslip.sync="dialogViewPayslip" />
     <v-row justify="center">
       <v-date-picker v-model="picker" @input="getNewDate()"> </v-date-picker>
       <v-col cols="12" sm="6">
@@ -66,9 +67,14 @@
     
 <script>
 import { mapActions, mapGetters } from "vuex";
+import ViewPayslip from "./ViewPayslip.vue";
 export default {
+  components : {
+    ViewPayslip
+  },
   data() {
     return {
+      dialogViewPayslip : false,
       picker: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substr(0, 10),
@@ -115,12 +121,26 @@ export default {
         .toISOString()
         .substr(0, 10);
     },
+    isLoadingFinish(){
+      const status = this.geStatusLoading
+      console.log(status)
+      if(status.loading == false){
+        this.dialogViewPayslip = true
+      }
+    }
   },
-
+  watch : {
+    geStatusLoading :{
+      handler(){
+        this.isLoadingFinish()
+      }
+    }
+  },
   computed: {
     ...mapGetters([
       "getDataAllPayslip",
       "getStatusPayslip",
+      "geStatusLoading"
     ]),
     // getCheckAttendance() {
     //   return this.getStatusAttendance.data;

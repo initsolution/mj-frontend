@@ -7,6 +7,7 @@ const state = {
     data: [],
     status: {},
     update: {},
+    isLoading : {},
 }
 
 const actions = {
@@ -43,6 +44,7 @@ const actions = {
     async savePayslip({ commit, dispatch }, data) {
         console.log("save playslip : "+data);
         try {
+            commit('SET_LOADING', true)
             const res = await httpCommons.post(apiName, data)
             const result = {
                 status: res.statusText,
@@ -51,6 +53,7 @@ const actions = {
             }
             console.log(result);
             commit('SET_CHECK_PAYSLIP', result)
+            commit('SET_LOADING', false)
             // dispatch('actionGetAllAttendence')
         } catch (error) {
             const result = {
@@ -63,6 +66,12 @@ const actions = {
 }
 
 const mutations = {
+    SET_LOADING(state, isLoading){
+        state.isLoading ={
+            loading : isLoading
+        }
+    },
+    
     SET_GET_DATA_PAYSLIP(state, rows) {
         state.data = rows
     },
@@ -75,6 +84,7 @@ const mutations = {
 const getters = {
     getDataAllPayslip: state => state.data,
     getStatusPayslip: state => state.status,
+    geStatusLoading: state => state.isLoading,
 }
 
 export default {
