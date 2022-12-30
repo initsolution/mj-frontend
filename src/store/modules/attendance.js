@@ -59,6 +59,7 @@ const actions = {
     },
 
     async saveBulkAttendance({ commit, dispatch }, data) {
+        console.log(data)
         try {
             const res = await httpCommons.post(apiName+"/bulk", data)
             const result = {

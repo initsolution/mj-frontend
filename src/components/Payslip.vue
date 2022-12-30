@@ -65,6 +65,7 @@
 </template>
     
 <script>
+import { mapActions, mapGetters } from "vuex";
 export default {
   data() {
     return {
@@ -79,9 +80,24 @@ export default {
     };
   },
   methods: {
+    ...mapActions([
+      "savePayslip",
+      "actionGetPayslip",
+    ]),
     payslip() {
-      console.log(this.dates);
+      // console.log(this.dates);
+      // console.log(this.start_date);
+      // console.log(this.end_date);
+      const data = {
+        departemen : "PRODUKSI",
+        periode_start : this.start_date,
+        periode_end : this.end_date,
+        day_off : this.dates,
+      };
+      console.log(data);
+      this.savePayslip(data);
     },
+
     getNewDate() {
       this.dates = [];
       this.select_date = this.picker;
@@ -99,6 +115,16 @@ export default {
         .toISOString()
         .substr(0, 10);
     },
+  },
+
+  computed: {
+    ...mapGetters([
+      "getDataAllPayslip",
+      "getStatusPayslip",
+    ]),
+    // getCheckAttendance() {
+    //   return this.getStatusAttendance.data;
+    // },
   },
   //   watch: {
   //     select_date: {
