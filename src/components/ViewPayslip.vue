@@ -81,6 +81,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { formatPrice } from "@/utils/utils";
+import { jsPDF } from "jspdf";
 export default {
   props: {
     dialogViewPayslip: {
@@ -147,6 +148,16 @@ export default {
     },
     print(){
       console.log(this.selected)
+      const doc = new jsPDF({orientation: "landscape"});
+      for(var i=0; i<this.selected.length; i++) {
+        let pageWidth = doc.internal.pageSize.getWidth();
+        doc.text("SLIP GAJI KARYAWAN",pageWidth / 2, 20, 'center');
+        doc.text("Nama : "+ this.selected[i].employee.name, 40, 40);
+        if(i < this.selected.length-1){
+          doc.addPage();
+        }
+      }
+      doc.save("a4.pdf");
     }
   },
   computed: {
