@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-mutating-props -->
 <template>
   <v-layout row justify-center>
     <v-dialog v-model="dialogEditAttendance" persistent max-width="600px">

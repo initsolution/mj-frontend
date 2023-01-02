@@ -1,12 +1,20 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-import Attendance from './modules/attendance'
+import Vue from "vue";
+import Vuex from "vuex";
+import Attendance from "./modules/attendance";
 
-Vue.use(Vuex)
+Vue.use(Vuex);
 
 export default new Vuex.Store({
-    modules : {
-        // User
-        Attendance
-    }
-})
+  state: {
+    drawer: null,
+  },
+  modules: {
+    // User
+    Attendance,
+  },
+  mutations: {
+    SET_DRAWER(state, payload) {
+      state.drawer = payload;
+    },
+  },
+});
