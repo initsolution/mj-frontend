@@ -71,7 +71,7 @@
         </v-card-text>
         <v-card-actions>
           <v-btn color="red darken-1" @click.native="close">Close</v-btn>
-        <v-btn color="green darken-1" @click="print">Print</v-btn>
+          <v-btn color="green darken-1" @click="print">Print</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -82,6 +82,8 @@
 import { mapGetters } from "vuex";
 import { formatPrice } from "@/utils/utils";
 import { jsPDF } from "jspdf";
+import autoTable from "jspdf-autotable";
+import angkaTerbilang from "@develoka/angka-terbilang-js";
 export default {
   props: {
     dialogViewPayslip: {
@@ -90,7 +92,7 @@ export default {
   },
   data() {
     return {
-      selected : [],
+      selected: [],
       headers: [
         { text: "Employee_ID", value: "employee.id" },
         { text: "Nama", value: "employee.name" },
@@ -146,19 +148,371 @@ export default {
     close() {
       this.$emit("update:dialogViewPayslip", false);
     },
-    print(){
-      console.log(this.selected)
-      const doc = new jsPDF({orientation: "landscape"});
-      for(var i=0; i<this.selected.length; i++) {
-        let pageWidth = doc.internal.pageSize.getWidth();
-        doc.text("SLIP GAJI KARYAWAN",pageWidth / 2, 20, 'center');
-        doc.text("Nama : "+ this.selected[i].employee.name, 40, 40);
-        if(i < this.selected.length-1){
+
+    formatDate(date) {
+      date = new Date(date);
+      var bulan = [
+        "Januari",
+        "Februari",
+        "Maret",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Agustus",
+        "September",
+        "Oktober",
+        "November",
+        "Desember",
+      ];
+      // date = date.substring(0, 10);
+      // date = date.split("-");
+      return (
+        date.getDate() +
+        " " +
+        bulan[date.getMonth()] +
+        " " +
+        parseInt(1900 + date.getYear())
+      );
+    },
+
+    print() {
+      // console.log(this.selected);
+      const doc = new jsPDF("l", "mm", "a5");
+      for (var i = 0; i < this.selected.length; i++) {
+        // let pageWidth = doc.internal.pageSize.getWidth();
+        // console.log("pagewidth : " + pageWidth);
+        // doc.setFontSize(10);
+
+        // doc.text("SLIP GAJI KARYAWAN", pageWidth / 2, 10, "center");
+        // doc.setFontSize(8);
+        // doc.text("Nama: " + this.selected[i].employee.name, 10, 20);
+        // doc.text("NIK:" + this.selected[i].employee.id, 10, 25);
+        // doc.text("Lama Kerja:" + this.selected[i].lama_kerja, 10, 30);
+        // doc.text(
+        //   "Total Hari Kerja:" + this.selected[i].total_hari_kerja,
+        //   10,
+        //   35
+        // );
+        // doc.text(
+        //   "Total Hari Masuk:" + this.selected[i].total_hari_masuk,
+        //   10,
+        //   40
+        // );
+        var tb_title = [
+          ["SLIP GAJI KARYAWAN"],
+          [
+            "Periode " +
+              this.formatDate(this.selected[i].periode_start) +
+              " - " +
+              this.formatDate(this.selected[i].periode_end),
+          ],
+        ];
+
+        var tb_karyawan = [
+          [
+            "Nama",
+            this.selected[i].employee.name,
+            "Departemen",
+            this.selected[i].employee.department.name,
+          ],
+          ["Nik", this.selected[i].employee.id, "Area Skill/Jabatan", ""],
+          ["Lama Kerja", this.selected[i].lama_kerja + " tahun", "", ""],
+          [
+            "Total Hari Kerja",
+            this.selected[i].total_hari_kerja,
+            "Total Hari Libur/Tanggal Merah",
+            this.selected[i].total_hari_libur,
+          ],
+          [
+            "Total Hari Masuk",
+            this.selected[i].total_hari_masuk,
+            "Total Hari Tidak Masuk",
+            this.selected[i].total_hari_off,
+          ],
+        ];
+
+        var tb_header = [["PENDAPATAN", "POTONGAN"]];
+
+        var tb_content = [
+          [
+            "Gaji Pokok",
+            "Rp",
+            this.formatPrice(this.selected[i].gaji_pokok),
+            "Potongan Telat dan Ijin",
+            "Rp",
+            this.formatPrice(this.selected[i].potongan_terlambat_ijin),
+          ],
+          [
+            "Lama Kerja",
+            "Rp",
+            this.formatPrice(this.selected[i].bonus_lama_kerja),
+            "Potongan BPJS Tenaga Kerja",
+            "Rp",
+            this.formatPrice(this.selected[i].potongan_bpjs_tk),
+          ],
+          [
+            "Upah 1 hari",
+            "Rp",
+            this.formatPrice(this.selected[i].upah_1_hari),
+            "Potongan BPJS Kesehatan",
+            "Rp",
+            this.formatPrice(this.selected[i].potongan_bpjs_ks),
+          ],
+          [
+            "Tunjangan Kehadiran",
+            "Rp",
+            this.formatPrice(this.selected[i].total_tunjangan_kehadiran),
+            "Potongan SPSI",
+            "Rp",
+            this.formatPrice(this.selected[i].potongan_spsi),
+          ],
+          [
+            "Upah " + this.selected[i].total_hari_masuk + " hari",
+            "Rp",
+            this.formatPrice(this.selected[i].upah_n_hari),
+            "Potongan Bon",
+            "Rp",
+            this.formatPrice(this.selected[i].potongan_bon),
+          ],
+          [
+            "Extra Full",
+            "Rp",
+            this.formatPrice(this.selected[i].extra_full),
+            "Potongan Lain-lain",
+            "Rp",
+            this.formatPrice(this.selected[i].potongan_lain),
+          ],
+          [
+            "Lembur",
+            "Rp",
+            this.formatPrice(this.selected[i].lembur),
+            "",
+            "",
+            "",
+          ],
+          [
+            "Upah Hari Minggu",
+            "Rp",
+            this.formatPrice(this.selected[i].upah_minggu),
+            "",
+            "",
+            "",
+          ],
+          [
+            "Premi Hari Besar",
+            "Rp",
+            this.formatPrice(this.selected[i].premi_hari_besar),
+            "",
+            "",
+            "",
+          ],
+          [
+            "Total Pendapatan",
+            "Rp",
+            this.formatPrice(this.selected[i].total_pendapatan),
+            "Total Potongan",
+            "Rp",
+            this.formatPrice(this.selected[i].total_potongan),
+          ],
+        ];
+
+        var tb_footer = [
+          [
+            "PENDAPATAN GAJI = Rp " +
+              formatPrice(this.selected[i].pendapatan_gaji),
+          ],
+          [angkaTerbilang(this.selected[i].pendapatan_gaji).toUpperCase()],
+          ["SISA PINJAMAN = Rp " + this.formatPrice(this.selected[i].sisa_bon)],
+        ];
+
+        doc.autoTable({
+          body: tb_title,
+          startY: 5,
+          theme: "plain",
+          styles: {
+            textColor: "#000000",
+            fontStyle: "bold",
+            fontSize: 10,
+            halign: "center",
+            cellPadding: 1,
+          },
+        });
+
+        doc.autoTable({
+          body: tb_karyawan,
+          startY: 17,
+          theme: "plain",
+          styles: {
+            textColor: "#000000",
+            fontSize: 8,
+            cellPadding: 1,
+          },
+          columnStyles: {
+            0: {
+              cellWidth: 45,
+            },
+            1: {
+              cellWidth: 45,
+            },
+            2: {
+              cellWidth: 45,
+            },
+            3: {
+              cellWidth: "auto",
+            },
+          },
+        });
+
+        doc.autoTable({
+          body: tb_header,
+          startY: 45,
+          theme: "plain",
+          styles: {
+            fontStyle: "bold",
+            textColor: "#000000",
+            fontSize: 9,
+            halign: "center",
+            cellPadding: 1,
+          },
+          columnStyles: {
+            0: {
+              cellWidth: 90,
+            },
+            1: {
+              cellWidth: "auto",
+            },
+          },
+
+          willDrawCell: function (data) {
+            if (data.row.section === "body") {
+              // draw bottom border
+              doc.setLineWidth(0.5);
+              doc.line(
+                data.cell.x,
+                data.cell.y + data.cell.height,
+                data.cell.x + data.cell.width,
+                data.cell.y + data.cell.height
+              );
+              // draw top border
+              doc.line(
+                data.cell.x + data.cell.width,
+                data.cell.y,
+                data.cell.x,
+                data.cell.y
+              );
+              // draw left border
+              // doc.line(
+              //   data.cell.x,
+              //   data.cell.y + data.cell.height,
+              //   data.cell.x,
+              //   data.cell.y
+              // );
+              // draw right border
+              // doc.line(
+              //   data.cell.x + data.cell.width,
+              //   data.cell.y,
+              //   data.cell.x + data.cell.width,
+              //   data.cell.y + data.cell.height
+              // );
+            }
+          },
+        });
+
+        doc.autoTable({
+          body: tb_content,
+          startY: 52,
+          theme: "plain",
+          styles: {
+            textColor: "#000000",
+            fontSize: 8,
+            cellPadding: 1,
+          },
+          columnStyles: {
+            0: {
+              cellWidth: 52,
+            },
+            1: {
+              cellWidth: 8,
+            },
+            2: {
+              cellWidth: 30,
+              halign: "right",
+            },
+            3: {
+              cellWidth: 52,
+            },
+            4: {
+              cellWidth: 8,
+            },
+            5: {
+              cellWidth: "auto",
+              halign: "right",
+            },
+          },
+          didParseCell: function (HookData) {
+            if (HookData.row.index == 9) {
+              HookData.cell.styles.fontStyle = "bold";
+            }
+          },
+        });
+
+        doc.autoTable({
+          body: tb_footer,
+          startY: 105,
+          theme: "plain",
+          styles: {
+            textColor: "#000000",
+            fontStyle: "bold",
+            fontSize: 8,
+            halign: "center",
+          },
+          willDrawCell: function (data) {
+            if (data.row.section === "body") {
+              if (data.row.index == 0) {
+                // draw top border
+                doc.setLineWidth(0.5);
+                doc.line(
+                  data.cell.x + data.cell.width,
+                  data.cell.y,
+                  data.cell.x,
+                  data.cell.y
+                );
+              }
+
+              if (data.row.index == 2) {
+                // draw bottom border
+                doc.setLineWidth(0.5);
+                doc.line(
+                  data.cell.x,
+                  data.cell.y + data.cell.height,
+                  data.cell.x + data.cell.width,
+                  data.cell.y + data.cell.height
+                );
+              }
+              // draw left border
+              // doc.line(
+              //   data.cell.x,
+              //   data.cell.y + data.cell.height,
+              //   data.cell.x,
+              //   data.cell.y
+              // );
+              // draw right border
+              // doc.line(
+              //   data.cell.x + data.cell.width,
+              //   data.cell.y,
+              //   data.cell.x + data.cell.width,
+              //   data.cell.y + data.cell.height
+              // );
+            }
+          },
+        });
+        if (i < this.selected.length - 1) {
           doc.addPage();
         }
       }
       doc.save("a4.pdf");
-    }
+    },
   },
   computed: {
     ...mapGetters(["getStatusPayslip"]),

@@ -117,7 +117,7 @@ export default {
       if (this.select_date == null) {
         return "";
       }
-      return new Date(new Date(this.select_date).getTime() + 604800000)
+      return new Date(new Date(this.select_date).getTime() + 518400000)
         .toISOString()
         .substr(0, 10);
     },
