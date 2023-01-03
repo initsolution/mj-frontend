@@ -1,16 +1,12 @@
 <template>
   <v-container class="align-center py-15">
-    <!-- <EditAttendance
-        :dialogEditAttendance.sync="dialogEditAttendancelocal"
-        :dataAttendance="dataAttendance"
-        @userInfo="getUserData($event)"
-      /> -->
-    <EditAttendance
+    <edit-attendance
       :dialogEditAttendance.sync="dialogEditAttendancelocal"
       :dataAttendance="dataAttendance"
       :type_overtime="type_overtime"
-    />
-    <v-card class="mx-auto my-auto" tile>
+    >
+    </edit-attendance>
+    <v-card class="mx-auto" tile>
       <v-card-title>
         <v-col cols="4" md="10">Attendance</v-col>
         <v-col cols="4" md="4">
@@ -27,12 +23,6 @@
           <v-btn @click="onChange" class="mt-3"> Upload </v-btn>
           <v-btn @click="payslip" class="mt-3"> PlaySlip </v-btn>
         </v-col>
-        <!-- <v-col cols="4" md="2">
-          <v-btn @click="updateUser">Update</v-btn>
-        </v-col>
-        <v-col cols="4" md="2">
-          <v-btn @click="deleteUserFunc">Delete User</v-btn>
-        </v-col> -->
       </v-card-title>
       <v-card-text>
         <v-data-table
@@ -44,16 +34,60 @@
             {{ convertDate(item.attendance_date) }}
           </template>
           <template v-slot:[`item.time_check_in`]="{ item }">
-            {{ convertTime(item.time_check_in) }}
+            <span
+              v-if="
+                isLate(
+                  item.time_check_in,
+                  item.work_hours != null
+                    ? item.work_hours.split('-')[0]
+                    : null,
+                  'check_in'
+                )
+              "
+              class="text-color"
+              >{{ convertTime(item.time_check_in) }}</span
+            >
+            <span v-else>{{ convertTime(item.time_check_in) }}</span>
           </template>
           <template v-slot:[`item.time_check_out`]="{ item }">
-            {{ convertTime(item.time_check_out) }}
+            <span
+              v-if="
+                isLate(
+                  item.time_check_out,
+                  item.work_hours != null
+                    ? item.work_hours.split('-')[1]
+                    : null,
+                  'check_out'
+                )
+              "
+              class="text-color"
+              >{{ convertTime(item.time_check_out) }}</span
+            >
+            <span v-else>{{ convertTime(item.time_check_out) }}</span>
           </template>
           <template v-slot:[`item.time_start_for_break`]="{ item }">
+            <!-- start_for_break tidak di hitung-->
+            <!-- <span v-if="isLate(item.time_start_for_break, item.break_hours !=null ? item.break_hours.split('-')[0] : null, 'start_break')" 
+              class="text-color">{{ convertTime(item.time_start_for_break) }}</span> -->
+            <!-- <span v-else>{{ convertTime(item.time_start_for_break) }}</span> -->
             {{ convertTime(item.time_start_for_break) }}
           </template>
           <template v-slot:[`item.time_end_for_break`]="{ item }">
-            {{ convertTime(item.time_end_for_break) }}
+            <!-- {{ convertTime(item.time_end_for_break) }} -->
+            <span
+              v-if="
+                isLate(
+                  item.time_end_for_break,
+                  item.break_hours != null
+                    ? item.break_hours.split('-')[1]
+                    : null,
+                  'end_break'
+                )
+              "
+              class="text-color"
+              >{{ convertTime(item.time_end_for_break) }}</span
+            >
+            <span v-else>{{ convertTime(item.time_end_for_break) }}</span>
           </template>
           <template v-slot:[`item.time_arrive_home`]="{ item }">
             {{ convertTime(item.time_arrive_home) }}
@@ -71,17 +105,7 @@
                   <!-- <v-btn color="primary" dark v-bind="attrs" v-on="on">
                       Dropdown
                     </v-btn> -->
-                  <v-chip v-if="item.overtime > 0">
-                    <v-chip
-                      :color="getColor(item.overtime)"
-                      dark
-                      v-bind="attrs"
-                      v-on="on"
-                    >
-                      {{ item.overtime }}
-                    </v-chip>
-                  </v-chip>
-                  <v-chip v-else>
+                  <v-chip v-if="item.overtime != null">
                     <v-chip
                       :color="getColor(item.overtime)"
                       dark
@@ -121,17 +145,7 @@
                   <!-- <v-btn color="primary" dark v-bind="attrs" v-on="on">
                       Dropdown
                     </v-btn> -->
-                  <v-chip v-if="item.early_overtime > 0">
-                    <v-chip
-                      :color="getColor(item.early_overtime)"
-                      dark
-                      v-bind="attrs"
-                      v-on="on"
-                    >
-                      {{ item.early_overtime }}
-                    </v-chip>
-                  </v-chip>
-                  <v-chip v-else>
+                  <v-chip v-if="item.early_overtime != null">
                     <v-chip
                       :color="getColor(item.early_overtime)"
                       dark
@@ -175,6 +189,8 @@ import XLSX from "xlsx";
 import { mapActions, mapGetters } from "vuex";
 import EditAttendance from "@/components/EditAttendance.vue";
 export default {
+  name: "Absensi",
+
   data() {
     return {
       datalist: [],
@@ -215,8 +231,6 @@ export default {
     };
   },
 
-  name: "App",
-
   components: {
     EditAttendance,
   },
@@ -229,7 +243,7 @@ export default {
 
     today = yyyy + "/" + mm + "/" + dd;
     // today = "18/11/2022"
-    console.log(today);
+    // console.log(today);
     this.actionGetAllAttendence(today);
   },
 
@@ -335,13 +349,13 @@ export default {
               attendance_date: datarow[2],
               attendance_type: datarow[7] == null ? 0 : 1,
               week_of_day: week_of_day,
-              time_check_in: datarow[3],
-              time_check_out: datarow[4],
-              time_start_for_break: datarow[5],
-              time_end_for_break: datarow[6],
-              time_arrive_home: datarow[7],
-              time_start_for_left: datarow[8],
-              time_end_for_left: datarow[9],
+              time_check_in: datarow[3] == "" ? null : datarow[3],
+              time_check_out: datarow[4] == "" ? null : datarow[4],
+              time_start_for_break: datarow[5] == "" ? null : datarow[5],
+              time_end_for_break: datarow[6] == "" ? null : datarow[6],
+              time_arrive_home: datarow[7] == "" ? null : datarow[7],
+              time_start_for_left: datarow[8] == "" ? null : datarow[8],
+              time_end_for_left: datarow[9] == "" ? null : datarow[9],
               // work_duration : calculate_work_duration,
             });
           }
@@ -365,6 +379,36 @@ export default {
         return;
       }
       return time.substring(0, 5);
+    },
+
+    //time1 = checkin, time2 = schedule
+    isLate(time1, time2, type) {
+      if (time1 == null || time2 == null) {
+        return false;
+      }
+      // console.log("time1: "+time1);
+      // console.log("time2: "+time2);
+      time1 = time1.split(":");
+      time2 = time2.split(":");
+
+      var calculateTime1 = parseInt(time1[0] * 60) + parseInt(time1[1]);
+      var calculateTime2 = parseInt(time2[0] * 60) + parseInt(time2[1]);
+      // console.log(calculateTime2 +" == "+calculateTime1)
+      if (type == "check_in" || type == "end_break") {
+        if (calculateTime2 >= calculateTime1) {
+          return false;
+        }
+      } else if (type == "check_out" || type == "start_break") {
+        if (calculateTime2 <= calculateTime1) {
+          return false;
+        }
+      }
+
+      return true;
+    },
+
+    splitTime(time) {
+      return time;
     },
 
     diff(
@@ -471,6 +515,10 @@ export default {
       else return "#00ff00";
     },
 
+    getTimeColor(time) {
+      return "#00ff00";
+    },
+
     confirmOvertime(item, type) {
       // console.log("overtime : "+ this.getCheckAttendance[index].overtime);
       // this.selectedItem = item;
@@ -557,4 +605,7 @@ export default {
 </script>
 
 <style>
+.text-color {
+  color: red;
+}
 </style>

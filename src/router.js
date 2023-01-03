@@ -46,6 +46,11 @@ export default new Router({
           component: () => import("./views/pages/Payslip.vue"),
         },
         {
+          path: "viewPayslip",
+          name: "ViewPayslip",
+          component: () => import("./views/pages/ViewPayslip.vue"),
+        },
+        {
           path: "pengeluaran",
           name: "Pengeluaran",
           component: () => import("./views/pages/Pengeluaran.vue"),
