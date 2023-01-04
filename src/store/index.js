@@ -3,7 +3,7 @@ import Vuex from "vuex";
 import Attendance from "./modules/attendance";
 import Payslip from './modules/payslip'
 import Employee from './modules/employee'
-import Departement from './modules/department'
+import Department from './modules/department'
 
 Vue.use(Vuex);
 
@@ -15,6 +15,8 @@ export default new Vuex.Store({
     // User
     Attendance,
     Payslip,
+    Employee,
+    Department
   },
   mutations: {
     SET_DRAWER(state, payload) {
