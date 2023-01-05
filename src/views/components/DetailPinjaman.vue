@@ -35,7 +35,7 @@
                 class="ml-3 elevation-0"
                 dark
                 small
-                @click="showPay(1)"
+                @click="showPay"
                 >Bayar</v-btn
               >
               <v-btn small class="mr-3 elevation-0" v-else disabled
@@ -70,11 +70,45 @@
         </v-card-text>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="dialogPay" max-width="600">
+      <v-card>
+        <v-card-title>
+          <div>
+            Bayar Pinjaman
+            <strong>({{ employee.name }})</strong>
+          </div>
+        </v-card-title>
+        <v-card-text>
+          <v-text-field
+            color="grey darken-2"
+            prefix="Rp"
+            v-model.trim="loan.nominal"
+            label="Nominal Pinjaman"
+            required
+          ></v-text-field>
+          <v-text-field
+            color="grey darken-2"
+            v-model.trim="loan.description"
+            label="Deskripsi"
+          ></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <div class="flex-grow-1"></div>
+          <v-btn class="elevation-0 grey darken-2" dark @click="dismisDialog"
+            >Batal</v-btn
+          >
+          <v-btn class="elevation-0 primary" @click.stop="saveLoan"
+            >Simpan</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-layout>
 </template>
 
 <script>
 import { formatPrice, formatDate } from "@/utils/utils";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "DetailPinjaman",
   props: {
@@ -82,9 +116,15 @@ export default {
       default: false,
     },
     getAllDataLoan: [],
+    employee: {},
   },
   data() {
     return {
+      dialogPay: false,
+      loan: {
+        description: null,
+        nominal: 0,
+      },
       headers: [
         { text: "Keterangan", value: "note" },
         { text: "Tanggal Transaksi", value: "tgl_transaksi" },
@@ -94,6 +134,7 @@ export default {
     };
   },
   methods: {
+    ...mapActions(["inputLoan", 'getAllEmployee']),
     formatPrice(value) {
       return formatPrice(value);
     },
@@ -103,9 +144,47 @@ export default {
     close() {
       this.$emit("update:dialogDetailPinjaman", false);
     },
-    showPay(val){
-        console.log(val)
-    }
+    showPay() {
+      console.log(this.employee);
+      this.dialogPay = true;
+    },
+    dismisDialog() {
+      this.dialogPay = false;
+    },
+    saveLoan() {
+      const data = {
+        employee: { id: this.employee.id },
+        nominal: this.loan.nominal,
+        note: this.loan.description,
+        type: "bayar",
+      };
+      this.inputLoan(data);
+    },
+    watchStatusLoan() {
+      const status = this.getStatusLoan
+      if (status.status == 201) {
+        if (status.statusText == "Created") {
+          const params = new URLSearchParams();
+          params.append("join", "loan");
+          params.append("join", "department");
+          params.append("sort", "loan.created_at,DESC");
+          this.getAllEmployee(params);
+          this.dismisDialog();
+          this.close();
+        }
+      }
+    },
+  },
+
+  watch: {
+    getStatusLoan: {
+      handler() {
+        this.watchStatusLoan();
+      },
+    },
+  },
+  computed: {
+    ...mapGetters(["getStatusLoan"]),
   },
 };
 </script>

@@ -11,7 +11,7 @@ const state = {
 const actions = {
     async getAllEmployee({commit}, param){
         const res = await httpCommons.get(apiName, {params : param})
-        console.log(res.data)
+        // console.log(res.data)
         commit('SET_DATA_EMPLOYEE', res.data)
     }
 }

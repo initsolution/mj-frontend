@@ -9,6 +9,12 @@
           :headers="headers"
           :items="getAllData"
         >
+          <template v-slot:[`item.periode_start`]="{ item }">
+            {{ formatDateUtils(item.periode_start) }}
+          </template>
+          <template v-slot:[`item.periode_end`]="{ item }">
+            {{ formatDateUtils(item.periode_end) }}
+          </template>
           <template v-slot:[`item.gaji_pokok`]="{ item }">
             {{ formatPrice(Math.round(item.gaji_pokok)) }}
           </template>
@@ -52,7 +58,13 @@
             {{ formatPrice(Math.round(item.potongan_spsi)) }}
           </template>
           <template v-slot:[`item.potongan_bon`]="{ item }">
-            {{ formatPrice(Math.round(item.potongan_bon)) }}
+            <v-btn
+              color="blue darken-1"
+              small
+              class="mr-3 elevation-0"
+              @click="openDialogBon(item)"
+              >{{ formatPrice(Math.round(item.potongan_bon)) }}</v-btn
+            >
           </template>
           <template v-slot:[`item.potongan_lain`]="{ item }">
             {{ formatPrice(Math.round(item.potongan_lain)) }}
@@ -72,12 +84,40 @@
         <v-btn color="green darken-1" @click="print">Print</v-btn>
       </v-card-actions>
     </v-card>
+    <v-dialog v-model="dialogPay" max-width="600">
+      <v-card>
+        
+        <v-card-text>
+          <v-text-field
+            color="grey darken-2"
+            prefix="Rp"
+            v-model.trim="loan.nominal"
+            label="Nominal Pinjaman"
+            required
+          ></v-text-field>
+          <v-text-field
+            color="grey darken-2"
+            v-model.trim="loan.description"
+            label="Deskripsi"
+          ></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <div class="flex-grow-1"></div>
+          <v-btn class="elevation-0 grey darken-2" dark @click="dismisDialog"
+            >Batal</v-btn
+          >
+          <v-btn class="elevation-0 primary" @click.stop="saveLoan"
+            >Simpan</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
   
   <script lang="js">
   import { mapGetters } from "vuex";
-  import { formatPrice } from "@/utils/utils";
+  import { formatPrice, formatDate } from "@/utils/utils";
   import { jsPDF } from "jspdf";
   import autoTable from "jspdf-autotable";
   import angkaTerbilang from "@develoka/angka-terbilang-js";
@@ -86,6 +126,9 @@
     data() {
       return {
         selected: [],
+        dialogPay : false,
+        loan : {},
+        dataPayslip : {},
         headers: [
           { text: "Employee_ID", value: "employee.id" },
           { text: "Nama", value: "employee.name" },
@@ -141,8 +184,11 @@
       close() {
         this.$emit("update:dialogViewPayslip", false);
       },
+      formatDateUtils(val){
+        return  formatDate(val, 'short-date')
+      },
   
-      formatDate(date) {
+      formatDateBulan(date) {
         date = new Date(date);
         var bulan = [
           "Januari",
@@ -167,6 +213,23 @@
           " " +
           parseInt(1900 + date.getYear())
         );
+      },
+      openDialogBon(item){
+        console.log(item)
+        this.dataPayslip(item)
+        this.dialogPay = true
+      },
+      dismisDialog() {
+      this.dialogPay = false;
+      },
+      saveLoan() {
+        const data = {
+          employee: { id: this.employee.id },
+          nominal: this.loan.nominal,
+          note: this.loan.description,
+          type: "bayar",
+        };
+        this.inputLoan(data);
       },
   
       print() {
@@ -196,9 +259,9 @@
             ["SLIP GAJI KARYAWAN"],
             [
               "Periode " +
-                this.formatDate(this.selected[i].periode_start) +
+                this.formatDateBulan(this.selected[i].periode_start) +
                 " - " +
-                this.formatDate(this.selected[i].periode_end),
+                this.formatDateBulan(this.selected[i].periode_end),
             ],
           ];
   
