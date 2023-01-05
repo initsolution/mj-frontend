@@ -8,3 +8,9 @@
 - Modul Payslip
     - Membuat payslip produksi periode 1 minggu
     - Cetak payslip pdf
+# 0.0.1 (Update 05/01/2023)
+- Modul Loan :
+    - tambah loan (untuk menambah hutang dan membayar)
+    - view loan
+- Modul payslip
+    - menambahkan tampilan sisa bon dan bon
