@@ -14,3 +14,6 @@
     - view loan
 - Modul payslip
     - menambahkan tampilan sisa bon dan bon
+# 0.0.1 (Update 06/01/2023)
+- Modul payslip
+    - menambahkan dialog untuk bon, dan update payslip    
