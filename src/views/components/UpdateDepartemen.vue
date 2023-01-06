@@ -1,0 +1,71 @@
+<template>
+  <v-layout row justify-center>
+    <v-dialog v-model="dialogUpdateDepartemen" persistent max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Update Departemen </span>
+        </v-card-title>
+
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col cols="12">
+                <v-text-field
+                  label="Nama Departemen"
+                  v-model.trim="getDataDepartemen.name"
+                  required
+                />
+              </v-col>
+              <v-col cols="12">
+                <v-text-field
+                  label="UMR"
+                  v-model.trim="getDataDepartemen.umr"
+                  required
+                />
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="red darken-1" @click.native="close">Close</v-btn>
+          <v-btn color="blue darken-1" @click="update">Update</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-layout>
+</template>
+
+<script>
+import { mapActions } from "vuex";
+export default {
+  name: "UpdateDepartemen",
+  props: {
+    dialogUpdateDepartemen: {
+      default: false,
+    },
+    getDataDepartemen: {},
+  },
+  data() {
+    return {};
+  },
+  methods: {
+    ...mapActions(["actionUpdateDepartement"]),
+    update() {
+      const data = {
+        id: this.getDataDepartemen.id,
+        name: this.getDataDepartemen.name,
+        umr: this.getDataDepartemen.umr,
+      };
+      this.actionUpdateDepartement(data);
+      this.close();
+    },
+
+    close() {
+      this.$emit("update:dialogUpdateDepartemen", false);
+    },
+  },
+};
+</script>
+
+<style>
+</style>
