@@ -17,3 +17,5 @@
 # 0.0.1 (Update 06/01/2023)
 - Modul payslip
     - menambahkan dialog untuk bon, dan update payslip    
+- Modul departemen
+    - menambahkan modul departemen lihat dan update departemen
