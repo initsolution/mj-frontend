@@ -42,7 +42,7 @@ const actions = {
     },
 
     async savePayslip({ commit, dispatch }, data) {
-        console.log("save playslip : "+data);
+        // console.log("save playslip : "+data);
         try {
             commit('SET_LOADING', true)
             const res = await httpCommons.post(apiName, data)
@@ -63,6 +63,13 @@ const actions = {
             commit('SET_CHECK_PAYSLIP', result)
         }
     },
+    
+    async updatePayslipWithBon({commit, dispatch}, data){
+        // commit('SET_LOADING', true)
+        const res = await httpCommons.patch(apiName+'/updatePayslipWithBon', data)
+        console.log(res)
+        commit('SET_CHECK_PAYSLIP', res.data)
+    }
 }
 
 const mutations = {
@@ -77,6 +84,7 @@ const mutations = {
     },
    
     SET_CHECK_PAYSLIP(state, status) {
+        console.log('masuk')
         state.status = status
     },
 }

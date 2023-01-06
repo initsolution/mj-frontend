@@ -7,7 +7,8 @@
           v-model="selected"
           show-select
           :headers="headers"
-          :items="getAllData"
+          :items.sync="getAllData"
+          
         >
           <template v-slot:[`item.periode_start`]="{ item }">
             {{ formatDateUtils(item.periode_start) }}
@@ -58,13 +59,14 @@
             {{ formatPrice(Math.round(item.potongan_spsi)) }}
           </template>
           <template v-slot:[`item.potongan_bon`]="{ item }">
-            <v-btn
+            <v-btn v-if="item.potongan_bon == 0"
               color="blue darken-1"
               small
               class="mr-3 elevation-0"
               @click="openDialogBon(item)"
               >{{ formatPrice(Math.round(item.potongan_bon)) }}</v-btn
             >
+            <div v-else>{{ formatPrice(Math.round(item.potongan_bon)) }}</div>
           </template>
           <template v-slot:[`item.potongan_lain`]="{ item }">
             {{ formatPrice(Math.round(item.potongan_lain)) }}
@@ -86,7 +88,6 @@
     </v-card>
     <v-dialog v-model="dialogPay" max-width="600">
       <v-card>
-        
         <v-card-text>
           <v-text-field
             color="grey darken-2"
@@ -116,7 +117,7 @@
 </template>
   
   <script lang="js">
-  import { mapGetters } from "vuex";
+  import { mapActions, mapGetters } from "vuex";
   import { formatPrice, formatDate } from "@/utils/utils";
   import { jsPDF } from "jspdf";
   import autoTable from "jspdf-autotable";
@@ -178,6 +179,7 @@
       };
     },
     methods: {
+      ...mapActions(['updatePayslipWithBon']),
       formatPrice(value) {
         return formatPrice(value);
       },
@@ -216,20 +218,24 @@
       },
       openDialogBon(item){
         console.log(item)
-        this.dataPayslip(item)
+        this.dataPayslip =item
         this.dialogPay = true
       },
       dismisDialog() {
-      this.dialogPay = false;
+        this.dialogPay = false;
       },
       saveLoan() {
         const data = {
-          employee: { id: this.employee.id },
+          idPayslip : this.dataPayslip.id,
+          employee: { id: this.dataPayslip.employee.id },
           nominal: this.loan.nominal,
           note: this.loan.description,
           type: "bayar",
         };
-        this.inputLoan(data);
+        this.updatePayslipWithBon(data)
+        console.log(data)
+        this.dismisDialog()
+        // this.inputLoan(data);
       },
   
       print() {

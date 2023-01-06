@@ -33,7 +33,7 @@
             </v-col>
 
             <v-col cols="4" md="4">
-              <v-btn @click="onChange" class="mt-3"> Upload </v-btn>
+              <v-btn @click="importAttendance" class="mt-3"> Upload </v-btn>
             </v-col>
           </v-row>
           <v-card class="mx-auto" tile>
@@ -307,7 +307,7 @@ export default {
       this.saveBulkAttendance({ bulk: bulk });
     },
 
-    onChange(event) {
+    importAttendance(event) {
       console.log("Upload");
       if (!this.selectXlsx) {
         console.log("Please upload a xlsx file");
