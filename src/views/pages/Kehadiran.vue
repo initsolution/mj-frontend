@@ -34,6 +34,25 @@
 
             <v-col cols="4" md="4">
               <v-btn @click="importAttendance" class="mt-3"> Upload </v-btn>
+              <v-snackbar
+                v-model="snackbar"
+                :multi-line="multiLine"
+                top
+                color="orange"
+              >
+                {{ notif_text }}
+
+                <template v-slot:action="{ attrs }">
+                  <v-btn
+                    color="white"
+                    text
+                    v-bind="attrs"
+                    @click="snackbar = false"
+                  >
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                </template>
+              </v-snackbar>
             </v-col>
           </v-row>
           <v-card class="mx-auto" tile>
@@ -212,6 +231,7 @@
 import XLSX from "xlsx";
 import { mapActions, mapGetters } from "vuex";
 import EditAttendance from "@/components/EditAttendance.vue";
+import { formatPrice, formatDate } from "@/utils/utils";
 export default {
   name: "Kehadiran",
 
@@ -252,6 +272,9 @@ export default {
       dataAttendance: null,
       selectedItem: null,
       type_overtime: null,
+      multiLine: false,
+      snackbar: false,
+      notif_text: "",
     };
   },
 
@@ -311,6 +334,8 @@ export default {
       console.log("Upload");
       if (!this.selectXlsx) {
         console.log("Please upload a xlsx file");
+        this.notif_text = "Pilih file excel dahulu";
+        this.snackbar = true;
         return;
       }
       // this.file = event.target.files ? event.target.files[0] : null;
@@ -333,60 +358,202 @@ export default {
           var datarow = [];
           for (var row = 2; ; row++) {
             datarow = [];
-            if (sheet["A" + row] == null) {
-              break;
-            }
+            // if (sheet["A" + row] == null) {
+            //   break;
+            // }
 
             for (var col = 65; col <= 75; col++) {
               var c = String.fromCharCode(col); // get 'A', 'B', 'C' ...
               var key = "" + c + row;
               if (sheet[key] == null) {
+                //   console.log(key)
                 datarow.push(null); //jika row .. column .. = null
                 continue;
               }
               datarow.push(sheet[key]["w"]);
             }
 
-            var date = datarow[2].split("/");
-            var year = date[2];
-            var month = Number.parseInt(date[0]);
-            var days = Number.parseInt(date[1]);
-            //date
-            datarow[2] = year + "-" + days + "-" + month;
-            console.log("year : " + datarow[2]);
-
-            //get Week Of Day
-            var getDate = new Date(datarow[2]);
-            var week_of_day = getDate.getDay() + 1;
-
             // var calculate_work_duration = this.diff(datarow[3],datarow[4],datarow[5],datarow[6],datarow[8],datarow[9]);
             // console.log(calculate_work_duration);
+            var _nik = datarow[0] == "" ? null : datarow[0];
+            var _name = datarow[1] == "" ? null : datarow[1];
+            var _attendance_date = datarow[2] == "" ? null : datarow[2];
+            var _time_check_in = datarow[3] == "" ? null : datarow[3];
+            var _time_start_for_break = datarow[4] == "" ? null : datarow[4];
+            var _time_end_for_break = datarow[5] == "" ? null : datarow[5];
+            var _time_check_out = datarow[6] == "" ? null : datarow[6];
+            var _time_arrive_home = datarow[7] == "" ? null : datarow[7];
+            var _time_start_for_left = datarow[8] == "" ? null : datarow[8];
+            var _time_end_for_left = datarow[9] == "" ? null : datarow[9];
 
-            this.datalist.push({
-              id: datarow[0],
-              name: datarow[1],
-              attendance_date: datarow[2],
-              attendance_type: datarow[7] == null ? 0 : 1,
-              week_of_day: week_of_day,
-              time_check_in: datarow[3] == "" ? null : datarow[3],
-              time_check_out: datarow[4] == "" ? null : datarow[4],
-              time_start_for_break: datarow[5] == "" ? null : datarow[5],
-              time_end_for_break: datarow[6] == "" ? null : datarow[6],
-              time_arrive_home: datarow[7] == "" ? null : datarow[7],
-              time_start_for_left: datarow[8] == "" ? null : datarow[8],
-              time_end_for_left: datarow[9] == "" ? null : datarow[9],
+            var data = {
+              id: _nik,
+              name: _name,
+              attendance_date: _attendance_date,
+              time_check_in: _time_check_in,
+              time_start_for_break: _time_start_for_break,
+              time_end_for_break: _time_end_for_break,
+              time_check_out: _time_check_out,
+              time_arrive_home: _time_arrive_home,
+              time_start_for_left: _time_start_for_left,
+              time_end_for_left: _time_end_for_left,
+              attendance_type: _time_arrive_home == null ? 0 : 1,
+              week_of_day: -1,
               // work_duration : calculate_work_duration,
-            });
+            };
+
+            var result = this.checkFormatExcel(data, row);
+            if (result == "end_of_excel") {
+              console.log("End Of Excel " + row);
+              break;
+            }
+            if (result != "sukses") {
+              this.notif_text = result;
+              this.snackbar = true;
+              this.datalist = [];
+              this.selectXlsx = null;
+              return;
+            }
           }
         };
         reader.readAsBinaryString(this.selectXlsx);
 
         reader.onloadend = (e) => {
           console.log("datalist len = " + this.datalist.length);
-          console.log(this.datalist);
-          this.uploadAttendance();
+          if (this.datalist.length > 0) {
+            this.uploadAttendance();
+            this.datalist = [];
+            this.selectXlsx = null;
+          }
         };
       }
+    },
+
+    checkFormatExcel(data, index) {
+      //check jika 1 baris isi nya kosong
+      var getDate = null;
+      var _week_of_day = null;
+      if (
+        data.id == null &&
+        data.name == null &&
+        data.attendance_date == null &&
+        data.time_check_in == null &&
+        data.time_start_for_break == null &&
+        data.time_end_for_break == null &&
+        data.time_check_out == null &&
+        data.time_arrive_home == null &&
+        data.time_start_for_left == null &&
+        data.time_end_for_left == null
+      ) {
+        return "end_of_excel";
+      }
+      if (data.id == null) {
+        return "Gagal Import, Kolom Nik pada baris ke " + index + " kosong";
+      }
+
+      if (data.name == null) {
+        return "Gagal Import, Kolom Nama pada baris ke " + index + " kosong";
+      }
+
+      if (data.attendance_date == null) {
+        return "Gagal Import, Kolom Tanggal pada baris ke " + index + " kosong";
+      } else {
+        // console.log(data.attendance_date);
+        var date = data.attendance_date.split("/");
+        var year = date[2];
+        var month = Number.parseInt(date[1]);
+        var days = Number.parseInt(date[0]);
+
+        date = month + "-" + days + "-" + year;
+        console.log(date);
+        var result = this.formatDateUtils(date);
+        console.log("res : " + result);
+        if (result == "Invalid date") {
+          return (
+            "Gagal Import, Format attendance_date pada baris ke " +
+            index +
+            " tidak sesuai"
+          );
+        } else {
+          getDate = new Date(date);
+          _week_of_day = getDate.getDay() + 1;
+          data.week_of_day = _week_of_day;
+          var _date = year + "-" + month + "-" + days;
+          data.attendance_date = _date;
+        }
+      }
+
+      if (data.time_check_in != null) {
+        if (_week_of_day != 7) {
+          if (data.time_start_for_break == null) {
+            return (
+              "Gagal Import, Kolom Time_start_for_break pada baris ke " +
+              index +
+              " kosong"
+            );
+          }
+
+          if (data.time_end_for_break == null) {
+            return (
+              "Gagal Import, Kolom Time_end_for_break pada baris ke " +
+              index +
+              " kosong"
+            );
+          }
+        }
+
+        if (data.time_check_out == null) {
+          return (
+            "Gagal Import, Kolom Time_check_out pada baris ke " +
+            index +
+            " kosong"
+          );
+        }
+
+        if (
+          data.time_start_for_left != null &&
+          data.time_end_for_left == null
+        ) {
+          return (
+            "Gagal Import, Kolom Time_end_for_left pada baris ke " +
+            index +
+            " kosong"
+          );
+        }
+
+        if (
+          data.time_start_for_left == null &&
+          data.time_end_for_left != null
+        ) {
+          return (
+            "Gagal Import, Kolom Time_start_for_left pada baris ke " +
+            index +
+            " kosong"
+          );
+        }
+      }
+
+      if (data.time_check_in == null) {
+        if (
+          data.time_start_for_break != null ||
+          data.time_end_for_break != null ||
+          data.time_check_out
+        ) {
+          return (
+            "Gagal Import, Kolom Time_check_in pada baris ke " +
+            index +
+            " kosong"
+          );
+        }
+      }
+
+      // console.log(data);
+      this.datalist.push(data);
+      return "sukses";
+    },
+
+    formatDateUtils(val) {
+      return formatDate(val, "short-date");
     },
 
     convertDate(date) {
