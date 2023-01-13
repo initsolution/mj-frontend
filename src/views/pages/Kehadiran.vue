@@ -22,7 +22,7 @@
           </v-row>
           <v-divider class="my-3"></v-divider>
           <v-row>
-            <v-col cols="4" md="4">
+            <v-col md="8">
               <v-file-input
                 accept=".xlsx"
                 label="File input"
@@ -32,12 +32,22 @@
               ></v-file-input>
             </v-col>
 
-            <v-col cols="4" md="4">
-              <v-btn @click="onChange" class="mt-3"> Upload </v-btn>
+            <v-col md="4">
+              <v-btn
+                color="primary elevation-0"
+                @click="onChange"
+                class="mt-3 mr-2 icon-box"
+              >
+                Upload
+              </v-btn>
+
+              <v-btn color="primary elevation-0" class="mt-3 icon-box">
+                Download
+              </v-btn>
             </v-col>
           </v-row>
-          <v-card class="mx-auto" tile>
-            <v-card-text>
+          <v-row>
+            <v-col md="12">
               <v-data-table
                 :headers="this.headers"
                 :items="getDataAllAttendance"
@@ -200,8 +210,8 @@
                   </div>
                 </template>
               </v-data-table>
-            </v-card-text>
-          </v-card>
+            </v-col>
+          </v-row>
         </div>
       </v-col>
     </v-row>
