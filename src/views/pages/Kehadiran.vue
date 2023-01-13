@@ -7,6 +7,14 @@
     >
     </edit-attendance>
 
+    <tambah-kehadiran :dialogTambahKehadiran.sync="dialogTambahKehadiran">
+    </tambah-kehadiran>
+    <hapus-kehadiran
+      :dialogHapusKehadiran.sync="dialogHapusKehadiran"
+      :deleteItems="selected_items"
+    >
+    </hapus-kehadiran>
+
     <v-row>
       <v-col>
         <div flat>
@@ -34,6 +42,8 @@
 
             <v-col cols="4" md="4">
               <v-btn @click="importAttendance" class="mt-3"> Upload </v-btn>
+              <span class="white--text mx-2"></span>
+              <v-btn @click="addAttendance" class="mt-3"> Tambah </v-btn>
               <v-snackbar
                 v-model="snackbar"
                 :multi-line="multiLine"
@@ -55,12 +65,34 @@
               </v-snackbar>
             </v-col>
           </v-row>
+          <v-divider></v-divider>
+          <div class="py2" v-if="selected_items.length > 0">
+            <div class="d-flex flex-row align-center justify-space-between">
+              <div>
+                <span>Data yang ditandai</span>
+                <v-chip color="blue" class="ml-3" dark>
+                  <strong>Total: {{ selected_items.length }}</strong>
+                </v-chip>
+              </div>
+              <v-btn
+                dark
+                color="blue"
+                class="mr-2 icon-box"
+                @click="deleteAttendance"
+              >
+                <v-icon>mdi-delete</v-icon>Hapus data terpilih
+              </v-btn>
+            </div>
+          </div>
+          <v-divider></v-divider>
           <v-card class="mx-auto" tile>
             <v-card-text>
               <v-data-table
+                v-model="selected_items"
                 :headers="this.headers"
                 :items="getDataAllAttendance"
                 class="elevation-1"
+                show-select
               >
                 <template v-slot:[`item.attendance_date`]="{ item }">
                   {{ convertDate(item.attendance_date) }}
@@ -218,6 +250,9 @@
                     </v-menu>
                   </div>
                 </template>
+                <template v-slot:[`item.total_leave`]="{ item }">
+                  {{ calculateTotalLeave(item.total_leave) }}
+                </template>
               </v-data-table>
             </v-card-text>
           </v-card>
@@ -232,6 +267,8 @@ import XLSX from "xlsx";
 import { mapActions, mapGetters } from "vuex";
 import EditAttendance from "@/components/EditAttendance.vue";
 import { formatPrice, formatDate } from "@/utils/utils";
+import TambahKehadiran from "@/views/components/TambahKehadiran.vue";
+import HapusKehadiran from "@/views/components/HapusKehadiran.vue";
 export default {
   name: "Kehadiran",
 
@@ -255,8 +292,8 @@ export default {
           sortable: false,
           value: "employee.id",
         },
-        { text: "Nama", value: "employee.name" },
-        { text: "Date", value: "attendance_date" },
+        { text: "Nama", value: "employee.name", width: 200 },
+        { text: "Date", value: "attendance_date", width: 130 },
         { text: "CheckIn", value: "time_check_in" },
         { text: "CheckOut", value: "time_check_out" },
         { text: "Start_break", value: "time_start_for_break" },
@@ -269,17 +306,22 @@ export default {
         { text: "Total Leave", value: "total_leave" },
       ],
       dialogEditAttendancelocal: false,
+      dialogTambahKehadiran: false,
+      dialogHapusKehadiran: false,
       dataAttendance: null,
-      selectedItem: null,
+      // selectedItem: null,
       type_overtime: null,
       multiLine: false,
       snackbar: false,
       notif_text: "",
+      selected_items: [],
     };
   },
 
   components: {
     EditAttendance,
+    HapusKehadiran,
+    TambahKehadiran,
   },
 
   created() {
@@ -301,6 +343,16 @@ export default {
       "checkAttendance",
       "actionGetAllAttendence",
     ]),
+
+    addAttendance() {
+      this.dialogTambahKehadiran = true;
+    },
+    deleteAttendance() {
+      // for (var i = 0; i < this.selected_items.length; i++) {
+      //   console.log(this.selected_items[i].employee.name);
+      // }
+      this.dialogHapusKehadiran = true;
+    },
 
     uploadAttendance() {
       var bulk = [];
@@ -448,88 +500,70 @@ export default {
         return "end_of_excel";
       }
       if (data.id == null) {
-        return "Gagal Import, Kolom Nik pada baris ke " + index + " kosong";
+        return "Gagal Import, Kolom A pada baris ke " + index + " kosong";
       }
 
       if (data.name == null) {
-        return "Gagal Import, Kolom Nama pada baris ke " + index + " kosong";
+        return "Gagal Import, Kolom B pada baris ke " + index + " kosong";
       }
 
       if (data.attendance_date == null) {
-        return "Gagal Import, Kolom Tanggal pada baris ke " + index + " kosong";
+        return "Gagal Import, Kolom C pada baris ke " + index + " kosong";
       } else {
         // console.log(data.attendance_date);
         var date = data.attendance_date.split("/");
         var year = date[2];
         var month = Number.parseInt(date[1]);
         var days = Number.parseInt(date[0]);
-
-        date = month + "-" + days + "-" + year;
-        console.log(date);
-        var result = this.formatDateUtils(date);
-        console.log("res : " + result);
-        if (result == "Invalid date") {
-          return (
-            "Gagal Import, Format attendance_date pada baris ke " +
-            index +
-            " tidak sesuai"
-          );
+        if (year.length == 4) { //sementara di check year 
+          date = month + "-" + days + "-" + year;
+          console.log(date);
+          var result = this.formatDateUtils(date);
+          if (result == "Invalid date") {
+            return (
+              "Gagal Import, Format C pada baris ke " + index + " tidak sesuai"
+            );
+          } else {
+            getDate = new Date(date);
+            _week_of_day = getDate.getDay() + 1;
+            data.week_of_day = _week_of_day;
+            var _date = year + "-" + month + "-" + days;
+            data.attendance_date = _date;
+          }
         } else {
-          getDate = new Date(date);
-          _week_of_day = getDate.getDay() + 1;
-          data.week_of_day = _week_of_day;
-          var _date = year + "-" + month + "-" + days;
-          data.attendance_date = _date;
+          return (
+            "Gagal Import, Format C pada baris ke " + index + " tidak sesuai"
+          );
         }
       }
 
       if (data.time_check_in != null) {
         if (_week_of_day != 7) {
           if (data.time_start_for_break == null) {
-            return (
-              "Gagal Import, Kolom Time_start_for_break pada baris ke " +
-              index +
-              " kosong"
-            );
+            return "Gagal Import, Kolom E pada baris ke " + index + " kosong";
           }
 
           if (data.time_end_for_break == null) {
-            return (
-              "Gagal Import, Kolom Time_end_for_break pada baris ke " +
-              index +
-              " kosong"
-            );
+            return "Gagal Import, Kolom F pada baris ke " + index + " kosong";
           }
         }
 
         if (data.time_check_out == null) {
-          return (
-            "Gagal Import, Kolom Time_check_out pada baris ke " +
-            index +
-            " kosong"
-          );
+          return "Gagal Import, Kolom G pada baris ke " + index + " kosong";
         }
 
         if (
           data.time_start_for_left != null &&
           data.time_end_for_left == null
         ) {
-          return (
-            "Gagal Import, Kolom Time_end_for_left pada baris ke " +
-            index +
-            " kosong"
-          );
+          return "Gagal Import, Kolom J pada baris ke " + index + " kosong";
         }
 
         if (
           data.time_start_for_left == null &&
           data.time_end_for_left != null
         ) {
-          return (
-            "Gagal Import, Kolom Time_start_for_left pada baris ke " +
-            index +
-            " kosong"
-          );
+          return "Gagal Import, Kolom I pada baris ke " + index + " kosong";
         }
       }
 
@@ -539,11 +573,7 @@ export default {
           data.time_end_for_break != null ||
           data.time_check_out
         ) {
-          return (
-            "Gagal Import, Kolom Time_check_in pada baris ke " +
-            index +
-            " kosong"
-          );
+          return "Gagal Import, Kolom D pada baris ke " + index + " kosong";
         }
       }
 
@@ -565,6 +595,19 @@ export default {
         return;
       }
       return time.substring(0, 5);
+    },
+
+    calculateTotalLeave(data){
+      if(data == null) {
+        return data
+      }
+
+      var tempData = data.split(",");
+      var sum = 0
+      for(var i=0; i<tempData.length; i++) {
+        sum = parseInt(sum + tempData[i]);
+      }
+      return sum;
     },
 
     //time1 = checkin, time2 = schedule
@@ -784,6 +827,11 @@ export default {
     getBulkAttendance: {
       handler() {
         this.getResAddAttendance();
+      },
+    },
+    getDataAllAttendance: {
+      handler() {
+        this.selected_items = [];
       },
     },
   },

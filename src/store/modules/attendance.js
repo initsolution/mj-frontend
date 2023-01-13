@@ -67,10 +67,12 @@ const actions = {
                 actions: res.status,
                 data : res.data,
             }
+            console.log("res : "+res);
             console.log(result);
             commit('SET_CHECK_ATTENDANCE', result)
             dispatch('actionGetAllAttendence')
         } catch (error) {
+            console.log(error);
             const result = {
                 status: 'duplicate',
                 actions: 201
@@ -121,6 +123,21 @@ const actions = {
         }
     },
 
+    async deleteAttendanceById({ commit, dispatch }, id) {
+        try {
+            const res = await httpCommons.delete(apiName + "/" + id)
+            console.log("res " + res);
+            const result = {
+                status: res.statusText,
+                actions: res.status
+            }
+            commit('SET_DELETE_ATTENDANCE', result)
+            dispatch('actionGetAllAttendence')
+        } catch (error) {
+
+        }
+    },
+
 }
 
 const mutations = {
@@ -134,14 +151,17 @@ const mutations = {
 
     SET_UPDATE_ATTENDANCE(state, status) {
         state.status = status
-    }
+    },
+
+    SET_DELETE_ATTENDANCE(state, status) {
+        state.status = status
+    },
 }
 
 const getters = {
     getDataAllAttendance: state => state.data,
     getStatusAttendance: state => state.status,
     getBulkAttendance: state => state.status,
-    
 }
 
 export default {

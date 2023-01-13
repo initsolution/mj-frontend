@@ -19,3 +19,14 @@
     - menambahkan dialog untuk bon, dan update payslip    
 - Modul departemen
     - menambahkan modul departemen lihat dan update departemen
+# 0.0.1 (Update 13/01/2023)
+- Modul Absensi 
+    - menambahkan modul tambah 1 absensi
+    - menambahkan hapus absensi
+    - validasi untuk absensi
+- Modul Departemen
+    - masih on progress    
+- Modul Area
+    - masih on progress
+- Modul Shift
+    - masih on progress
