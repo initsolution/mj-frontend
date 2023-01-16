@@ -1,5 +1,11 @@
 <template>
   <v-container class="pa-8" fluid>
+    <hapus-karyawan
+      :dialogHapusKaryawan.sync="dialogHapusKaryawan"
+      :deleteItems="selected_items"
+    >
+    </hapus-karyawan>
+
     <v-row>
       <v-col>
         <div flat>
@@ -41,16 +47,48 @@
           </v-row>
           <v-row>
             <v-col md="12">
+              <div class="py2" v-if="selected_items.length > 0">
+                <div class="d-flex flex-row align-center justify-space-between">
+                  <div>
+                    <span>Data yang ditandai</span>
+                    <v-chip color="blue" class="ml-3" dark>
+                      <strong>Total: {{ selected_items.length }}</strong>
+                    </v-chip>
+                  </div>
+                  <v-btn
+                    dark
+                    color="blue"
+                    class="mr-2 icon-box"
+                    @click="deleteEmployee"
+                  >
+                    <v-icon>mdi-delete</v-icon>Hapus data terpilih
+                  </v-btn>
+                </div>
+              </div>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col md="12">
               <v-data-table
+                v-model="selected_items"
                 :headers="this.headers"
                 :items="getDataEmployees"
                 class="elevation-1"
+                show-select
               >
                 <template v-slot:[`item.date_of_birth`]="{ item }">
                   {{ convertDate(item.date_of_birth) }}
                 </template>
                 <template v-slot:[`item.active_date`]="{ item }">
                   {{ convertYear(item.active_date) }}
+                </template>
+                <template v-slot:[`item.active`]="{ item }">
+                  <v-switch
+                    color="primary"
+                    inset
+                    v-model="item.active"
+                    :label="`${item.active ? 'Aktif' : 'Tidak aktif'}`"
+                  ></v-switch>
                 </template>
               </v-data-table>
             </v-col>
@@ -64,11 +102,14 @@
 import XLSX from "xlsx";
 import { formatDate } from "@/utils/utils";
 import { mapActions, mapGetters } from "vuex";
+import HapusKaryawan from "@/views/components/HapusKaryawan.vue";
+
 export default {
   name: "Karyawan",
   data() {
     return {
       selectXlsx: null,
+      selected_items: [],
       headers: [
         {
           text: "NIK",
@@ -88,18 +129,38 @@ export default {
         { text: "Aktif", value: "active" },
       ],
       datalist: [],
+      dialogHapusKaryawan: false,
     };
   },
-  components: {},
+  components: { HapusKaryawan },
   created() {
     const params = new URLSearchParams();
     params.append("join", "department");
     this.actionGetAllEmployee(params);
+    // this.datalist.push({
+    //   id: "01",
+    //   name: "AA",
+    //   active_date: "2009/02/01",
+    //   type: "REGULER",
+    //   date_of_birth: "1992/12/08",
+    //   address: "Demak",
+    //   phone_no: "081xxxxxxx3",
+    //   npwp_id: "",
+    //   bpjs_id: "",
+    //   gaji_pokok: "203000",
+    //   insentif_extra: "28000",
+    //   extra_tambahan_kerja: "9000",
+    //   tunjangan_kehadiran: "2000",
+    //   extra_full: "10000",
+    //   iuran_bpjs_tk: "25000",
+    //   iuran_bpjs_ks: "13000",
+    //   iuran_spsi: "0",
+    // });
   },
   methods: {
     ...mapActions(["actionGetAllEmployee", "saveBulkEmployee"]),
     convertDate(date) {
-      return formatDate(date, "year");
+      return formatDate(date, "long");
     },
 
     convertYear(date) {
@@ -151,19 +212,21 @@ export default {
             }
 
             // reformat active_date
-            var date = datarow[2].split("/");
-            var year = date[2];
-            var month = Number.parseInt(date[1]);
-            var days = Number.parseInt(date[0]);
-
-            datarow[2] = year + "-" + month + "-" + days;
-
+            if (datarow[2] != null) {
+              var date = datarow[2].split("-");
+              var year = date[2];
+              var month = Number.parseInt(date[1]);
+              var days = Number.parseInt(date[0]);
+              datarow[2] = year + "-" + month + "-" + days;
+            }
             // reformat date_of_birth
-            date = datarow[4].split("/");
-            year = date[2];
-            month = Number.parseInt(date[1]);
-            days = Number.parseInt(date[0]);
-            datarow[4] = year + "-" + month + "-" + days;
+            if (datarow[4] != null) {
+              date = datarow[4].split("-");
+              year = date[2];
+              month = Number.parseInt(date[1]);
+              days = Number.parseInt(date[0]);
+              datarow[4] = year + "-" + month + "-" + days;
+            }
 
             this.datalist.push({
               id: datarow[0],
@@ -196,9 +259,19 @@ export default {
         };
       }
     },
+    deleteEmployee() {
+      this.dialogHapusKaryawan = true;
+    },
   },
   computed: {
     ...mapGetters(["getDataEmployees"]),
+  },
+  watch: {
+    getDataEmployees: {
+      handler() {
+        this.selected_items = [];
+      },
+    },
   },
 };
 </script>

@@ -14,6 +14,7 @@ const actions = {
     commit("SET_DATA_EMPLOYEE", res.data);
   },
   async saveBulkEmployee({ commit, dispatch }, data) {
+    console.log("save");
     console.log(data);
     try {
       const res = await httpCommons.post(apiName + "/bulk", data);
@@ -23,14 +24,32 @@ const actions = {
         data: res.data,
       };
       console.log(result);
-      commit("SET_BULK_EMPLOYEE", result);
+      commit("SET_STATUS_RESPONSE", result);
       dispatch("actionGetAllEmployee");
     } catch (error) {
       const result = {
         status: "duplicate",
         actions: 201,
       };
-      commit("SET_BULK_EMPLOYEE", result);
+      commit("SET_STATUS_RESPONSE", result);
+    }
+  },
+  async deleteEmployeeById({ commit, dispatch }, id) {
+    try {
+      const res = await httpCommons.delete(apiName + "/" + id);
+      console.log("res " + res);
+      const result = {
+        status: res.statusText,
+        actions: res.status,
+      };
+      commit("SET_STATUS_RESPONSE", result);
+      dispatch("actionGetAllEmployee");
+    } catch (error) {
+      const result = {
+        status: error,
+        actions: 404,
+      };
+      commit("SET_STATUS_RESPONSE", result);
     }
   },
 };
@@ -39,14 +58,14 @@ const mutations = {
   SET_DATA_EMPLOYEE(state, rows) {
     state.data = rows;
   },
-  SET_BULK_EMPLOYEE(state, status) {
+  SET_STATUS_RESPONSE(state, status) {
     state.status = status;
   },
 };
 
 const getters = {
   getDataEmployees: (state) => state.data,
-  getBulkEmployees: (state) => state.status,
+  getStatusResponse: (state) => state.status,
 };
 
 export default {
