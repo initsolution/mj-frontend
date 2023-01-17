@@ -5,6 +5,7 @@ import Payslip from './modules/payslip'
 import Employee from './modules/employee'
 import Department from './modules/department'
 import Loans from './modules/loans'
+import Shift from './modules/shift'
 
 Vue.use(Vuex);
 
@@ -18,7 +19,8 @@ export default new Vuex.Store({
     Payslip,
     Employee,
     Department,
-    Loans
+    Loans,
+    Shift,
   },
   mutations: {
     SET_DRAWER(state, payload) {

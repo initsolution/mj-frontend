@@ -30,3 +30,8 @@
     - masih on progress
 - Modul Shift
     - masih on progress
+# 0.0.1 (Update 13/01/2023)
+- Modul Shift
+    - Tambah Edit Modul Shift -> kurang insert/edit ke database
+- Modul Attendance
+    - validasi tambah attendance

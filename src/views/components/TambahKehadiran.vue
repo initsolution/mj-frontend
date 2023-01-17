@@ -200,27 +200,36 @@ export default {
         return;
       }
 
-      if (this.arrive_home.length != 0 && this.arrive_home.length != 5) {
-        this.notif_text =
-          "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
-        this.snackbar = true;
-        return;
+      if (this.arrive_home != null) {
+        if (this.arrive_home.length != 0 && this.arrive_home.length != 5) {
+          this.notif_text =
+            "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+          this.snackbar = true;
+          return;
+        }
       }
 
-      if (this.start_for_left.length != 0 && this.start_for_left.length != 5) {
-        this.notif_text =
-          "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
-        this.snackbar = true;
-        return;
-      } else if (
-        this.start_for_left.length == 5 &&
-        this.end_for_left.length != 5
-      ) {
-        //jika start_for_left ada data, maka end_for_left harus diisi
-        this.notif_text =
-          "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
-        this.snackbar = true;
-        return;
+      if (this.start_for_left != null) {
+        if (
+          this.start_for_left.length != 0 &&
+          this.start_for_left.length != 5
+        ) {
+          this.notif_text =
+            "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+          this.snackbar = true;
+          return;
+        } else if (this.end_for_left != null) {
+          if (
+            this.start_for_left.length == 5 &&
+            this.end_for_left.length != 5
+          ) {
+            //jika start_for_left ada data, maka end_for_left harus diisi
+            this.notif_text =
+              "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+            this.snackbar = true;
+            return;
+          }
+        }
       }
 
       this.arrive_home = this.arrive_home == "" ? null : this.arrive_home;
@@ -229,6 +238,65 @@ export default {
       this.end_for_left = this.end_for_left == "" ? null : this.end_for_left;
 
       var attendance_type = this.arrive_home != null ? 1 : 0;
+
+      var result_check_in = this.checkTime(
+        this.check_in.split(":")[0],
+        this.check_in.split(":")[1]
+      );
+      var result_check_out = this.checkTime(
+        this.check_out.split(":")[0],
+        this.check_out.split(":")[1]
+      );
+      var result_start_for_break = this.checkTime(
+        this.start_for_break.split(":")[0],
+        this.start_for_break.split(":")[1]
+      );
+      var result_end_for_break = this.checkTime(
+        this.end_for_break.split(":")[0],
+        this.end_for_break.split(":")[1]
+      );
+
+      if (
+        result_check_in != "" ||
+        result_check_out != "" ||
+        result_start_for_break != "" ||
+        result_end_for_break != ""
+      ) {
+        this.notif_text =
+          "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+        this.snackbar = true;
+        return;
+      }
+
+      if (this.start_for_left != null || this.end_for_left != null) {
+        var result_start_for_left = this.checkTime(
+          this.start_for_left.split(":")[0],
+          this.start_for_left.split(":")[1]
+        );
+        var result_end_for_left = this.checkTime(
+          this.end_for_left.split(":")[0],
+          this.end_for_left.split(":")[1]
+        );
+        if (result_start_for_left != "" || result_end_for_left != "") {
+          this.notif_text =
+            "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+          this.snackbar = true;
+          return;
+        }
+      }
+
+      if (this.arrive_home != null) {
+        var result_arrive_home = this.checkTime(
+          this.arrive_home.split(":")[0],
+          this.arrive_home.split(":")[1]
+        );
+        if (result_arrive_home != "") {
+          this.notif_text =
+            "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+          this.snackbar = true;
+          return;
+        }
+      }
 
       const data = {
         employee: {
@@ -249,8 +317,15 @@ export default {
       };
       console.log(data);
       bulk.push(data);
-      this.saveBulkAttendance({ bulk: bulk });
+      // this.saveBulkAttendance({ bulk: bulk });
       this.close();
+    },
+
+    checkTime(hour, minute) {
+      if (hour > 23 || minute > 59) {
+        return "Format Jam Salah";
+      }
+      return "";
     },
 
     close() {
