@@ -35,3 +35,7 @@
     - Tambah Edit Modul Shift -> kurang insert/edit ke database
 - Modul Attendance
     - validasi tambah attendance
+# 0.0.1 (Update 19/01/2023)
+- Modul PayslipProduksi
+    - Sort tampilan payslip dan download bedasarkan nama
+    - View Payslip Produksi container di ganti jadi class pa-8 fluid    

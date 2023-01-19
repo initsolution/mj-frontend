@@ -352,7 +352,7 @@ export default {
 
     isLoadingFinish() {
       const status = this.geStatusLoading;
-      console.log(status);
+      // console.log(status);
       if (status.loading == false) {
         this.$router.push("/viewPayslip").catch(() => {});
       }
