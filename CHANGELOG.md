@@ -30,3 +30,24 @@
     - masih on progress
 - Modul Shift
     - masih on progress
+# 0.0.1 (Update 13/01/2023)
+- Modul Shift
+    - Tambah Edit Modul Shift -> kurang insert/edit ke database
+- Modul Attendance
+    - validasi tambah attendance
+# 0.0.1 (Update 19/01/2023)
+- Modul PayslipProduksi
+    - Sort tampilan payslip dan download bedasarkan nama
+    - View Payslip Produksi container di ganti jadi class pa-8 fluid
+# 0.0.1 (Update 29/01/2023)
+- Modul ViewPayslip
+    - Nama file menjadi periodeawal-periodeakhir.pdf
+- Modul Kehadiran
+    - Ignore Scanout jika terdapat arrive_home
+- Modul Shift dan Detail_Shift
+    - Edit Shift byId
+    - Edit Detail_Shift byId
+- Modul Area
+    - Add Edit View Area
+- Modul Position
+    - Add Edit View Position

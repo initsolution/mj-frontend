@@ -1,5 +1,5 @@
 <template>
-  <v-container row justify-center>
+  <v-container class="pa-8" fluid>
     <v-card>
       <v-card-title></v-card-title>
       <v-card-text>
@@ -8,7 +8,6 @@
           show-select
           :headers="headers"
           :items.sync="getAllData"
-          
         >
           <template v-slot:[`item.periode_start`]="{ item }">
             {{ formatDateUtils(item.periode_start) }}
@@ -59,7 +58,8 @@
             {{ formatPrice(Math.round(item.potongan_spsi)) }}
           </template>
           <template v-slot:[`item.potongan_bon`]="{ item }">
-            <v-btn v-if="item.potongan_bon == 0"
+            <v-btn
+              v-if="item.potongan_bon == 0"
               color="blue darken-1"
               small
               class="mr-3 elevation-0"
@@ -573,13 +573,24 @@
             doc.addPage();
           }
         }
-        doc.save("a4.pdf");
+        var document_name = "Produksi "+this.selected[0].periode_start+" - "+this.selected[0].periode_end+".pdf";
+        doc.save(document_name);
       },
     },
     computed: {
       ...mapGetters(["getStatusPayslip"]),
       getAllData() {
-        return this.getStatusPayslip.data;
+        return this.getStatusPayslip.data.sort((a, b) =>{
+          let fa = a.employee.name.toLowerCase();
+        let fb = b.employee.name.toLowerCase();
+        if (fa < fb) {
+          return -1;
+        }
+        if (fa > fb) {
+          return 1;
+        }
+        return 0;
+        });
       },
     },
   };

@@ -83,6 +83,11 @@ export default {
         to: "/departemen",
       },
       {
+        title: "Shift",
+        icon: "mdi-timer",
+        to: "/shift",
+      },
+      {
         title: "Kehadiran",
         icon: "mdi-calendar-check",
         to: "/kehadiran",

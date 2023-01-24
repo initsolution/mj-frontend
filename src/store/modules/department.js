@@ -7,11 +7,15 @@ const state = {
     data: [],
     status: {},
     update: {},
-    isLoading : {},
+    isLoading: {},
 }
 
 const actions = {
     async actionGetAllDepartment({ commit }) {
+        // const param = new URLSearchParams();
+        // param.append("join", "area");
+        // param.append('filter', 'department.id||$eq||1');
+        // const res = await httpCommons.get(apiName, { params: param })
         const res = await httpCommons.get(apiName)
         commit('SET_DATA_DEPARTEMENT', res.data)
     },
@@ -19,7 +23,6 @@ const actions = {
     async actionUpdateDepartement({ commit, dispatch }, data) {
         try {
             const res = await httpCommons.patch(apiName + `/${data.id}`, data)
-            console.log(res);
             const result = {
                 status: res.statusText,
                 actions: res.status

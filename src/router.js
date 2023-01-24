@@ -36,6 +36,11 @@ export default new Router({
           component: () => import("./views/pages/Absensi.vue"),
         },
         {
+          path: "shift",
+          name: "Shift",
+          component: () => import("./views/pages/Shift.vue"),
+        },
+        {
           path: "pinjaman",
           name: "Pinjaman",
           component: () => import("./views/pages/Pinjaman.vue"),
