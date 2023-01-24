@@ -91,14 +91,6 @@
                     </template>
                   </v-snackbar>
 
-                  <div class="white--text mx-2"></div>
-                  <v-btn
-                    color="blue"
-                    class="elevation-0"
-                    dark
-                    @click="deleteShift()"
-                    >Hapus
-                  </v-btn>
                   <v-snackbar
                     v-model="snackbar"
                     :multi-line="multiLine"
@@ -178,6 +170,7 @@ export default {
       label_shift: [],
       selected_item: null,
       selected_shift: null,
+      selected_id: null,
       multiLine: false,
       snackbar: false,
       detailShift: [],
@@ -198,15 +191,16 @@ export default {
 
     editShift() {
       if (this.selected_shift == null) {
+        this.notif_text = "Pilih Shift dahulu!";
+        this.snackbar = true;
         return;
       }
-      console.log(this.selected_shift);
       this.getDataShift = this.selected_shift;
       this.dialogTambahEditShift = true;
     },
 
     addShift() {
-      this.getDataShift = null;
+      this.getDataShift = "tambah";
       this.dialogTambahEditShift = true;
     },
   },
@@ -217,12 +211,26 @@ export default {
   watch: {
     selected_shift: {
       handler() {
+        this.detailShift = [];
         if (this.selected_shift != null) {
-          console.log(this.selected_shift.detailShift[0].days);
+          this.selected_id = this.selected_shift.id;
           for (var i = 0; i < this.selected_shift.detailShift.length; i++) {
             this.detailShift.push(this.selected_shift.detailShift[i]);
           }
-          console.log(this.detailShift);
+        }
+      },
+    },
+    getAllDataShift: {
+      handler() {
+        if (this.selected_shift == null) {
+          return;
+        }
+        
+        for (var i = 0; i < this.getAllDataShift.length; i++) {
+          var id = this.getAllDataShift[i].id;
+          if (this.selected_id == id) {
+            this.selected_shift = this.getAllDataShift[i];
+          }
         }
       },
     },

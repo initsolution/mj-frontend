@@ -122,7 +122,7 @@
                           ? item.work_hours.split('-')[1]
                           : null,
                         'check_out'
-                      )
+                      ) && item.time_arrive_home == null
                     "
                     class="text-color"
                     >{{ convertTime(item.time_check_out) }}</span
@@ -515,7 +515,8 @@ export default {
         var year = date[2];
         var month = Number.parseInt(date[1]);
         var days = Number.parseInt(date[0]);
-        if (year.length == 4) { //sementara di check year 
+        if (year.length == 4) {
+          //sementara di check year
           date = month + "-" + days + "-" + year;
           console.log(date);
           var result = this.formatDateUtils(date);
@@ -597,14 +598,14 @@ export default {
       return time.substring(0, 5);
     },
 
-    calculateTotalLeave(data){
-      if(data == null) {
-        return data
+    calculateTotalLeave(data) {
+      if (data == null) {
+        return data;
       }
 
       var tempData = data.split(",");
-      var sum = 0
-      for(var i=0; i<tempData.length; i++) {
+      var sum = 0;
+      for (var i = 0; i < tempData.length; i++) {
         sum = parseInt(sum + tempData[i]);
       }
       return sum;

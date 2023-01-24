@@ -573,7 +573,8 @@
             doc.addPage();
           }
         }
-        doc.save("a4.pdf");
+        var document_name = "Produksi "+this.selected[0].periode_start+" - "+this.selected[0].periode_end+".pdf";
+        doc.save(document_name);
       },
     },
     computed: {
