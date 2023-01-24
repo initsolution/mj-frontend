@@ -12,7 +12,7 @@
               <v-col cols="12">
                 <span
                   >Apakah anda yakin ingin menghapus data karyawan yang sudah
-                  dipilih ({{this.deleteItems.length}} data) ?</span
+                  dipilih ({{ this.deleteItems.length }} data) ?</span
                 >
               </v-col>
             </v-row>
@@ -42,13 +42,16 @@ export default {
     return {};
   },
   methods: {
-    ...mapActions(["deleteEmployeeById"]),
+    ...mapActions(["actionUpdateEmployee"]),
     deleteEmployee() {
       console.log(this.deleteItems.length);
       if (this.deleteItems.length > 0) {
         for (var i = 0; i < this.deleteItems.length; i++) {
-          var id = this.deleteItems[i].id;
-          this.deleteEmployeeById(id);
+          const _employee = {
+            id: this.deleteItems[i].id,
+            active: 0,
+          };
+          this.actionUpdateEmployee(_employee);
         }
       }
       this.close();

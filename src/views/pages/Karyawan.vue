@@ -1,5 +1,9 @@
 <template>
   <v-container class="pa-8" fluid>
+    <form-karyawan
+      :dialogForm.sync="dialogForm"
+      :dataEmployee="employee"
+    ></form-karyawan>
     <hapus-karyawan
       :dialogHapusKaryawan.sync="dialogHapusKaryawan"
       :deleteItems="selected_items"
@@ -40,8 +44,16 @@
                 Upload
               </v-btn>
 
-              <v-btn color="primary elevation-0" class="mt-3 icon-box">
+              <v-btn color="primary elevation-0" class="mt-3 mr-2 icon-box">
                 Download
+              </v-btn>
+
+              <v-btn
+                @click="addFunction"
+                color="primary elevation-0"
+                class="mt-3 icon-box"
+              >
+                Tambah
               </v-btn>
             </v-col>
           </v-row>
@@ -76,6 +88,15 @@
                 class="elevation-1"
                 show-select
               >
+                <template v-slot:[`item.id`]="{ item }">
+                  <v-btn
+                    color="blue"
+                    class="elevation-0"
+                    dark
+                    @click="editFunction(item)"
+                    >{{ item.id }}
+                  </v-btn>
+                </template>
                 <template v-slot:[`item.date_of_birth`]="{ item }">
                   {{ convertDate(item.date_of_birth) }}
                 </template>
@@ -99,43 +120,46 @@
   </v-container>
 </template>
 <script>
-import XLSX from "xlsx";
-import { formatDate } from "@/utils/utils";
-import { mapActions, mapGetters } from "vuex";
-import HapusKaryawan from "@/views/components/HapusKaryawan.vue";
+import XLSX from 'xlsx';
+import { formatDate } from '@/utils/utils';
+import { mapActions, mapGetters } from 'vuex';
+import HapusKaryawan from '@/views/components/HapusKaryawan.vue';
+import FormKaryawan from '@/views/components/FormKaryawan.vue';
 
 export default {
-  name: "Karyawan",
+  name: 'Karyawan',
   data() {
     return {
       selectXlsx: null,
       selected_items: [],
       headers: [
         {
-          text: "NIK",
-          align: "right",
+          text: 'NIK',
+          align: 'right',
           sortable: false,
-          value: "id",
+          value: 'id',
         },
-        { text: "Nama", value: "name" },
-        { text: "Tgl Lahir", value: "date_of_birth" },
-        { text: "Thn Bergabung", value: "active_date" },
-        { text: "Departemen", value: "department.name" },
+        { text: 'Nama', value: 'name' },
+        { text: 'Tgl Lahir', value: 'date_of_birth' },
+        { text: 'Thn Bergabung', value: 'active_date' },
+        { text: 'Departemen', value: 'department.name' },
         // { text: "Shift", value: "shift.name" },
         // { text: "Bagian", value: "area.name" },
         // { text: "Jabatan", value: "position.name" },
-        { text: "BPJS", value: "bpjs_id" },
-        { text: "NPWP", value: "npwp_id" },
-        { text: "Aktif", value: "active" },
+        { text: 'BPJS', value: 'bpjs_id' },
+        { text: 'NPWP', value: 'npwp_id' },
+        { text: 'Aktif', value: 'active' },
       ],
       datalist: [],
+      employee: {},
       dialogHapusKaryawan: false,
+      dialogForm: false,
     };
   },
-  components: { HapusKaryawan },
+  components: { HapusKaryawan, FormKaryawan },
   created() {
     const params = new URLSearchParams();
-    params.append("join", "department");
+    params.append('join', 'department');
     this.actionGetAllEmployee(params);
     // this.datalist.push({
     //   id: "01",
@@ -158,13 +182,13 @@ export default {
     // });
   },
   methods: {
-    ...mapActions(["actionGetAllEmployee", "saveBulkEmployee"]),
+    ...mapActions(['actionGetAllEmployee', 'saveBulkEmployee']),
     convertDate(date) {
-      return formatDate(date, "long");
+      return formatDate(date, 'long');
     },
 
     convertYear(date) {
-      return formatDate(date, "year");
+      return formatDate(date, 'year');
     },
 
     convertTime(time) {
@@ -173,10 +197,24 @@ export default {
       }
       return time.substring(0, 5);
     },
+
+    addFunction() {
+      this.dialogForm = true;
+      this.employee = {};
+    },
+
+    editFunction(item) {
+      if (item != null) {
+        // console.log(item);
+        this.employee = item;
+        this.dialogForm = true;
+      }
+    },
+
     onUpload(event) {
-      console.log("Upload");
+      console.log('Upload');
       if (!this.selectXlsx) {
-        console.log("Please upload a xlsx file");
+        console.log('Please upload a xlsx file');
         return;
       }
 
@@ -186,7 +224,7 @@ export default {
         reader.onload = (e) => {
           /* Parse data */
           const bstr = e.target.result;
-          const wb = XLSX.read(bstr, { type: "binary" });
+          const wb = XLSX.read(bstr, { type: 'binary' });
           /* Get first worksheet */
           var datarow = [];
 
@@ -196,36 +234,36 @@ export default {
           for (let row = 2; ; row++) {
             datarow = [];
 
-            if (sheet["A" + row] == null) {
+            if (sheet['A' + row] == null) {
               break;
             }
 
             for (var col = 65; col <= 81; col++) {
               var c = String.fromCharCode(col); // get 'A', 'B', 'C' ... 'Q'
-              var key = "" + c + row;
+              var key = '' + c + row;
               if (sheet[key] == null) {
                 datarow.push(null); //jika row .. column .. = null
                 continue;
               }
               // console.log(sheet[key]["w"]);
-              datarow.push(sheet[key]["w"]);
+              datarow.push(sheet[key]['w']);
             }
 
             // reformat active_date
             if (datarow[2] != null) {
-              var date = datarow[2].split("-");
+              var date = datarow[2].split('-');
               var year = date[2];
               var month = Number.parseInt(date[1]);
               var days = Number.parseInt(date[0]);
-              datarow[2] = year + "-" + month + "-" + days;
+              datarow[2] = year + '-' + month + '-' + days;
             }
             // reformat date_of_birth
             if (datarow[4] != null) {
-              date = datarow[4].split("-");
+              date = datarow[4].split('-');
               year = date[2];
               month = Number.parseInt(date[1]);
               days = Number.parseInt(date[0]);
-              datarow[4] = year + "-" + month + "-" + days;
+              datarow[4] = year + '-' + month + '-' + days;
             }
 
             this.datalist.push({
@@ -253,7 +291,7 @@ export default {
         reader.readAsBinaryString(this.selectXlsx);
 
         reader.onloadend = (e) => {
-          console.log("datalist len = " + this.datalist.length);
+          console.log('datalist len = ' + this.datalist.length);
           console.log(this.datalist);
           this.saveBulkEmployee({ bulk: this.datalist });
         };
@@ -264,7 +302,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["getDataEmployees"]),
+    ...mapGetters(['getDataEmployees']),
   },
   watch: {
     getDataEmployees: {
