@@ -1,113 +1,74 @@
 <template>
-  <div fluid class="mt-4">
+  <v-layout row justify-center>
     <TambahEditPosition
-      :dialogPosition.sync="dialogPosition"
-      :getDataPosition="selected_position"
+      :dialogTambahEditPosition.sync="dialogTambahEditPosition"
+      :getDataPosition="getDataPosition"
       :areaId="areaId"
       :type="type"
-    />
-    <v-row>
-      <v-col class="py-0">
-        <v-card class="round relative card-detail elevation-1">
-          <v-card-text>
-            <div class="title">Position</div>
-          </v-card-text>
-          <v-card-text>
-            <v-row>
-              <v-col
-                ><v-autocomplete
-                  v-model.trim="selected_position"
-                  :items="this.getDataAllPosition"
-                  color="white"
-                  item-text="name"
-                  label="Area"
-                  return-object
-                ></v-autocomplete
-              ></v-col>
-              <v-col>
-                <v-row align="center" class="fill-height">
-                  <v-btn
-                    color="blue"
-                    class="elevation-0"
-                    dark
-                    @click="updatePosition()"
-                    >Edit
-                  </v-btn>
-                  <v-snackbar
-                    v-model="snackbar"
-                    :multi-line="multiLine"
-                    top
-                    color="orange"
-                  >
-                    {{ notif_text }}
-
-                    <template v-slot:action="{ attrs }">
-                      <v-btn
-                        color="white"
-                        text
-                        v-bind="attrs"
-                        @click="snackbar = false"
-                      >
-                        <v-icon>mdi-close</v-icon>
-                      </v-btn>
-                    </template>
-                  </v-snackbar>
-
-                  <div class="white--text mx-2"></div>
-                  <v-btn
-                    color="blue"
-                    class="elevation-0"
-                    dark
-                    @click="addPosition()"
-                    >Tambah
-                  </v-btn>
-                  <v-snackbar
-                    v-model="snackbar"
-                    :multi-line="multiLine"
-                    top
-                    color="orange"
-                  >
-                    {{ notif_text }}
-
-                    <template v-slot:action="{ attrs }">
-                      <v-btn
-                        color="white"
-                        text
-                        v-bind="attrs"
-                        @click="snackbar = false"
-                      >
-                        <v-icon>mdi-close</v-icon>
-                      </v-btn>
-                    </template>
-                  </v-snackbar>
-
-                  <v-snackbar
-                    v-model="snackbar"
-                    :multi-line="multiLine"
-                    top
-                    color="orange"
-                  >
-                    {{ notif_text }}
-
-                    <template v-slot:action="{ attrs }">
-                      <v-btn
-                        color="white"
-                        text
-                        v-bind="attrs"
-                        @click="snackbar = false"
-                      >
-                        <v-icon>mdi-close</v-icon>
-                      </v-btn>
-                    </template>
-                  </v-snackbar>
-                </v-row>
-              </v-col>
-            </v-row>
-          </v-card-text>
-        </v-card>
-      </v-col>
-    </v-row>
-  </div>
+    ></TambahEditPosition>
+    <v-dialog v-model="dialogPosition" persistent max-width="800px">
+      <v-card>
+        <v-card-title
+          class="
+            subheading
+            px-6
+            d-flex
+            flex-row
+            align-center
+            justify-space-between
+          "
+        >
+          <div>Data Jabatan</div>
+          <v-icon @click="close()">mdi-close</v-icon>
+        </v-card-title>
+        <v-card-text>
+          <v-row align="center" justify="space-between">
+            <v-col cols="4" class="py-0">
+              <v-btn
+                class="elevation-0 my-3"
+                color="primary"
+                @click="addPosition()"
+                >Tambah Jabatan</v-btn
+              >
+            </v-col>
+          </v-row>
+          <v-simple-table>
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th class="text-left">Nama Jabatan</th>
+                  <th class="text-left">Tanggal Ditambahkan</th>
+                  <th class="text-left">Tanggal Diperbarui</th>
+                  <th class="text-left">Aksi</th>
+                </tr>
+              </thead>
+              <tbody v-if="getDataAllArea != null">
+                <tr
+                  v-for="(item, index) in getDataAllArea.position"
+                  :key="index"
+                >
+                  <td>{{ formatDate(item.name) }}</td>
+                  <td>{{ formatDate(item.created_at) }}</td>
+                  <td>{{ formatDate(item.updated_at) }}</td>
+                  <td>
+                    <v-btn
+                      @click="updatePosition(item)"
+                      title="Ubah Posisi"
+                      small
+                      color="blue"
+                      dark
+                      class="mr-2 elevation-0"
+                      >Edit</v-btn
+                    >
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </v-card-text>
+      </v-card>
+    </v-dialog>
+  </v-layout>
 </template>
 
 <script>
@@ -119,68 +80,91 @@ export default {
     TambahEditPosition,
   },
   props: {
-    getDataPositionByArea: null,
+    getDetailDataArea: null,
+    dialogPosition: {
+      default: false,
+    },
   },
   data() {
     return {
-      dialogPosition: false,
       areaId: null,
-      selected_position: {},
       type: null,
+      dialogTambahEditPosition: false,
+      getDataPosition: {},
       multiLine: false,
       snackbar: false,
       notif_text: "",
     };
   },
 
-  created() {
-    this.getAllPositionByAreaId();
-  },
+  created() {},
 
   methods: {
-    ...mapActions(["actionGetAllPositionByAreaId"]),
-    getAllPositionByAreaId() {
-      if (this.getDataPositionByArea != null) {
-        this.areaId = this.getDataPositionByArea.id;
-        const param = new URLSearchParams();
-        param.append("join", "area");
-        param.append("filter", "area.id||$eq||" + this.areaId);
-        this.actionGetAllPositionByAreaId(param);
-        this.selected_position = {};
-      }
+    ...mapActions(["actionGetAllAreaById"]),
+
+    getAllAreaById() {
+      const param = new URLSearchParams();
+      param.append("join", "position");
+      this.areaId = this.getDetailDataArea.id;
+      const data = {
+        id: this.areaId,
+        param: param,
+      };
+      this.actionGetAllAreaById(data);
     },
 
-    updatePosition() {
-      if (this.selected_position.id == null) {
-        this.snackbar = true;
-        this.notif_text = "Pilih Data Position!";
-        return;
-      }
+    updatePosition(item) {
       this.type = "update";
-      this.dialogPosition = true;
+      this.getDataPosition = item;
+      this.dialogTambahEditPosition = true;
     },
 
     addPosition() {
-      this.selected_position = {};
       this.type = "add";
-      this.dialogPosition = true;
-      this.areaId = this.getDataPositionByArea.id;
+      this.getDataPosition = {};
+      this.dialogTambahEditPosition = true;
+    },
+
+    formatDate(date) {
+      return date.substring(0, 10);
+    },
+
+    close() {
+      this.$emit("update:dialogPosition", false);
     },
   },
 
   computed: {
-    ...mapGetters(["getDataAllPosition", "getStatusPosition"]),
+    ...mapGetters([
+      "getDataAllArea",
+      "getDataAllPosition",
+      "getStatusPosition",
+    ]),
   },
 
   watch: {
-    getDataPositionByArea: {
+    getDetailDataArea: {
       handler() {
-        this.getAllPositionByAreaId();
+        this.getAllAreaById();
       },
     },
+
     getStatusPosition: {
       handler() {
-        this.getAllPositionByAreaId();
+        if (
+          this.getStatusPosition.status == "Created" ||
+          this.getStatusPosition.status == "OK"
+        ) {
+          this.getAllAreaById();
+        }
+      },
+    },
+
+    dialogTambahEditPosition: {
+      handler() {
+        if (!this.dialogTambahEditPosition) {
+          this.getAllAreaById();
+        }
       },
     },
   },

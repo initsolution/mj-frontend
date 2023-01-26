@@ -16,6 +16,13 @@ const actions = {
         commit('SET_DATA_AREA', res.data)
     },
 
+    async actionGetAllAreaById({ commit }, data) {
+        const id = data.id;
+        const param = data.param;
+        const res = await httpCommons.get(apiName + `/${id}`, { params: param })
+        commit('SET_DATA_AREA', res.data)
+    },
+
     async actionSaveArea({ commit, dispatch }, data) {
         try {
             const res = await httpCommons.post(apiName, data);
@@ -24,7 +31,7 @@ const actions = {
                 actions: res.status,
             };
             commit("SET_SAVE_AREA", result);
-            dispatch("actionGetAllAreaByDepartmentId");
+            // dispatch("actionGetAllAreaByDepartmentId");
         } catch (error) {
             const result = {
                 status: "duplicate",
@@ -42,7 +49,7 @@ const actions = {
                 actions: res.status
             }
             commit('SET_UPDATE_AREA', result)
-            dispatch('actionGetAllAreaByDepartmentId')
+            // dispatch('actionGetAllAreaByDepartmentId')
         } catch (error) {
             const result = {
                 status: 'duplicate',

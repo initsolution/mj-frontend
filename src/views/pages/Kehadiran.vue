@@ -6,6 +6,12 @@
       :type_overtime="type_overtime"
     >
     </edit-attendance>
+    <cancel-overtime
+      :dialogCancelOvertime.sync="dialogCancelOvertime"
+      :dataAttendance="dataAttendance"
+      :type_overtime="type_overtime"
+    >
+    </cancel-overtime>
 
     <tambah-kehadiran :dialogTambahKehadiran.sync="dialogTambahKehadiran">
     </tambah-kehadiran>
@@ -192,7 +198,7 @@
                             </v-list-item-title>
                           </v-list-item-content>
                         </v-list-item>
-                        <v-list-item @click="confirmOvertime(item, 'late')">
+                        <v-list-item @click="cancelOvertime(item, 'late')">
                           <v-list-item-content>
                             <v-list-item-title>
                               <v-icon small class="mr-2 red--text"
@@ -236,7 +242,7 @@
                             </v-list-item-title>
                           </v-list-item-content>
                         </v-list-item>
-                        <v-list-item @click="confirmOvertime(item, 'early')">
+                        <v-list-item @click="cancelOvertime(item, 'early')">
                           <v-list-item-content>
                             <v-list-item-title>
                               <v-icon small class="mr-2 red--text"
@@ -269,6 +275,7 @@ import EditAttendance from "@/components/EditAttendance.vue";
 import { formatPrice, formatDate } from "@/utils/utils";
 import TambahKehadiran from "@/views/components/TambahKehadiran.vue";
 import HapusKehadiran from "@/views/components/HapusKehadiran.vue";
+import CancelOvertime from "@/views/components/CancelOvertime.vue";
 export default {
   name: "Kehadiran",
 
@@ -306,6 +313,7 @@ export default {
         { text: "Total Leave", value: "total_leave" },
       ],
       dialogEditAttendancelocal: false,
+      dialogCancelOvertime: false,
       dialogTambahKehadiran: false,
       dialogHapusKehadiran: false,
       dataAttendance: null,
@@ -322,6 +330,7 @@ export default {
     EditAttendance,
     HapusKehadiran,
     TambahKehadiran,
+    CancelOvertime,
   },
 
   created() {
@@ -762,6 +771,13 @@ export default {
       this.type_overtime = type;
       this.dialogEditAttendancelocal = true;
       this.dataAttendance = item;
+    },
+
+    cancelOvertime(item, type) {
+      console.log(item);
+      this.dataAttendance = item;
+      this.type_overtime = type;
+      this.dialogCancelOvertime = true;
     },
 
     getUserData(value) {
