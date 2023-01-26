@@ -1,6 +1,6 @@
-import httpCommons from "../../http-commons";
+import httpCommons from '../../http-commons';
 
-const apiName = "employee";
+const apiName = 'employee';
 
 const state = {
   data: [],
@@ -11,45 +11,63 @@ const actions = {
   async actionGetAllEmployee({ commit }, param) {
     const res = await httpCommons.get(apiName, { params: param });
     // console.log(res.data)
-    commit("SET_DATA_EMPLOYEE", res.data);
+    commit('SET_DATA_EMPLOYEE', res.data);
   },
   async saveBulkEmployee({ commit, dispatch }, data) {
-    console.log("save");
+    console.log('save');
     console.log(data);
     try {
-      const res = await httpCommons.post(apiName + "/bulk", data);
+      const res = await httpCommons.post(apiName + '/bulk', data);
       const result = {
         status: res.statusText,
         actions: res.status,
         data: res.data,
       };
       console.log(result);
-      commit("SET_STATUS_RESPONSE", result);
-      dispatch("actionGetAllEmployee");
+      commit('SET_STATUS_RESPONSE', result);
+      dispatch('actionGetAllEmployee');
     } catch (error) {
       const result = {
-        status: "duplicate",
+        status: 'duplicate',
         actions: 201,
       };
-      commit("SET_STATUS_RESPONSE", result);
+      commit('SET_STATUS_RESPONSE', result);
     }
   },
-  async deleteEmployeeById({ commit, dispatch }, id) {
+  async actionUpdateEmployee({ commit, dispatch }, data) {
     try {
-      const res = await httpCommons.delete(apiName + "/" + id);
-      console.log("res " + res);
+      const res = await httpCommons.patch(apiName + `/${data.id}`, data);
+      console.log('res ' + res);
       const result = {
         status: res.statusText,
         actions: res.status,
       };
-      commit("SET_STATUS_RESPONSE", result);
-      dispatch("actionGetAllEmployee");
+      commit('SET_STATUS_RESPONSE', result);
+      dispatch('actionGetAllEmployee');
     } catch (error) {
       const result = {
         status: error,
         actions: 404,
       };
-      commit("SET_STATUS_RESPONSE", result);
+      commit('SET_STATUS_RESPONSE', result);
+    }
+  },
+
+  async actionSaveEmployee({ commit, dispatch }, data) {
+    try {
+      const res = await httpCommons.post(apiName, data);
+      const result = {
+        status: res.statusText,
+        actions: res.status,
+      };
+      commit('SET_STATUS_RESPONSE', result);
+      dispatch('actionGetAllEmployee');
+    } catch (error) {
+      const result = {
+        status: error,
+        actions: 404,
+      };
+      commit('SET_STATUS_RESPONSE', result);
     }
   },
 };
