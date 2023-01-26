@@ -1,6 +1,6 @@
 <!-- eslint-disable vue/no-mutating-props -->
 <template>
-  <v-dialog v-model="dialogForm" persistent max-width="1200">
+  <v-dialog v-model="dialogForm" persistent max-width="1000">
     <v-card>
       <v-card-title
         class="
@@ -16,23 +16,23 @@
       >
         <div>
           <div>
-            <!-- <v-icon color="primary">{{
-              getEmployee.id != null ? 'assessment' : 'mdi-add-circle'
+            <v-icon color="primary">{{
+              dataEmployee.id != null ? 'assessment' : 'mdi-add-circle'
             }}</v-icon>
-            {{ getEmployee.id != null ? 'Edit' : 'Tambah' }} Karyawan -->
+            {{ dataEmployee.id != null ? 'Edit' : 'Tambah' }} Karyawan
           </div>
           <div class="caption ml-8 grey--text darken-3">
             Form {{ dataEmployee.id != null ? 'mengubah' : 'menambahkan' }} data
             karyawan
           </div>
         </div>
-        <!-- <v-icon @click="closeForm">close</v-icon> -->
+        <v-icon @click="closeForm">mdi-close</v-icon>
       </v-card-title>
       <v-divider></v-divider>
       <v-card-text>
         <v-container>
           <v-row>
-            <v-col cols="12" sm="5" md="5">
+            <v-col cols="12">
               <v-form ref="form" v-model="valid" lazy-validation>
                 <div
                   class="font-sm grey--text grey lighten-4 px-3 py-1 mb-3 round"
@@ -152,7 +152,30 @@
                       :items="listDepartment"
                       item-text="name"
                       item-value="id"
+                      v-on:change="getAllAreaByDepartmentId"
                       label="Departemen"
+                    ></v-select>
+                  </v-col>
+                  <v-col class="py-0" cols="12" sm="6" md="6">
+                    <v-select
+                      v-model.trim="area_id"
+                      :items="listArea"
+                      item-text="name"
+                      item-value="id"
+                      v-on:change="getAllPositionByAreaId"
+                      label="Bagian"
+                    ></v-select>
+                  </v-col>
+                </v-row>
+
+                <v-row>
+                  <v-col class="py-0" cols="12" sm="6" md="6">
+                    <v-select
+                      v-model.trim="position_id"
+                      :items="listPosition"
+                      item-text="name"
+                      item-value="id"
+                      label="Jabatan"
                     ></v-select>
                   </v-col>
                   <v-col class="py-0" cols="12" sm="6" md="6">
@@ -161,28 +184,7 @@
                       :items="listShift"
                       item-text="name"
                       item-value="id"
-                      label="Golongan"
-                    ></v-select>
-                  </v-col>
-                </v-row>
-
-                <v-row>
-                  <v-col class="py-0" cols="12" sm="6" md="6">
-                    <v-select
-                      v-model.trim="area_id"
-                      :items="listArea"
-                      item-text="name"
-                      item-value="id"
-                      label="Area"
-                    ></v-select>
-                  </v-col>
-                  <v-col class="py-0" cols="12" sm="6" md="6">
-                    <v-select
-                      v-model.trim="position_id"
-                      :items="listPosition"
-                      item-text="name"
-                      item-value="id"
-                      label="Posisi"
+                      label="Shift"
                     ></v-select>
                   </v-col>
                 </v-row>
@@ -238,18 +240,133 @@
                     <v-col class="py-0 mb-5" cols="12" sm="12" md="12">
                       <v-currency-field
                         color="grey darken-2"
+                        :decimal-length="0"
                         prefix="Rp"
                         filled
                         v-bind="currency_config"
                         v-model.trim="gaji_pokok"
                         class="currency-input pa-0 ma-0 font-md"
-                        label="Insentif / Lembur Extra"
+                        label="Gaji Pokok"
                       ></v-currency-field>
                       <div
                         style="color: red; font-size: 12px"
                         v-if="gaji_pokok === ''"
                       >
                         Data insentif harus diisi
+                      </div>
+                      <v-currency-field
+                        color="grey darken-2"
+                        :decimal-length="0"
+                        prefix="Rp"
+                        filled
+                        v-bind="currency_config"
+                        v-model.trim="extra_full"
+                        class="currency-input pa-0 ma-0 font-md"
+                        label="Extra Full"
+                      ></v-currency-field>
+                      <div
+                        style="color: red; font-size: 12px"
+                        v-if="extra_full === ''"
+                      >
+                        Extra Full harus diisi
+                      </div>
+                      <v-currency-field
+                        color="grey darken-2"
+                        :decimal-length="0"
+                        prefix="Rp"
+                        filled
+                        v-bind="currency_config"
+                        v-model.trim="insentif_extra"
+                        class="currency-input pa-0 ma-0 font-md"
+                        label="Insentif Extra"
+                      ></v-currency-field>
+                      <div
+                        style="color: red; font-size: 12px"
+                        v-if="insentif_extra === ''"
+                      >
+                        Insentif Extra harus diisi
+                      </div>
+                      <v-currency-field
+                        color="grey darken-2"
+                        :decimal-length="0"
+                        prefix="Rp"
+                        filled
+                        v-bind="currency_config"
+                        v-model.trim="extra_tambahan_kerja"
+                        class="currency-input pa-0 ma-0 font-md"
+                        label="Extra Tambahan Kerja"
+                      ></v-currency-field>
+                      <div
+                        style="color: red; font-size: 12px"
+                        v-if="extra_tambahan_kerja === ''"
+                      >
+                        Extra Tambahan Kerja harus diisi
+                      </div>
+
+                      <v-currency-field
+                        color="grey darken-2"
+                        :decimal-length="0"
+                        prefix="Rp"
+                        filled
+                        v-bind="currency_config"
+                        v-model.trim="tunjangan_kehadiran"
+                        class="currency-input pa-0 ma-0 font-md"
+                        label="Tunjangan Kehadiran"
+                      ></v-currency-field>
+                      <div
+                        style="color: red; font-size: 12px"
+                        v-if="tunjangan_kehadiran === ''"
+                      >
+                        Tunjangan Kehadiran harus diisi
+                      </div>
+
+                      <v-currency-field
+                        color="grey darken-2"
+                        :decimal-length="0"
+                        prefix="Rp"
+                        filled
+                        v-bind="currency_config"
+                        v-model.trim="iuran_bpjs_tk"
+                        class="currency-input pa-0 ma-0 font-md"
+                        label="Iuran BPJS Ketenagakerjaan"
+                      ></v-currency-field>
+                      <div
+                        style="color: red; font-size: 12px"
+                        v-if="iuran_bpjs_tk === ''"
+                      >
+                        Iuran BPJS Ketenagakerjaan harus diisi
+                      </div>
+                      <v-currency-field
+                        color="grey darken-2"
+                        :decimal-length="0"
+                        prefix="Rp"
+                        filled
+                        v-bind="currency_config"
+                        v-model.trim="iuran_bpjs_ks"
+                        class="currency-input pa-0 ma-0 font-md"
+                        label="Iuran BPJS Kesehatan"
+                      ></v-currency-field>
+                      <div
+                        style="color: red; font-size: 12px"
+                        v-if="iuran_bpjs_ks === ''"
+                      >
+                        Iuran BPJS Kesehatan harus diisi
+                      </div>
+                      <v-currency-field
+                        color="grey darken-2"
+                        :decimal-length="0"
+                        prefix="Rp"
+                        filled
+                        v-bind="currency_config"
+                        v-model.trim="iuran_spsi"
+                        class="currency-input pa-0 ma-0 font-md"
+                        label="Iuran SPSI"
+                      ></v-currency-field>
+                      <div
+                        style="color: red; font-size: 12px"
+                        v-if="iuran_spsi === ''"
+                      >
+                        Iuran BPJS SPSI harus diisi
                       </div>
                     </v-col>
                   </v-row>
@@ -294,7 +411,7 @@ export default {
       menu2: null,
       menu3: null,
       dateNow: new Date().toISOString().substring(0, 10),
-      // employee: {
+      // EMPLOYEE FIELDS
       id: null,
       name: null,
       phone_no: null,
@@ -307,7 +424,7 @@ export default {
       date_of_birth: null,
       extra_full: null,
       iuran_bpjs_tk: null,
-      iuran_bjs_ks: null,
+      iuran_bpjs_ks: null,
       iuran_spsi: null,
       insentif_extra: null,
       extra_tambahan_kerja: null,
@@ -320,15 +437,17 @@ export default {
       area_id: null,
       position_id: null,
       shift_id: null,
-      // },
+      // ------------------
+
       name_: null,
       valid: true,
-      listDepartment: ['Produksi', 'Office', 'Helper'],
-      listShift: ['Shift Pagi', 'Shift Siang', 'Shift Sore', 'Shift Malam'],
-      listArea: ['Cat', 'Kayu', 'Staff'],
-      listPosition: ['Junior', 'Senior', 'Mandor'],
+      listDepartment: [],
+      listShift: [],
+      listArea: [],
+      listPosition: [],
 
       currency_config: {
+        decimal: ',',
         thousands: '.',
         prefix: 'Rp',
         precision: 0,
@@ -351,23 +470,46 @@ export default {
     },
     dataEmployee: {},
   },
+  created() {
+    this.actionGetAllDepartment();
+    this.actionGetAllShift();
+  },
   methods: {
-    ...mapActions(['actionSaveEmployee', 'actionUpdateEmployee']),
+    ...mapActions([
+      'actionSaveEmployee',
+      'actionUpdateEmployee',
+      'actionGetAllDepartment',
+      'actionGetAllAreaByDepartmentId',
+      'actionGetAllPositionByAreaId',
+      'actionGetAllShift',
+    ]),
     save() {
       const newEmployee = {
         id: this.id,
         name: this.name,
         phone_no: this.phone_no,
-        address: this.eddress,
+        address: this.address,
         type: this.type,
         active: this.active,
         active_date: this.active_date,
         bpjs_id: this.bpjs_id,
         npwp_id: this.npwp_id,
         date_of_birth: this.date_of_birth,
+        department: {
+          id: this.department_id,
+        },
+        area: {
+          id: this.area_id,
+        },
+        position: {
+          id: this.position_id,
+        },
+        shift: {
+          id: this.shift_id,
+        },
         extra_full: this.extra_full,
         iuran_bpjs_tk: this.iuran_bpjs_tk,
-        iuran_bjs_ks: this.iuran_bjs_ks,
+        iuran_bpjs_ks: this.iuran_bpjs_ks,
         iuran_spsi: this.iuran_spsi,
         insentif_extra: this.insentif_extra,
         extra_tambahan_kerja: this.extra_tambahan_kerja,
@@ -378,9 +520,9 @@ export default {
         owner_overtime_rate: 0,
         meta: {},
       };
-      // console.log(newEmployee);
+      console.log(newEmployee);
       if (this.dataEmployee.id != null) {
-        console.log(this.employee);
+        // console.log(this.employee);
         this.actionUpdateEmployee(newEmployee);
       } else {
         this.actionSaveEmployee(newEmployee);
@@ -392,12 +534,32 @@ export default {
     closeForm() {
       this.$emit('update:dialogForm', false);
     },
+
+    getAllAreaByDepartmentId() {
+      // console.log(this.department_id);
+      if (this.department_id != null) {
+        const param = new URLSearchParams();
+        param.append('join', 'department');
+        param.append('filter', 'department.id||$eq||' + this.department_id);
+        this.actionGetAllAreaByDepartmentId(param);
+      }
+    },
+
+    getAllPositionByAreaId() {
+      // console.log(this.area_id);
+      if (this.area_id != null) {
+        const param = new URLSearchParams();
+        param.append('join', 'area');
+        param.append('filter', 'area.id||$eq||' + this.area_id);
+        this.actionGetAllPositionByAreaId(param);
+      }
+    },
   },
 
   watch: {
     dataEmployee: {
       handler() {
-        console.log(this.dataEmployee);
+        // console.log(this.dataEmployee);
         this.id = this.dataEmployee.id;
         this.name = this.dataEmployee.name;
         this.phone_no = this.dataEmployee.phone_no;
@@ -410,7 +572,7 @@ export default {
         this.date_of_birth = this.dataEmployee.date_of_birth;
         this.extra_full = this.dataEmployee.extra_full;
         this.iuran_bpjs_tk = this.dataEmployee.iuran_bpjs_tk;
-        this.iuran_bjs_ks = this.dataEmployee.iuran_bjs_ks;
+        this.iuran_bpjs_ks = this.dataEmployee.iuran_bpjs_ks;
         this.iuran_spsi = this.dataEmployee.iuran_spsi;
         this.insentif_extra = this.dataEmployee.insentif_extra;
         this.extra_tambahan_kerja = this.dataEmployee.extra_tambahan_kerja;
@@ -424,48 +586,51 @@ export default {
     getDataAllDepartement: {
       handler() {
         for (var i = 0; i < this.getDataAllDepartement.length; i++) {
-          this.listDepartment = [
-            {
-              text: this.getDataAllDepartement[i].name,
-              value: this.getDataAllDepartement,
-            },
-          ];
+          this.listDepartment.push({
+            name: this.getDataAllDepartement[i].name,
+            id: this.getDataAllDepartement[i].id,
+          });
         }
       },
     },
-    getDataAllShift: {
+    getAllDataShift: {
       handler() {
-        for (var i = 0; i < this.getDataAllShift.length; i++) {
-          this.listShift = [
-            {
-              text: this.getDataAllShift[i].name,
-              value: this.getDataAllShift,
-            },
-          ];
+        for (var i = 0; i < this.getAllDataShift.length; i++) {
+          this.listShift.push({
+            name: this.getAllDataShift[i].name,
+            id: this.getAllDataShift[i].id,
+          });
         }
       },
     },
+
     getDataAllArea: {
       handler() {
-        for (var i = 0; i < this.getDataAllArea.length; i++) {
-          this.listArea = [
-            {
-              text: this.getDataAllArea[i].name,
-              value: this.getDataAllArea,
-            },
-          ];
+        this.listArea = [];
+        if (this.getDataAllArea.length > 0) {
+          for (var i = 0; i < this.getDataAllArea.length; i++) {
+            this.listArea.push({
+              name: this.getDataAllArea[i].name,
+              id: this.getDataAllArea[i].id,
+            });
+          }
+
+          this.area_id = this.getDataAllArea[0].id;
+          this.getAllPositionByAreaId();
         }
       },
     },
     getDataAllPosition: {
       handler() {
-        for (var i = 0; i < this.getDataAllPosition.length; i++) {
-          this.listPosition = [
-            {
-              text: this.getDataAllPosition[i].name,
-              value: this.getDataAllPosition,
-            },
-          ];
+        this.listPosition = [];
+        if (this.getDataAllPosition.length > 0) {
+          for (var i = 0; i < this.getDataAllPosition.length; i++) {
+            this.listPosition.push({
+              name: this.getDataAllPosition[i].name,
+              id: this.getDataAllPosition[i].id,
+            });
+          }
+          this.position_id = this.getDataAllPosition[0].id;
         }
       },
     },
@@ -476,7 +641,7 @@ export default {
       'getDataAllDepartement',
       'getDataAllArea',
       'getDataAllPosition',
-      'getDataAllShift',
+      'getAllDataShift',
     ]),
   },
 };
