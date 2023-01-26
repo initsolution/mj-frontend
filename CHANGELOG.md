@@ -39,7 +39,7 @@
 - Modul PayslipProduksi
     - Sort tampilan payslip dan download bedasarkan nama
     - View Payslip Produksi container di ganti jadi class pa-8 fluid
-# 0.0.1 (Update 29/01/2023)
+# 0.0.1 (Update 24/01/2023)
 - Modul ViewPayslip
     - Nama file menjadi periodeawal-periodeakhir.pdf
 - Modul Kehadiran
@@ -51,3 +51,13 @@
     - Add Edit View Area
 - Modul Position
     - Add Edit View Position
+
+# 0.0.1 (Update 26/01/2023)
+- Modul Kehadiran
+    - Add cancel overtime
+- Modul Departemen
+    - Update Add, Edit, View Departemen
+- Modul Bagian
+    - Update Add, Edit, View Bagian
+- Modul Position
+    - Update Add, Edit, View Position

@@ -11,12 +11,12 @@ const state = {
 }
 
 const actions = {
-    async actionGetAllDepartment({ commit }) {
+    async actionGetAllDepartment({ commit }, param) {
         // const param = new URLSearchParams();
         // param.append("join", "area");
         // param.append('filter', 'department.id||$eq||1');
         // const res = await httpCommons.get(apiName, { params: param })
-        const res = await httpCommons.get(apiName)
+        const res = await httpCommons.get(apiName, {params : param})
         commit('SET_DATA_DEPARTEMENT', res.data)
     },
 
@@ -27,14 +27,14 @@ const actions = {
                 status: res.statusText,
                 actions: res.status
             }
-            commit('SET_RES_UPDATE_DEPARTEMENT', result)
-            dispatch('actionGetAllDepartment')
+            commit('SET_STATUS_DEPARTEMENT', result)
+            // dispatch('actionGetAllDepartment')
         } catch (error) {
             const result = {
                 status: 'duplicate',
                 actions: 201
             }
-            commit('SET_RES_UPDATE_DEPARTEMENT', result)
+            commit('SET_STATUS_DEPARTEMENT', result)
         }
     },
 }
@@ -43,14 +43,14 @@ const mutations = {
     SET_DATA_DEPARTEMENT(state, rows) {
         state.data = rows
     },
-    SET_RES_UPDATE_DEPARTEMENT(state, status) {
+    SET_STATUS_DEPARTEMENT(state, status) {
         state.status = status
     }
 }
 
 const getters = {
     getDataAllDepartement: state => state.data,
-    getResUpdateDepartement: state => state.status,
+    getStatusDepartement: state => state.status,
 }
 
 export default {

@@ -3,8 +3,8 @@
     <v-dialog v-model="dialogArea" persistent max-width="600px">
       <v-card>
         <v-card-title>
-          <span v-if="type == 'add'" headline>Tambah Area</span>
-          <span v-else-if="type == 'update'" headline>Edit Area</span>
+          <span v-if="type == 'add'" headline>Tambah Bagian</span>
+          <span v-else-if="type == 'update'" headline>Edit Bagian</span>
         </v-card-title>
 
         <v-card-text>
@@ -12,7 +12,7 @@
             <v-row>
               <v-col cols="12">
                 <v-text-field
-                  label="Nama Area"
+                  label="Nama Bagian"
                   v-model.trim="getDataArea.name"
                   required
                 />
