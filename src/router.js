@@ -31,6 +31,16 @@ export default new Router({
           component: () => import("./views/pages/Kehadiran.vue"),
         },
         {
+          path: "kehadiran_bulanan",
+          name: "Kehadiran Bulanan",
+          component: () => import("./views/pages/KehadiranBulanan.vue"),
+        },
+        {
+          path: "kehadiran_mingguan",
+          name: "Kehadiran Mingguan",
+          component: () => import("./views/pages/KehadiranMingguan.vue"),
+        },
+        {
           path: "absensi",
           name: "Absensi",
           component: () => import("./views/pages/Absensi.vue"),
