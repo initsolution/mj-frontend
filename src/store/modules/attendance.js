@@ -1,6 +1,6 @@
 import httpCommons from "../../http-commons";
 
-const apiName = "attendance";
+const apiName = "attendance-produksi";
 
 const state = {
   data: [],
