@@ -72,3 +72,7 @@
     - searching by date dan nama
 - Modul Position
     - validasi jika areaId = null
+    
+# 0.0.1 (Update 01/02/2023)
+- Modul Shift
+    - solve bug add dan edit shift
