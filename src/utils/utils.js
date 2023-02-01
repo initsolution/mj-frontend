@@ -44,3 +44,15 @@ export const formatDate = (value, type) => {
     return moment(value).locale("id");
   }
 };
+
+export const manipulateDate = (tgl, operator, val) =>{
+  var newdate
+  if(operator === 'add'){
+    newdate = moment(tgl, "YYYY-MM-DD").add(val, 'days');
+    
+  }else if(operator === 'minus'){
+    newdate = moment(tgl, "YYYY-MM-DD").add((val*-1), 'days')
+  }
+  return newdate.format('YYYY-MM-DD')
+  
+}

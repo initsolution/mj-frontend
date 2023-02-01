@@ -300,55 +300,55 @@
             [
               "Gaji Pokok",
               "Rp",
-              this.formatPrice(this.selected[i].gaji_pokok),
+              this.formatPrice(Math.round(this.selected[i].gaji_pokok)),
               "Potongan Telat dan Ijin",
               "Rp",
-              this.formatPrice(this.selected[i].potongan_terlambat_ijin),
+              this.formatPrice(Math.round(this.selected[i].potongan_terlambat_ijin)),
             ],
             [
               "Lama Kerja",
               "Rp",
-              this.formatPrice(this.selected[i].bonus_lama_kerja),
+              this.formatPrice(Math.round(this.selected[i].bonus_lama_kerja)),
               "Potongan BPJS Tenaga Kerja",
               "Rp",
-              this.formatPrice(this.selected[i].potongan_bpjs_tk),
+              this.formatPrice(Math.round(this.selected[i].potongan_bpjs_tk)),
             ],
             [
               "Upah 1 hari",
               "Rp",
-              this.formatPrice(this.selected[i].upah_1_hari),
+              this.formatPrice(Math.round(this.selected[i].upah_1_hari)),
               "Potongan BPJS Kesehatan",
               "Rp",
-              this.formatPrice(this.selected[i].potongan_bpjs_ks),
+              this.formatPrice(Math.round(this.selected[i].potongan_bpjs_ks)),
             ],
             [
               "Tunjangan Kehadiran",
               "Rp",
-              this.formatPrice(this.selected[i].total_tunjangan_kehadiran),
+              this.formatPrice(Math.round(this.selected[i].total_tunjangan_kehadiran)),
               "Potongan SPSI",
               "Rp",
-              this.formatPrice(this.selected[i].potongan_spsi),
+              this.formatPrice(Math.round(this.selected[i].potongan_spsi)),
             ],
             [
               "Upah " + this.selected[i].total_hari_masuk + " hari",
               "Rp",
-              this.formatPrice(this.selected[i].upah_n_hari),
+              this.formatPrice(Math.round(this.selected[i].upah_n_hari)),
               "Potongan Bon",
               "Rp",
-              this.formatPrice(this.selected[i].potongan_bon),
+              this.formatPrice(Math.round(this.selected[i].potongan_bon)),
             ],
             [
               "Extra Full",
               "Rp",
-              this.formatPrice(this.selected[i].extra_full),
+              this.formatPrice(Math.round(this.selected[i].extra_full)),
               "Potongan Lain-lain",
               "Rp",
-              this.formatPrice(this.selected[i].potongan_lain),
+              this.formatPrice(Math.round(this.selected[i].potongan_lain)),
             ],
             [
               "Lembur",
               "Rp",
-              this.formatPrice(this.selected[i].lembur),
+              this.formatPrice(Math.round(this.selected[i].lembur)),
               "",
               "",
               "",
@@ -356,7 +356,7 @@
             [
               "Upah Hari Minggu",
               "Rp",
-              this.formatPrice(this.selected[i].upah_minggu),
+              this.formatPrice(Math.round(this.selected[i].upah_minggu)),
               "",
               "",
               "",
@@ -364,7 +364,7 @@
             [
               "Premi Hari Besar",
               "Rp",
-              this.formatPrice(this.selected[i].premi_hari_besar),
+              this.formatPrice(Math.round(this.selected[i].premi_hari_besar)),
               "",
               "",
               "",
@@ -372,20 +372,20 @@
             [
               "Total Pendapatan",
               "Rp",
-              this.formatPrice(this.selected[i].total_pendapatan),
+              this.formatPrice(Math.round(this.selected[i].total_pendapatan)),
               "Total Potongan",
               "Rp",
-              this.formatPrice(this.selected[i].total_potongan),
+              this.formatPrice(Math.round(this.selected[i].total_potongan)),
             ],
           ];
   
           var tb_footer = [
             [
               "PENDAPATAN GAJI = Rp " +
-                formatPrice(this.selected[i].pendapatan_gaji),
+                formatPrice(Math.round(this.selected[i].pendapatan_gaji)),
             ],
-            [angkaTerbilang(this.selected[i].pendapatan_gaji).toUpperCase()],
-            ["SISA PINJAMAN = Rp " + this.formatPrice(this.selected[i].sisa_bon)],
+            [angkaTerbilang(Math.round(this.selected[i].pendapatan_gaji)).toUpperCase()],
+            ["SISA PINJAMAN = Rp " + this.formatPrice(Math.round(this.selected[i].sisa_bon))],
           ];
   
           doc.autoTable({

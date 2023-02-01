@@ -1,6 +1,6 @@
 import httpCommons from "../../http-commons";
 
-const apiName = "attendance";
+const apiName = "attendance-produksi";
 
 const state = {
   data: [],
@@ -36,6 +36,12 @@ const actions = {
     const path = `?s=${filter}`;
     // const res = await httpCommons.get(apiName + path)
     const res = await httpCommons.get(apiName);
+    commit("SET_GET_DATA_ATTENDANCE", res.data);
+  },
+
+  async actionGetAllAttendenceByFilter({ commit }, param) {
+    const res = await httpCommons.get(apiName, {params : param});
+    console.log(res);
     commit("SET_GET_DATA_ATTENDANCE", res.data);
   },
 
@@ -130,7 +136,7 @@ const actions = {
       };
       commit("SET_DELETE_ATTENDANCE", result);
       dispatch("actionGetAllAttendence");
-    } catch (error) {}
+    } catch (error) { }
   },
 };
 
