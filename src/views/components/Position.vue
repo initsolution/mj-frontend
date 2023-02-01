@@ -106,6 +106,9 @@ export default {
       const param = new URLSearchParams();
       param.append("join", "position");
       this.areaId = this.getDetailDataArea.id;
+      if(this.areaId == null ) {
+        return;
+      }
       const data = {
         id: this.areaId,
         param: param,

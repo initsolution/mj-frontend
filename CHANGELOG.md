@@ -61,3 +61,14 @@
     - Update Add, Edit, View Bagian
 - Modul Position
     - Update Add, Edit, View Position
+- Modul Kehadiran
+    - ganti api name    
+
+# 0.0.1 (Update 31/01/2023)
+- Modul Payslip
+    - Pembulatan angka
+- Modul Kehadiran
+    - membuat submodul produksi dan bulanan
+    - searching by date dan nama
+- Modul Position
+    - validasi jika areaId = null
