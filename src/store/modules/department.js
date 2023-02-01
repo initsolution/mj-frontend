@@ -17,6 +17,7 @@ const actions = {
         // param.append('filter', 'department.id||$eq||1');
         // const res = await httpCommons.get(apiName, { params: param })
         const res = await httpCommons.get(apiName, {params : param})
+        console.log(res.data);
         commit('SET_DATA_DEPARTEMENT', res.data)
     },
 

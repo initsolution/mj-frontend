@@ -16,8 +16,8 @@
       >
         <div>
           <div>
-            <v-icon color="primary">{{
-              dataEmployee.id != null ? 'assessment' : 'mdi-add-circle'
+            <v-icon color="purple">{{
+              dataEmployee.id != null ? 'mdi-account-edit' : 'mdi-account-plus'
             }}</v-icon>
             {{ dataEmployee.id != null ? 'Edit' : 'Tambah' }} Karyawan
           </div>
@@ -471,6 +471,7 @@ export default {
     dataEmployee: {},
   },
   created() {
+    console.log('created');
     this.actionGetAllDepartment();
     this.actionGetAllShift();
   },
@@ -532,6 +533,11 @@ export default {
     },
 
     closeForm() {
+      this.department_id = null;
+      this.area_id = null;
+      this.position_id = null;
+      this.shift_id = null;
+      this.$emit('update:dataEmployee', {});
       this.$emit('update:dialogForm', false);
     },
 
@@ -559,7 +565,8 @@ export default {
   watch: {
     dataEmployee: {
       handler() {
-        // console.log(this.dataEmployee);
+        console.log('dataEmployee');
+        console.log(this.dataEmployee);
         this.id = this.dataEmployee.id;
         this.name = this.dataEmployee.name;
         this.phone_no = this.dataEmployee.phone_no;
@@ -581,10 +588,25 @@ export default {
         this.owner_rate = this.dataEmployee.owner_rate;
         this.owner_bonus_khusus = this.dataEmployee.owner_bonus_khusus;
         this.owner_overtime_rate = this.dataEmployee.owner_overtime_rate;
+        if (this.dataEmployee.department != null) {
+          this.department_id = this.dataEmployee.department.id;
+          this.getAllAreaByDepartmentId();
+        }
+
+        if (this.dataEmployee.area != null) {
+          this.area_id = this.dataEmployee.area.id;
+          this.getAllPositionByAreaId();
+        }
+        if (this.dataEmployee.position != null)
+          this.position_id = this.dataEmployee.position.id;
+        if (this.dataEmployee.shift != null)
+          this.shift_id = this.dataEmployee.shift.id;
       },
     },
     getDataAllDepartement: {
       handler() {
+        console.log('department_id');
+        console.log(this.department_id);
         for (var i = 0; i < this.getDataAllDepartement.length; i++) {
           this.listDepartment.push({
             name: this.getDataAllDepartement[i].name,
@@ -614,8 +636,6 @@ export default {
               id: this.getDataAllArea[i].id,
             });
           }
-
-          this.area_id = this.getDataAllArea[0].id;
           this.getAllPositionByAreaId();
         }
       },
@@ -630,7 +650,6 @@ export default {
               id: this.getDataAllPosition[i].id,
             });
           }
-          this.position_id = this.getDataAllPosition[0].id;
         }
       },
     },

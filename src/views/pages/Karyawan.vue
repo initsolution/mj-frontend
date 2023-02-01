@@ -2,7 +2,7 @@
   <v-container class="pa-8" fluid>
     <form-karyawan
       :dialogForm.sync="dialogForm"
-      :dataEmployee="employee"
+      :dataEmployee.sync="employee"
     ></form-karyawan>
     <hapus-karyawan
       :dialogHapusKaryawan.sync="dialogHapusKaryawan"
@@ -160,6 +160,9 @@ export default {
   created() {
     const params = new URLSearchParams();
     params.append('join', 'department');
+    params.append('join', 'area');
+    params.append('join', 'position');
+    params.append('join', 'shift');
     this.actionGetAllEmployee(params);
     // this.datalist.push({
     //   id: "01",
@@ -307,6 +310,7 @@ export default {
   watch: {
     getDataEmployees: {
       handler() {
+        console.log(this.getDataEmployees);
         this.selected_items = [];
       },
     },
