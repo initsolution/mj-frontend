@@ -3,6 +3,7 @@
     <tambah-edit-shift
       :dialogTambahEditShift.sync="dialogTambahEditShift"
       :getDataShift.sync="getDataShift"
+      :type="type"
     >
     </tambah-edit-shift>
     <v-row>
@@ -149,6 +150,7 @@ export default {
   data() {
     return {
       getDataShift: null,
+      type : null,
       dialogTambahEditShift: false,
       headers: [
         { text: "Hari", value: "days" },
@@ -196,11 +198,13 @@ export default {
         return;
       }
       this.getDataShift = this.selected_shift;
+      this.type = "edit";
       this.dialogTambahEditShift = true;
     },
 
     addShift() {
-      this.getDataShift = "tambah";
+      this.getDataShift = {};
+      this.type = "tambah";
       this.dialogTambahEditShift = true;
     },
   },

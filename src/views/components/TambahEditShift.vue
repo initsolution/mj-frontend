@@ -4,9 +4,7 @@
     <v-dialog v-model="dialogTambahEditShift" persistent max-width="1000px">
       <v-card>
         <v-card-title>
-          <span v-if="getDataShift == 'tambah'" class="headline"
-            >Tambah Shift</span
-          >
+          <span v-if="type == 'tambah'" class="headline">Tambah Shift</span>
           <span v-else class="headline">Edit Shift</span>
         </v-card-title>
 
@@ -133,7 +131,7 @@
           <v-btn color="red darken-1" @click.native="close">Close</v-btn>
 
           <v-btn
-            v-if="getDataShift == 'tambah'"
+            v-if="type == 'tambah'"
             color="blue darken-1"
             @click="add_edit_Shift"
             >Tambah</v-btn
@@ -176,6 +174,7 @@ export default {
       default: false,
     },
     getDataShift: null,
+    type: null,
   },
 
   directives: {
@@ -320,18 +319,26 @@ export default {
         this.list_detailshift[i].break_duration_h = hasil / 60;
         this.list_detailshift[i].break_duration_m = hasil;
       }
-      const dataShift = {
-        id: this.shift_id,
-        name: this.shift_name,
-        switchable: this.switchable,
-        shiftDetail: this.list_detailshift,
-      };
-      console.log(dataShift);
-      if (this.getDataShift == null) {
+
+      if (this.type == "tambah") {
+        console.log("tambah");
+        const dataShift = {
+          name: this.shift_name,
+          switchable: this.switchable,
+          shiftDetail: this.list_detailshift,
+        };
+        console.log(dataShift);
         this.actionSaveShift(dataShift);
-      } else {
+      } else if (this.type == "edit") {
+        console.log("edit");
+        const dataShift = {
+          id: this.shift_id,
+          name: this.shift_name,
+          switchable: this.switchable,
+          shiftDetail: this.list_detailshift,
+        };
+        console.log(dataShift);
         this.actionUpdateShift(dataShift);
-        console.log("====");
         console.log(dataShift);
         for (var i = 0; i < dataShift.shiftDetail.length; i++) {
           var shiftDetail = dataShift.shiftDetail[i];
@@ -372,38 +379,41 @@ export default {
   watch: {
     getDataShift: {
       handler() {
+        if(this.getDataShift == null) {
+          return;
+        }
+        console.log("fs : " + this.type);
+        console.log(this.getDataShift);
         //tambah shift
-        if (this.getDataShift != null) {
-          if (this.getDataShift == "tambah") {
-            for (var i = 0; i < this.label_day.length; i++) {
-              const shift = {
-                active: false, //0 & 1
-                break_duration_h: null, //1 atau 1.5 jam
-                break_duration_m: null, //satuan menit konversi break_duration_h
-                break_hours: null, //hasil join start-break dan end-break
-                days: i + 1,
-                start: null,
-                start_break: null,
-                end_break: null,
-                end: null,
-                is_flexible: null, //0 & 1
-                work_hours: null, //hasil join start dan end
-              };
-              this.list_detailshift.push(shift);
-            }
-          } else {
-            this.shift_id = this.getDataShift.id;
-            this.shift_name = this.getDataShift.name;
-            this.switchable = 1;
-            this.list_detailshift = this.getDataShift.detailShift;
-            var is_flexible = this.getDataShift.detailShift[0].is_flexible;
-            this.selected_schedule = this.schedules[is_flexible];
-            console.log(this.list_detailshift);
-            this.list_detailshift = this.list_detailshift
-              .map((item) => item)
-              .sort((a, b) => a.days - b.days);
-            console.log(this.list_detailshift);
+        if (this.type == "tambah") {
+          for (var i = 0; i < this.label_day.length; i++) {
+            const shift = {
+              active: false, //0 & 1
+              break_duration_h: null, //1 atau 1.5 jam
+              break_duration_m: null, //satuan menit konversi break_duration_h
+              break_hours: null, //hasil join start-break dan end-break
+              days: i + 1,
+              start: null,
+              start_break: null,
+              end_break: null,
+              end: null,
+              is_flexible: null, //0 & 1
+              work_hours: null, //hasil join start dan end
+            };
+            this.list_detailshift.push(shift);
           }
+        } else if (this.type == "edit") {
+          this.shift_id = this.getDataShift.id;
+          this.shift_name = this.getDataShift.name;
+          this.switchable = 1;
+          this.list_detailshift = this.getDataShift.detailShift;
+          var is_flexible = this.getDataShift.detailShift[0].is_flexible;
+          this.selected_schedule = this.schedules[is_flexible];
+          console.log(this.list_detailshift);
+          this.list_detailshift = this.list_detailshift
+            .map((item) => item)
+            .sort((a, b) => a.days - b.days);
+          console.log(this.list_detailshift);
         }
       },
     },
