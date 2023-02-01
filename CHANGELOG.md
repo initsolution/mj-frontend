@@ -61,6 +61,8 @@
     - Update Add, Edit, View Bagian
 - Modul Position
     - Update Add, Edit, View Position
+- Modul Kehadiran
+    - ganti api name    
 
 # 0.0.1 (Update 31/01/2023)
 - Modul Payslip
