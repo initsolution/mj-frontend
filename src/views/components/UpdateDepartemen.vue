@@ -3,7 +3,7 @@
     <v-dialog v-model="dialogUpdateDepartemen" persistent max-width="600px">
       <v-card>
         <v-card-title>
-          <span class="headline">Update Departemen </span>
+          <span class="headline">Ubah Departemen </span>
         </v-card-title>
 
         <v-card-text>
@@ -17,18 +17,23 @@
                 />
               </v-col>
               <v-col cols="12">
-                <v-text-field
-                  label="UMR"
+                <v-currency-field
+                  :decimal-length="0"
+                  prefix="Rp"
+                  filled
+                  v-bind="currency_config"
                   v-model.trim="getDataDepartemen.umr"
-                  required
+                  class="currency-input pa-0 ma-0 font-md"
+                  label="UMR"
                 />
+                
               </v-col>
             </v-row>
           </v-container>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="red darken-1" @click.native="close">Close</v-btn>
-          <v-btn color="blue darken-1" @click="update">Update</v-btn>
+          <v-btn color="red darken-1" @click.native="close">Tutup</v-btn>
+          <v-btn color="blue darken-1" @click="update">Ubah</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -46,7 +51,18 @@ export default {
     getDataDepartemen: {},
   },
   data() {
-    return {};
+    return {
+      currency_config: {
+        decimal: ",",
+        thousands: ".",
+        prefix: "Rp",
+        precision: 0,
+        masked: false,
+        allowBlank: false,
+        min: Number.MIN_SAFE_INTEGER,
+        max: Number.MAX_SAFE_INTEGER,
+      },
+    };
   },
   methods: {
     ...mapActions(["actionUpdateDepartement"]),

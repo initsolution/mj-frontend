@@ -84,3 +84,9 @@
     - Add new an employee
     - Update employee
     - Sort Employee by Name ASC
+- Modul Attendance Mingguan
+    - filter by created at
+- Modul Payslip Produksi
+    - print payslip tambah area dan jabatan
+- Modul Pinjaman
+    - ganti vuex actiongetallemployee
