@@ -82,3 +82,7 @@
     - filter by created at
 - Modul Payslip Produksi
     - print payslip tambah area dan jabatan    
+    
+# 0.0.1 (Update 02/02/2023)
+- Modul Pinjaman
+    - ganti vuex actiongetallemployee
