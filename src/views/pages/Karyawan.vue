@@ -88,7 +88,7 @@
                 class="elevation-1"
                 show-select
               >
-                <template v-slot:[`item.id`]="{ item }">
+                <!-- <template v-slot:[`item.id`]="{ item }">
                   <v-btn
                     color="blue"
                     class="elevation-0"
@@ -96,6 +96,9 @@
                     @click="editFunction(item)"
                     >{{ item.id }}
                   </v-btn>
+                </template> -->
+                <template v-slot:[`item.id`]="{ item }">
+                  <a @click="editFunction(item)">{{ item.id }}</a>
                 </template>
                 <template v-slot:[`item.date_of_birth`]="{ item }">
                   {{ convertDate(item.date_of_birth) }}
@@ -158,12 +161,7 @@ export default {
   },
   components: { HapusKaryawan, FormKaryawan },
   created() {
-    const params = new URLSearchParams();
-    params.append('join', 'department');
-    params.append('join', 'area');
-    params.append('join', 'position');
-    params.append('join', 'shift');
-    this.actionGetAllEmployee(params);
+    this.actionGetAllEmployee();
     // this.datalist.push({
     //   id: "01",
     //   name: "AA",

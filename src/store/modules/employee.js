@@ -8,8 +8,14 @@ const state = {
 };
 
 const actions = {
-  async actionGetAllEmployee({ commit }, param) {
-    const res = await httpCommons.get(apiName, { params: param });
+  async actionGetAllEmployee({ commit }) {
+    const params = new URLSearchParams();
+    params.append('join', 'department');
+    params.append('join', 'area');
+    params.append('join', 'position');
+    params.append('join', 'shift');
+    params.append('sort', 'name,ASC');
+    const res = await httpCommons.get(apiName, { params: params });
     // console.log(res.data)
     commit('SET_DATA_EMPLOYEE', res.data);
   },
