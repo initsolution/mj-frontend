@@ -76,3 +76,9 @@
 # 0.0.1 (Update 01/02/2023)
 - Modul Shift
     - solve bug add dan edit shift
+
+# 0.0.1 (Update 02/02/2023)
+- Modul Attendance Mingguan
+    - filter by created at
+- Modul Payslip Produksi
+    - print payslip tambah area dan jabatan    

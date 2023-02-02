@@ -163,7 +163,7 @@
               </div>
               <v-text-field
                 single-line
-                v-model="keyword"
+                v-model.trim="keyword"
                 class="white elevation-0"
                 dense
                 hide-details
@@ -445,15 +445,16 @@ export default {
   },
 
   created() {
-    var today = new Date();
-    var dd = String(today.getDate()).padStart(2, "0");
-    var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-    var yyyy = today.getFullYear();
+    // var today = new Date();
+    // var dd = String(today.getDate()).padStart(2, "0");
+    // var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+    // var yyyy = today.getFullYear();
 
-    today = yyyy + "/" + mm + "/" + dd;
+    // today = yyyy + "/" + mm + "/" + dd;
     // today = "18/11/2022"
     // console.log(today);
-    this.actionGetAllAttendence(today);
+
+    this.getAttendanceCustom();
   },
 
   methods: {
@@ -463,10 +464,11 @@ export default {
       "checkAttendance",
       "actionGetAllAttendence",
       "actionGetAllAttendenceByFilter",
+      "getAttendanceCustom",
     ]),
-    manipulasiDate(tgl, operator, val){
-        console.log(tgl+'-'+operator+'-'+val)
-        return manipulateDate(tgl,operator,val)
+    manipulasiDate(tgl, operator, val) {
+      console.log(tgl + "-" + operator + "-" + val);
+      return manipulateDate(tgl, operator, val);
     },
     addAttendance() {
       this.dialogTambahKehadiran = true;
@@ -728,7 +730,7 @@ export default {
       var tempData = data.split(",");
       var sum = 0;
       for (var i = 0; i < tempData.length; i++) {
-        sum = parseInt(sum + tempData[i]);
+        sum += parseInt(tempData[i]);
       }
       return sum;
     },
@@ -839,7 +841,7 @@ export default {
         param.append("filter", "employee.name||$cont||" + this.keyword);
       }
       if (this.startDate != null && this.endDate != null) {
-        var newdate = this.manipulasiDate(this.startDate,'minus', 1)
+        var newdate = this.manipulasiDate(this.startDate, "minus", 1);
         param.append(
           "filter",
           "attendance_date||$between||" + newdate + "," + this.endDate
@@ -850,7 +852,16 @@ export default {
     },
 
     searchKeyword() {
-      this.getDataAllAttendanceByFilter();
+      console.log(this.keyword);
+      if (
+        this.keyword.length == 0 &&
+        this.startDate == null &&
+        this.endDate == null
+      ) {
+        this.getAttendanceCustom();
+      } else {
+        this.getDataAllAttendanceByFilter();
+      }
     },
   },
 

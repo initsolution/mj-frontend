@@ -240,6 +240,7 @@
   
       print() {
         // console.log(this.selected);
+        this.selected.sort((a, b)=> a.employee.name.localeCompare(b.employee.name))
         const doc = new jsPDF("l", "mm", "a5");
         for (var i = 0; i < this.selected.length; i++) {
           // let pageWidth = doc.internal.pageSize.getWidth();
@@ -278,7 +279,7 @@
               "Departemen",
               this.selected[i].employee.department.name,
             ],
-            ["Nik", this.selected[i].employee.id, "Area Skill/Jabatan", ""],
+            ["Nik", this.selected[i].employee.id, "Area Skill / Jabatan", this.selected[i].employee.area.name+' / '+this.selected[i].employee.position.name],
             ["Lama Kerja", this.selected[i].lama_kerja + " tahun", "", ""],
             [
               "Total Hari Kerja",

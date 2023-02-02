@@ -9,19 +9,27 @@ const state = {
 };
 
 const actions = {
-  async actionGetAllAttendence({ commit }, date) {
-    if (date == null) {
-      console.log("date kosong");
+  async getAttendanceCustom({commit}){
+    console.log('get custom attendance')
+    const res = await httpCommons.get(apiName+'/customGetAttendance');
+    console.log(res)
+    commit("SET_GET_DATA_ATTENDANCE", res.data);
+  },
+  
+  async actionGetAllAttendence({ commit }) {
+    // if (date == null) {
+    //   console.log("date kosong");
       var today = new Date();
       var dd = String(today.getDate()).padStart(2, "0");
       var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
       var yyyy = today.getFullYear();
-
-      today = yyyy + "/" + mm + "/" + dd;
-      // today = "18/11/2022"
-      // console.log(today);
-      date = today;
-    }
+      const today1 = today
+      var todayDate = yyyy + "-" + mm + "-" + dd;
+      console.log(todayDate)
+    //   // today = "18/11/2022"
+    //   // console.log(today);
+    //   date = today;
+    // }
     // param =  { s: { overtime: 30 } }
     // const searching = new URLSearchParams([['overtime', 90]]);
     // const res = await httpCommons.get(apiName+'?s=%7B%22overtime%22%3A90%7D')
@@ -32,10 +40,14 @@ const actions = {
     // var datx = encodeURIComponent(searching);
     // var v = 90
     // const res = await httpCommons.get(apiName, {params : {s : datx}})
-    const filter = encodeURIComponent(`{"attendance_date":"${date}"}`);
-    const path = `?s=${filter}`;
+    // const filter = encodeURIComponent(`{"attendance_date":"${date}"}`);
+    // const path = `?s=${filter}`;
     // const res = await httpCommons.get(apiName + path)
-    const res = await httpCommons.get(apiName);
+    const params = new URLSearchParams();
+    params.append("filter", "created_at||cont||"+todayDate)
+    
+    const res = await httpCommons.get(apiName, {params : params});
+    console.log(res)
     commit("SET_GET_DATA_ATTENDANCE", res.data);
   },
 
