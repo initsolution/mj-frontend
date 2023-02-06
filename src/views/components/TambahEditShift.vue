@@ -36,7 +36,7 @@
             <v-divider class="my-5"></v-divider>
             <v-row>
               <v-col class="py-0" cols="10" sm="6" md="6">
-                <span><v-icon>mdi-calendar</v-icon>Jadwal Kerja</span>
+                <span><v-icon>mdi-calendar</v-icon>Tipe Istirahat</span>
               </v-col>
               <v-col class="py-0" cols="10" sm="6" md="6">
                 <v-select
@@ -47,7 +47,7 @@
                   item-text="name"
                   item-value="id"
                   single-line
-                  label="Tipe Jadwal"
+                  label="Tipe Istirahat"
                 ></v-select>
               </v-col>
             </v-row>
@@ -188,7 +188,7 @@ export default {
 
   data() {
     return {
-      schedules: ["Jadwal Tetap", "Jadwal Shift"],
+      schedules: ["Sesuai Jadwal", "Bebas (1 Jam)"],
       label_day: [
         "Minggu",
         "Senin",
