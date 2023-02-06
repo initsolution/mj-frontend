@@ -106,6 +106,9 @@
                 <template v-slot:[`item.active_date`]="{ item }">
                   {{ convertYear(item.active_date) }}
                 </template>
+                <template v-slot:[`item.lama_kerja`]="{ item }">
+                  {{ hitungLamaKerja(convertYear(item.active_date)) }}
+                </template>
                 <template v-slot:[`item.active`]="{ item }">
                   <v-switch
                     color="primary"
@@ -145,12 +148,13 @@ export default {
         { text: 'Nama', value: 'name' },
         { text: 'Tgl Lahir', value: 'date_of_birth' },
         { text: 'Thn Bergabung', value: 'active_date' },
+        { text: 'Lama Kerja', value: 'lama_kerja' },
         { text: 'Departemen', value: 'department.name' },
         // { text: "Shift", value: "shift.name" },
         // { text: "Bagian", value: "area.name" },
         // { text: "Jabatan", value: "position.name" },
         { text: 'BPJS', value: 'bpjs_id' },
-        { text: 'NPWP', value: 'npwp_id' },
+        // { text: 'NPWP', value: 'npwp_id' },
         { text: 'Aktif', value: 'active' },
       ],
       datalist: [],
@@ -184,6 +188,9 @@ export default {
   },
   methods: {
     ...mapActions(['actionGetAllEmployee', 'saveBulkEmployee']),
+    hitungLamaKerja(tahunKerja) {
+      return new Date().getFullYear() - parseInt(tahunKerja);
+    },
     convertDate(date) {
       return formatDate(date, 'long');
     },
