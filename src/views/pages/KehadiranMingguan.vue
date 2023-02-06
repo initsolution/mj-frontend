@@ -289,7 +289,7 @@
                             v-bind="attrs"
                             v-on="on"
                           >
-                            {{ item.overtime }}
+                            {{ convertToHour(item.overtime) }} jam
                           </v-chip>
                         </v-chip>
                       </template>
@@ -333,7 +333,7 @@
                             v-bind="attrs"
                             v-on="on"
                           >
-                            {{ item.early_overtime }}
+                            {{ convertToHour(item.early_overtime) }} jam
                           </v-chip>
                         </v-chip>
                       </template>
@@ -408,9 +408,9 @@ export default {
         { text: "Nama", value: "employee.name", width: 200 },
         { text: "Tanggal Kehadiran", value: "attendance_date", width: 130 },
         { text: "Masuk", value: "time_check_in" },
-        { text: "Pulang", value: "time_check_out" },
         { text: "Mulai Istirahat", value: "time_start_for_break" },
         { text: "Selesai Istirahat", value: "time_end_for_break" },
+        { text: "Pulang", value: "time_check_out" },
         { text: "Tiba dirumah", value: "time_arrive_home" },
         { text: "Mulai Ijin", value: "time_start_for_left" },
         { text: "Selesai Ijin", value: "time_end_for_left" },
@@ -712,7 +712,7 @@ export default {
     },
 
     convertDate(date) {
-      return date.substring(0, 10);
+      return formatDate(date.substring(0,10), "short-date");
     },
 
     convertTime(time) {
@@ -766,8 +766,12 @@ export default {
     },
 
     getColor(total_leave) {
-      if (total_leave > 0) return "#ff0000";
-      else return "#00ff00";
+      if (total_leave > 0) return "#EB212E";
+      else return "#77DD77";
+    },
+
+    convertToHour(total_leave){
+      return total_leave / 60;
     },
 
     getTimeColor(time) {
