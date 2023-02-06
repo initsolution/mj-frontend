@@ -203,7 +203,7 @@
                 <v-data-table
                   v-model="selected_items"
                   :headers="this.headers"
-                  :items="getDataAllAttendance"
+                  :items="getDataAllAttendanceBulanan"
                   class="elevation-1"
                   show-select
                 >
@@ -453,16 +453,16 @@
       today = yyyy + "/" + mm + "/" + dd;
       // today = "18/11/2022"
       // console.log(today);
-      this.actionGetAllAttendence(today);
+      this.actionGetAllAttendenceBulanan(today);
     },
   
     methods: {
       ...mapActions([
-        "saveAttendance",
-        "saveBulkAttendance",
-        "checkAttendance",
-        "actionGetAllAttendence",
-        "actionGetAllAttendenceByFilter",
+        "saveAttendanceBulanan",
+        "saveBulkAttendanceBulanan",
+        "checkAttendanceBulanan",
+        "actionGetAllAttendenceBulanan",
+        "actionGetAllAttendenceBulananByFilter",
       ]),
       manipulasiDate(tgl, operator, val){
           console.log(tgl+'-'+operator+'-'+val)
@@ -503,7 +503,7 @@
         }
         console.log(bulk);
         // this.checkAttendance({ bulk: bulk });
-        this.saveBulkAttendance({ bulk: bulk });
+        this.saveBulkAttendanceBulanan({ bulk: bulk });
       },
   
       importAttendance(event) {
@@ -556,9 +556,8 @@
               var _time_start_for_break = datarow[4] == "" ? null : datarow[4];
               var _time_end_for_break = datarow[5] == "" ? null : datarow[5];
               var _time_check_out = datarow[6] == "" ? null : datarow[6];
-              var _time_arrive_home = datarow[7] == "" ? null : datarow[7];
-              var _time_start_for_left = datarow[8] == "" ? null : datarow[8];
-              var _time_end_for_left = datarow[9] == "" ? null : datarow[9];
+              var _time_start_for_left = datarow[7] == "" ? null : datarow[7];
+              var _time_end_for_left = datarow[8] == "" ? null : datarow[8];
   
               var data = {
                 id: _nik,
@@ -568,10 +567,8 @@
                 time_start_for_break: _time_start_for_break,
                 time_end_for_break: _time_end_for_break,
                 time_check_out: _time_check_out,
-                time_arrive_home: _time_arrive_home,
                 time_start_for_left: _time_start_for_left,
                 time_end_for_left: _time_end_for_left,
-                attendance_type: _time_arrive_home == null ? 0 : 1,
                 week_of_day: -1,
                 // work_duration : calculate_work_duration,
               };
@@ -808,7 +805,7 @@
       },
   
       getResAddAttendance() {
-        const status = this.getBulkAttendance;
+        const status = this.getBulkAttendanceBulanan;
         console.log("getResAddAttendance : " + status.data);
         // if (status.actions == 201) {
         //   if (status.status == "Created") {
@@ -833,7 +830,7 @@
         // }
       },
   
-      getDataAllAttendanceByFilter() {
+      getDataAllAttendanceBulananByFilter() {
         const param = new URLSearchParams();
         if (this.keyword != null) {
           param.append("filter", "employee.name||$cont||" + this.keyword);
@@ -846,19 +843,19 @@
           );
         }
         param.append("join", "employee");
-        this.actionGetAllAttendenceByFilter(param);
+        this.actionGetAllAttendenceBulananByFilter(param);
       },
   
       searchKeyword() {
-        this.getDataAllAttendanceByFilter();
+        this.getDataAllAttendanceBulananByFilter();
       },
     },
   
     computed: {
       ...mapGetters([
-        "getStatusAttendance",
-        "getBulkAttendance",
-        "getDataAllAttendance",
+        "getStatusAttendanceBulanan",
+        "getBulkAttendanceBulanan",
+        "getDataAllAttendanceBulanan",
       ]),
       // getCheckAttendance() {
       //   return this.getStatusAttendance.data;
@@ -866,12 +863,12 @@
     },
   
     watch: {
-      getBulkAttendance: {
+      getBulkAttendanceBulanan: {
         handler() {
           this.getResAddAttendance();
         },
       },
-      getDataAllAttendance: {
+      getDataAllAttendanceBulanan: {
         handler() {
           this.selected_items = [];
         },
@@ -879,7 +876,7 @@
       startDate: {
         handler() {
           console.log(this.startDate + " - " + this.endDate);
-          this.getDataAllAttendanceByFilter();
+          this.getDataAllAttendanceBulananByFilter();
           // if (this.startDate != null && this.endDate != null) {
           //   console.log("masuk1");
           // }
@@ -888,7 +885,7 @@
       endDate: {
         handler() {
           console.log(this.startDate + " - " + this.endDate);
-          this.getDataAllAttendanceByFilter();
+          this.getDataAllAttendanceBulananByFilter();
           // if (this.startDate != null && this.endDate != null) {
           //   console.log("masuk2");
           // }
