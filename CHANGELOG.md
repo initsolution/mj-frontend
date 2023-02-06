@@ -77,8 +77,16 @@
 - Modul Shift
     - solve bug add dan edit shift
 
-# 0.0.1 (Update 02/02/2023)
+#0.0.1 (Update 02/02/2023)
+- Modul Employee
+    - Show all employee
+    - Import employee from spreadsheet
+    - Add new an employee
+    - Update employee
+    - Sort Employee by Name ASC
 - Modul Attendance Mingguan
     - filter by created at
 - Modul Payslip Produksi
-    - print payslip tambah area dan jabatan    
+    - print payslip tambah area dan jabatan
+- Modul Pinjaman
+    - ganti vuex actiongetallemployee

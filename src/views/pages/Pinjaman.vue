@@ -109,13 +109,13 @@ export default {
     this.getDataLoan();
   },
   methods: {
-    ...mapActions(["getAllEmployee", "inputLoan"]),
+    ...mapActions(["actionGetAllEmployee", "inputLoan"]),
     getDataLoan() {
       const params = new URLSearchParams();
       params.append("join", "loan");
       params.append("join", "department");
       params.append("sort", "loan.created_at,DESC");
-      this.getAllEmployee(params);
+      this.actionGetAllEmployee(params);
     },
     formatPrice(value) {
       return formatPrice(value);
