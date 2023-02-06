@@ -90,3 +90,11 @@
     - print payslip tambah area dan jabatan
 - Modul Pinjaman
     - ganti vuex actiongetallemployee
+
+# 0.0.1 (Update 06/02/2023)
+- Modul Attendance Mingguan (feedback MJ)
+    - Format tgl kehadiran nya tg-bln-th
+    - urutan tampilan masuk-mulai istirahat - selesai istirahat -pulang
+    - validasi jam lembur nya ijo& merah nya jangan yg cetar, warna kalem
+- Modul Attendance Bulanan
+    - On going
