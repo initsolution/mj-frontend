@@ -98,3 +98,8 @@
     - validasi jam lembur nya ijo& merah nya jangan yg cetar, warna kalem
 - Modul Attendance Bulanan
     - On going
+
+# 0.0.1 (Update 06/02/2023)
+- Modul Attendance Mingguan (feedback MJ)
+    - Notifikasi Duplikasi data
+    - Add component overlay loading
