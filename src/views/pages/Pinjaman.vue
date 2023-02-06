@@ -111,11 +111,13 @@ export default {
   methods: {
     ...mapActions(["actionGetAllEmployee", "inputLoan"]),
     getDataLoan() {
-      const params = new URLSearchParams();
-      params.append("join", "loan");
-      params.append("join", "department");
-      params.append("sort", "loan.created_at,DESC");
-      this.actionGetAllEmployee(params);
+      // const params = new URLSearchParams();
+      // params.append("join", "loan");
+      // params.append("join", "department");
+      // params.append("sort", "loan.created_at,DESC");
+      // this.actionGetAllEmployee(params);
+      this.actionGetAllEmployee();
+      
     },
     formatPrice(value) {
       return formatPrice(value);

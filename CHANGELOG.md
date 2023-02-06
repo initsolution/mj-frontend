@@ -103,3 +103,5 @@
 - Modul Attendance Mingguan (feedback MJ)
     - Notifikasi Duplikasi data
     - Add component overlay loading
+- Modul Pinjaman (feedback MJ)
+    - Mengganti get data employee    
