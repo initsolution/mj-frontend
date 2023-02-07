@@ -11,7 +11,7 @@ const state = {
 
 const actions = {
   async getAttendanceCustom({commit}){
-    console.log('get custom attendance')
+    // console.log('get custom attendance')
     const res = await httpCommons.get(apiName+'/customGetAttendance');
     // console.log(res)
     commit("SET_GET_DATA_ATTENDANCE", res.data);
@@ -26,7 +26,7 @@ const actions = {
       var yyyy = today.getFullYear();
       const today1 = today
       var todayDate = yyyy + "-" + mm + "-" + dd;
-      console.log(todayDate)
+      // console.log(todayDate)
     //   // today = "18/11/2022"
     //   // console.log(today);
     //   date = today;
@@ -48,13 +48,13 @@ const actions = {
     params.append("filter", "created_at||cont||"+todayDate)
     
     const res = await httpCommons.get(apiName, {params : params});
-    console.log(res)
+    // console.log(res)
     commit("SET_GET_DATA_ATTENDANCE", res.data);
   },
 
   async actionGetAllAttendenceByFilter({ commit }, param) {
     const res = await httpCommons.get(apiName, {params : param});
-    console.log(res);
+    // console.log(res);
     commit("SET_GET_DATA_ATTENDANCE", res.data);
   },
 
@@ -104,15 +104,15 @@ const actions = {
   async updateOvertime({ commit, dispatch }, data) {
     try {
       const res = await httpCommons.patch(apiName + `/${data.id}`, data);
-      console.log(res);
+      // console.log(res);
       const result = {
         status: res.statusText,
         actions: res.status,
         data: res.data,
       };
-      console.log("overtime_update : " + result);
+      // console.log(result);
       commit("SET_UPDATE_ATTENDANCE", result);
-      dispatch("actionGetAllAttendence");
+      // dispatch("actionGetAllAttendence");
     } catch (error) {
       const result = {
         status: "duplicate",
@@ -123,7 +123,7 @@ const actions = {
   },
 
   async checkAttendance({ commit, dispatch }, data) {
-    console.log(data);
+    // console.log(data);
     try {
       const res = await httpCommons.post(apiName + "/checkAttendance", data);
       const result = {
@@ -131,7 +131,7 @@ const actions = {
         actions: res.status,
         data: res.data,
       };
-      console.log(result.data);
+      // console.log(result.data);
       commit("SET_CHECK_ATTENDANCE", result);
     } catch (error) {
       const result = {
@@ -145,13 +145,13 @@ const actions = {
   async deleteAttendanceById({ commit, dispatch }, id) {
     try {
       const res = await httpCommons.delete(apiName + "/" + id);
-      console.log("res " + res);
+      // console.log("res " + res);
       const result = {
         status: res.statusText,
         actions: res.status,
       };
       commit("SET_DELETE_ATTENDANCE", result);
-      dispatch("actionGetAllAttendence");
+      // dispatch("actionGetAllAttendence");
     } catch (error) { }
   },
 };

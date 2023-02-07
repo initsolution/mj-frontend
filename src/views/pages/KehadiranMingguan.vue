@@ -857,19 +857,29 @@ export default {
       }
     },
 
-    cekDialogAlert() {
+    updateStatusAttendance() {
       const status = this.getStatusAttendance;
-      // console.log("status = " + status.actions);
-      if (status.actions == 201) {
-        if(status.status == 'duplicate'){
-        this.notif_text = "Ada duplikasi data";
-        this.snackbar = true;
+      console.log("f");
+      if (status.actions == 200) {
+        if (status.status == "OK") {
+          this.getDataAllAttendanceByFilter();
+        }
+      } else if (status.actions == 201) {
+        if (status.status == "duplicate") {
+          this.notif_text = "Ada duplikasi data";
+          this.snackbar = true;
         }
       }
     },
 
     getDataAllAttendanceByFilter() {
       const param = new URLSearchParams();
+      if (this.startDate != null) {
+        if (this.endDate == null) {
+          return;
+        }
+      }
+      
       if (this.keyword != null) {
         param.append("filter", "employee.name||$cont||" + this.keyword);
       }
@@ -946,7 +956,7 @@ export default {
     },
     getStatusAttendance: {
       handler() {
-        this.cekDialogAlert();
+        this.updateStatusAttendance();
       },
     },
   },

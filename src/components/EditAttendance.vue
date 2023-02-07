@@ -4,7 +4,7 @@
     <v-dialog v-model="dialogEditAttendance" persistent max-width="600px">
       <v-card>
         <v-card-title>
-          <span class="headline">Update</span>
+          <span class="headline">Edit</span>
           <!-- {{ (dataAttendance_ = dataAttendance) }} -->
         </v-card-title>
 
@@ -16,7 +16,7 @@
                 <v-combobox
                   v-model="select"
                   :items="label_overtime"
-                  label="Combobox"
+                  label="Durasi"
                   outlined
                   dense
                 >
@@ -26,8 +26,8 @@
           </v-container>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="red darken-1" @click.native="close">Close</v-btn>
-          <v-btn color="blue darken-1" @click="update">Update</v-btn>
+          <v-btn color="red darken-1" @click.native="close">Tutup</v-btn>
+          <v-btn color="blue darken-1" @click="update">Edit</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
