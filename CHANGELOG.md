@@ -108,3 +108,5 @@
 - Modul Attendance Mingguan (feedback MJ)
     - Filter Attendance
     - Tambah, Hapus, dan Edit kehadiran by filter
+- Modul Pinjaman (feedback MJ)
+    - Mengganti get data employee    

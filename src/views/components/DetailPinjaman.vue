@@ -134,7 +134,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["inputLoan", 'getAllEmployee']),
+    ...mapActions(["inputLoan", 'actionGetAllEmployee']),
     formatPrice(value) {
       return formatPrice(value);
     },
@@ -164,11 +164,11 @@ export default {
       const status = this.getStatusLoan
       if (status.status == 201) {
         if (status.statusText == "Created") {
-          const params = new URLSearchParams();
-          params.append("join", "loan");
-          params.append("join", "department");
-          params.append("sort", "loan.created_at,DESC");
-          this.getAllEmployee(params);
+          // const params = new URLSearchParams();
+          // params.append("join", "loan");
+          // params.append("join", "department");
+          // params.append("sort", "loan.created_at,DESC");
+          this.actionGetAllEmployee();
           this.dismisDialog();
           this.close();
         }
