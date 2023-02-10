@@ -372,6 +372,13 @@
         </div>
       </v-col>
     </v-row>
+    <v-overlay :value="overlay">
+      <v-progress-circular
+        indeterminate
+        color="blue"
+        dark
+      ></v-progress-circular>
+    </v-overlay>
   </v-container>
 </template>
     
@@ -434,6 +441,7 @@ export default {
       startDate: null,
       endDate: null,
       keyword: null,
+      overlay: false,
     };
   },
 
@@ -467,7 +475,7 @@ export default {
       "getAttendanceCustom",
     ]),
     manipulasiDate(tgl, operator, val) {
-      console.log(tgl + "-" + operator + "-" + val);
+      // console.log(tgl + "-" + operator + "-" + val);
       return manipulateDate(tgl, operator, val);
     },
     addAttendance() {
@@ -503,15 +511,15 @@ export default {
         };
         bulk.push(data);
       }
-      console.log(bulk);
+      // console.log(bulk);
       // this.checkAttendance({ bulk: bulk });
       this.saveBulkAttendance({ bulk: bulk });
     },
 
     importAttendance(event) {
-      console.log("Upload");
+      // console.log("Upload");
       if (!this.selectXlsx) {
-        console.log("Please upload a xlsx file");
+        // console.log("Please upload a xlsx file");
         this.notif_text = "Pilih file excel dahulu";
         this.snackbar = true;
         return;
@@ -580,7 +588,7 @@ export default {
 
             var result = this.checkFormatExcel(data, row);
             if (result == "end_of_excel") {
-              console.log("End Of Excel " + row);
+              // console.log("End Of Excel " + row);
               break;
             }
             if (result != "sukses") {
@@ -595,7 +603,7 @@ export default {
         reader.readAsBinaryString(this.selectXlsx);
 
         reader.onloadend = (e) => {
-          console.log("datalist len = " + this.datalist.length);
+          // console.log("datalist len = " + this.datalist.length);
           if (this.datalist.length > 0) {
             this.uploadAttendance();
             this.datalist = [];
@@ -642,7 +650,7 @@ export default {
         if (year.length == 4) {
           //sementara di check year
           date = month + "-" + days + "-" + year;
-          console.log(date);
+          // console.log(date);
           var result = this.formatDateUtils(date);
           if (result == "Invalid date") {
             return (
@@ -712,7 +720,7 @@ export default {
     },
 
     convertDate(date) {
-      return formatDate(date.substring(0,10), "short-date");
+      return formatDate(date.substring(0, 10), "short-date");
     },
 
     convertTime(time) {
@@ -770,7 +778,7 @@ export default {
       else return "#77DD77";
     },
 
-    convertToHour(total_leave){
+    convertToHour(total_leave) {
       return total_leave / 60;
     },
 
@@ -785,14 +793,14 @@ export default {
     },
 
     cancelOvertime(item, type) {
-      console.log(item);
+      // console.log(item);
       this.dataAttendance = item;
       this.type_overtime = type;
       this.dialogCancelOvertime = true;
     },
 
     getUserData(value) {
-      console.log(value);
+      // console.log(value);
       // getCheckAttendance();
     },
 
@@ -805,9 +813,9 @@ export default {
         if (item.selected == true) {
           isSelected = index;
         }
-        console.log(item);
+        // console.log(item);
       });
-      console.log("isSelected " + isSelected);
+      // console.log("isSelected " + isSelected);
       // value.total_leave = 100;
       this.dialogEditAttendancelocal = true;
       this.dataAttendance = value.total_leave;
@@ -815,7 +823,7 @@ export default {
 
     getResAddAttendance() {
       const status = this.getBulkAttendance;
-      console.log("getResAddAttendance : " + status.data);
+      // console.log("getResAddAttendance : " + status.data);
       // if (status.actions == 201) {
       //   if (status.status == "Created") {
       //     title = "Sukses Update data";
@@ -839,8 +847,39 @@ export default {
       // }
     },
 
+    getStatusLoading() {
+      const status = this.getLoadingAttendance;
+      // console.log(status);
+      if (status) {
+        this.overlay = true;
+      } else {
+        this.overlay = false;
+      }
+    },
+
+    updateStatusAttendance() {
+      const status = this.getStatusAttendance;
+      console.log("f");
+      if (status.actions == 200) {
+        if (status.status == "OK") {
+          this.getDataAllAttendanceByFilter();
+        }
+      } else if (status.actions == 201) {
+        if (status.status == "duplicate") {
+          this.notif_text = "Ada duplikasi data";
+          this.snackbar = true;
+        }
+      }
+    },
+
     getDataAllAttendanceByFilter() {
       const param = new URLSearchParams();
+      if (this.startDate != null) {
+        if (this.endDate == null) {
+          return;
+        }
+      }
+      
       if (this.keyword != null) {
         param.append("filter", "employee.name||$cont||" + this.keyword);
       }
@@ -856,7 +895,7 @@ export default {
     },
 
     searchKeyword() {
-      console.log(this.keyword);
+      // console.log(this.keyword);
       if (
         this.keyword.length == 0 &&
         this.startDate == null &&
@@ -874,6 +913,7 @@ export default {
       "getStatusAttendance",
       "getBulkAttendance",
       "getDataAllAttendance",
+      "getLoadingAttendance",
     ]),
     // getCheckAttendance() {
     //   return this.getStatusAttendance.data;
@@ -893,7 +933,7 @@ export default {
     },
     startDate: {
       handler() {
-        console.log(this.startDate + " - " + this.endDate);
+        // console.log(this.startDate + " - " + this.endDate);
         this.getDataAllAttendanceByFilter();
         // if (this.startDate != null && this.endDate != null) {
         //   console.log("masuk1");
@@ -902,11 +942,21 @@ export default {
     },
     endDate: {
       handler() {
-        console.log(this.startDate + " - " + this.endDate);
+        // console.log(this.startDate + " - " + this.endDate);
         this.getDataAllAttendanceByFilter();
         // if (this.startDate != null && this.endDate != null) {
         //   console.log("masuk2");
         // }
+      },
+    },
+    getLoadingAttendance: {
+      handler() {
+        this.getStatusLoading();
+      },
+    },
+    getStatusAttendance: {
+      handler() {
+        this.updateStatusAttendance();
       },
     },
   },

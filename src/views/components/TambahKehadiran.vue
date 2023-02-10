@@ -317,7 +317,7 @@ export default {
       };
       console.log(data);
       bulk.push(data);
-      // this.saveBulkAttendance({ bulk: bulk });
+      this.saveBulkAttendance({ bulk: bulk });
       this.close();
     },
 
