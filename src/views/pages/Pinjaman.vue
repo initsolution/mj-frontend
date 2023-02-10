@@ -109,14 +109,14 @@ export default {
     this.getDataLoan();
   },
   methods: {
-    ...mapActions(["actionGetAllEmployee", "inputLoan"]),
+    ...mapActions(["actionGetAllEmployeeByFilter", "inputLoan"]),
     getDataLoan() {
-      // const params = new URLSearchParams();
-      // params.append("join", "loan");
-      // params.append("join", "department");
-      // params.append("sort", "loan.created_at,DESC");
+      const params = new URLSearchParams();
+      params.append("join", "loan");
+      params.append("join", "department");
+      params.append("sort", "loan.created_at,DESC");
       // this.actionGetAllEmployee(params);
-      this.actionGetAllEmployee();
+      this.actionGetAllEmployeeByFilter(params);
       
     },
     formatPrice(value) {

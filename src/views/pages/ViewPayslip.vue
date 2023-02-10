@@ -1,7 +1,7 @@
 <template>
   <v-container class="pa-8" fluid>
     <v-card>
-      <v-card-title></v-card-title>
+      <v-card-title>Payslip Prouksi</v-card-title>
       <v-card-text>
         <v-data-table
           v-model="selected"

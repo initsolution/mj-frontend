@@ -134,7 +134,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["inputLoan", 'actionGetAllEmployee']),
+    ...mapActions(["inputLoan", "actionGetAllEmployeeByFilter"]),
     formatPrice(value) {
       return formatPrice(value);
     },
@@ -161,14 +161,14 @@ export default {
       this.inputLoan(data);
     },
     watchStatusLoan() {
-      const status = this.getStatusLoan
+      const status = this.getStatusLoan;
       if (status.status == 201) {
         if (status.statusText == "Created") {
-          // const params = new URLSearchParams();
-          // params.append("join", "loan");
-          // params.append("join", "department");
-          // params.append("sort", "loan.created_at,DESC");
-          this.actionGetAllEmployee();
+          const params = new URLSearchParams();
+          params.append("join", "loan");
+          params.append("join", "department");
+          params.append("sort", "loan.created_at,DESC");
+          this.actionGetAllEmployeeByFilter(params);
           this.dismisDialog();
           this.close();
         }

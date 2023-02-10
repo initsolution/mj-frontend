@@ -396,9 +396,15 @@ export default {
 
     isLoadingFinish() {
       const status = this.geStatusLoading;
-      // console.log(status);
+      console.log(status);
       if (status.loading == false) {
-        this.$router.push("/viewPayslip").catch(() => {});
+        if (this.choosenDepartment.id == 1) {
+          this.$router.push("/viewPayslip").catch(() => {});
+        }else if (this.choosenDepartment.id == 2) {
+          // this.$router.push("/viewPayslip").catch(() => {});
+        }else if (this.choosenDepartment.id == 3) {
+          this.$router.push("/viewPayslipHelper").catch(() => {});
+        }
       }
     },
 

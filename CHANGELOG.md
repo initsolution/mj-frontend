@@ -126,3 +126,10 @@
     - solving bug switchable selalu true
 - Etc 
     - remove debug print in each modul
+- Modul Absensi
+    - Menampilkan data karyawan yg tidak masuk
+- Modul Payslip Helper
+    - Menampilkan dan kalkulasi payslip helper
+    - cetak payslip helper
+- Modul Pinjaman
+    - ganti cara mendapatkan employee bedasarkan filters    

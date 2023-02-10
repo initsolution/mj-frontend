@@ -1,0 +1,540 @@
+<template>
+    <v-container class="pa-8" fluid>
+      <v-card>
+        <v-card-title>Payslip Helper</v-card-title>
+        <v-card-text>
+          <v-data-table
+            v-model="selected"
+            show-select
+            :headers="headers"
+            :items.sync="getAllData"
+          >
+            <template v-slot:[`item.periode_start`]="{ item }">
+              {{ formatDateUtils(item.periode_start) }}
+            </template>
+            <template v-slot:[`item.periode_end`]="{ item }">
+              {{ formatDateUtils(item.periode_end) }}
+            </template>
+            <template v-slot:[`item.gaji_pokok`]="{ item }">
+              {{ formatPrice(Math.round(item.gaji_pokok)) }}
+            </template>
+            <template v-slot:[`item.bonus_lama_kerja`]="{ item }">
+              {{ formatPrice(Math.round(item.bonus_lama_kerja)) }}
+            </template>
+            <template v-slot:[`item.upah_n_hari`]="{ item }">
+              {{ formatPrice(Math.round(item.upah_n_hari)) }}
+            </template>
+            <template v-slot:[`item.extra_full`]="{ item }">
+              {{ formatPrice(Math.round(item.extra_full)) }}
+            </template>
+            <template v-slot:[`item.total_pendapatan`]="{ item }">
+              {{ formatPrice(Math.round(item.total_pendapatan)) }}
+            </template>
+            <template v-slot:[`item.potongan_terlambat_ijin`]="{ item }">
+              {{ formatPrice(Math.round(item.potongan_terlambat_ijin)) }}
+            </template>
+            <template v-slot:[`item.potongan_bpjs_tk`]="{ item }">
+              {{ formatPrice(Math.round(item.potongan_bpjs_tk)) }}
+            </template>
+            <template v-slot:[`item.potongan_bpjs_ks`]="{ item }">
+              {{ formatPrice(Math.round(item.potongan_bpjs_ks)) }}
+            </template>
+            <template v-slot:[`item.potongan_spsi`]="{ item }">
+              {{ formatPrice(Math.round(item.potongan_spsi)) }}
+            </template>
+            <template v-slot:[`item.potongan_bon`]="{ item }">
+              <v-btn
+                v-if="item.potongan_bon == 0"
+                color="blue darken-1"
+                small
+                class="mr-3 elevation-0"
+                @click="openDialogBon(item)"
+                >{{ formatPrice(Math.round(item.potongan_bon)) }}</v-btn
+              >
+              <div v-else>{{ formatPrice(Math.round(item.potongan_bon)) }}</div>
+            </template>
+            <template v-slot:[`item.potongan_lain`]="{ item }">
+              {{ formatPrice(Math.round(item.potongan_lain)) }}
+            </template>
+            <template v-slot:[`item.total_potongan`]="{ item }">
+              {{ formatPrice(Math.round(item.total_potongan)) }}
+            </template>
+            <template v-slot:[`item.pendapatan_gaji`]="{ item }">
+              {{ formatPrice(Math.round(item.pendapatan_gaji)) }}
+            </template>
+            <template v-slot:[`item.sisa_bon`]="{ item }">
+              {{ formatPrice(Math.round(item.sisa_bon)) }}
+            </template>
+          </v-data-table>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn color="green darken-1" @click="print">Print</v-btn>
+        </v-card-actions>
+      </v-card>
+      <v-dialog v-model="dialogPay" max-width="600">
+        <v-card>
+          <v-card-text>
+            <v-text-field
+              color="grey darken-2"
+              prefix="Rp"
+              v-model.trim="loan.nominal"
+              label="Nominal Pinjaman"
+              required
+            ></v-text-field>
+            <v-text-field
+              color="grey darken-2"
+              v-model.trim="loan.description"
+              label="Deskripsi"
+            ></v-text-field>
+          </v-card-text>
+          <v-card-actions>
+            <div class="flex-grow-1"></div>
+            <v-btn class="elevation-0 grey darken-2" dark @click="dismisDialog"
+              >Batal</v-btn
+            >
+            <v-btn class="elevation-0 primary" @click.stop="saveLoan"
+              >Simpan</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-container>
+  </template>
+    
+    <script lang="js">
+    import { mapActions, mapGetters } from "vuex";
+    import { formatPrice, formatDate } from "@/utils/utils";
+    import { jsPDF } from "jspdf";
+    import autoTable from "jspdf-autotable";
+    import angkaTerbilang from "@develoka/angka-terbilang-js";
+    export default {
+      name: "ViewPayslipHelper",
+      data() {
+        return {
+          selected: [],
+          dialogPay : false,
+          loan : {},
+          dataPayslip : {},
+          headers: [
+            { text: "Employee_ID", value: "employee.id" },
+            { text: "Nama", value: "employee.name" },
+            { text: "Periode awal", value: "periode_start" },
+            { text: "Periode akhir", value: "periode_end" },
+            { text: "Total hari kerja", value: "total_hari_kerja" },
+            { text: "Total hari masuk", value: "total_hari_masuk" },
+            { text: "Total hari off", value: "total_hari_off" },
+            { text: "Lama kerja", value: "lama_kerja", align: "right" },
+            { text: "Gaji Pokok", value: "gaji_pokok", align: "right" },
+            { text: "Bonus lama kerja", value: "bonus_lama_kerja", align: "right" },
+            { text: "Upah 1 minggu", value: "upah_n_hari", align: "right" },
+            { text: "Extra full", value: "extra_full", align: "right" },
+            { text: "Total pendapatan", value: "total_pendapatan", align: "right" },
+            {
+              text: "Potongan terlambat dan ijin",
+              value: "potongan_terlambat_ijin",
+              align: "right",
+            },
+            {
+              text: "Potongan BPJS tenaga kerja",
+              value: "potongan_bpjs_tk",
+              align: "right",
+            },
+            {
+              text: "Potongan BPJS kesehatan",
+              value: "potongan_bpjs_ks",
+              align: "right",
+            },
+            { text: "Potongan SPSI", value: "potongan_spsi", align: "right" },
+            { text: "Potongan bon", value: "potongan_bon", align: "right" },
+            { text: "Potongan lain", value: "potongan_lain", align: "right" },
+            { text: "Total potongan", value: "total_potongan", align: "right" },
+            { text: "Pendapatan gaji", value: "pendapatan_gaji", align: "right" },
+            { text: "Sisa bon", value: "sisa_bon", align: "right" },
+          ],
+        };
+      },
+      methods: {
+        ...mapActions(['updatePayslipWithBon']),
+        formatPrice(value) {
+          return formatPrice(value);
+        },
+        formatDateUtils(val){
+          return  formatDate(val, 'short-date')
+        },
+    
+        formatDateBulan(date) {
+          date = new Date(date);
+          var bulan = [
+            "Januari",
+            "Februari",
+            "Maret",
+            "April",
+            "Mei",
+            "Juni",
+            "Juli",
+            "Agustus",
+            "September",
+            "Oktober",
+            "November",
+            "Desember",
+          ];
+          // date = date.substring(0, 10);
+          // date = date.split("-");
+          return (
+            date.getDate() +
+            " " +
+            bulan[date.getMonth()] +
+            " " +
+            parseInt(1900 + date.getYear())
+          );
+        },
+        openDialogBon(item){
+          console.log(item)
+          this.dataPayslip =item
+          this.dialogPay = true
+        },
+        dismisDialog() {
+          this.dialogPay = false;
+        },
+        saveLoan() {
+          const data = {
+            idPayslip : this.dataPayslip.id,
+            employee: { id: this.dataPayslip.employee.id },
+            nominal: this.loan.nominal,
+            note: this.loan.description,
+            type: "bayar",
+          };
+          this.updatePayslipWithBon(data)
+          console.log(data)
+          this.dismisDialog()
+          // this.inputLoan(data);
+        },
+    
+        print() {
+        //   console.log(this.selected);
+          this.selected.sort((a, b)=> a.employee.name.localeCompare(b.employee.name))
+          const doc = new jsPDF("l", "mm", "a5");
+          for (var i = 0; i < this.selected.length; i++) {
+            // console.log(this.selected[i])
+            // let pageWidth = doc.internal.pageSize.getWidth();
+            // console.log("pagewidth : " + pageWidth);
+            // doc.setFontSize(10);
+    
+            // doc.text("SLIP GAJI KARYAWAN", pageWidth / 2, 10, "center");
+            // doc.setFontSize(8);
+            // doc.text("Nama: " + this.selected[i].employee.name, 10, 20);
+            // doc.text("NIK:" + this.selected[i].employee.id, 10, 25);
+            // doc.text("Lama Kerja:" + this.selected[i].lama_kerja, 10, 30);
+            // doc.text(
+            //   "Total Hari Kerja:" + this.selected[i].total_hari_kerja,
+            //   10,
+            //   35
+            // );
+            // doc.text(
+            //   "Total Hari Masuk:" + this.selected[i].total_hari_masuk,
+            //   10,
+            //   40
+            // );
+            var tb_title = [
+              ["SLIP GAJI KARYAWAN"],
+              [
+                "Periode " +
+                  this.formatDateBulan(this.selected[i].periode_start) +
+                  " - " +
+                  this.formatDateBulan(this.selected[i].periode_end),
+              ],
+            ];
+    
+            var tb_karyawan = [
+              [
+                "Nama",
+                this.selected[i].employee.name,
+                "Departemen",
+                this.selected[i].employee.department.name,
+              ],
+              ["Nik", this.selected[i].employee.id, "Area Skill / Jabatan", this.selected[i].employee.area.name+' / '+this.selected[i].employee.position.name],
+              ["Lama Kerja", this.selected[i].lama_kerja + " tahun", "", ""],
+              [
+                "Total Hari Kerja",
+                this.selected[i].total_hari_kerja,
+              ],
+              [
+                "Total Hari Masuk",
+                this.selected[i].total_hari_masuk,
+                "Total Hari Tidak Masuk",
+                this.selected[i].total_hari_off,
+              ],
+            ];
+    
+            var tb_header = [["PENDAPATAN", "POTONGAN"]];
+    
+            var tb_content = [
+              [
+                "Gaji Pokok",
+                "Rp",
+                this.formatPrice(Math.round(this.selected[i].gaji_pokok)),
+                "Potongan Telat dan Ijin",
+                "Rp",
+                this.formatPrice(Math.round(this.selected[i].potongan_terlambat_ijin)),
+              ],
+              [
+                "Lama Kerja",
+                "Rp",
+                this.formatPrice(Math.round(this.selected[i].bonus_lama_kerja)),
+                "Potongan BPJS Tenaga Kerja",
+                "Rp",
+                this.formatPrice(Math.round(this.selected[i].potongan_bpjs_tk)),
+              ],
+              ["Upah " + this.selected[i].total_hari_masuk + " hari",
+                "Rp",
+                this.formatPrice(Math.round(this.selected[i].upah_n_hari)),
+                "Potongan BPJS Kesehatan",
+                "Rp",
+                this.formatPrice(Math.round(this.selected[i].potongan_bpjs_ks)),
+              ],
+              
+              [
+              "Extra Full",
+                "Rp",
+                this.formatPrice(Math.round(this.selected[i].extra_full)),
+                "Potongan Bon",
+                "Rp",
+                this.formatPrice(Math.round(this.selected[i].potongan_bon)),
+              ],
+              [
+                "","","",
+                "Potongan Lain-lain",
+                "Rp",
+                this.formatPrice(Math.round(this.selected[i].potongan_lain)),
+              ],
+             
+             
+              [
+                "Total Pendapatan",
+                "Rp",
+                this.formatPrice(Math.round(this.selected[i].total_pendapatan)),
+                "Total Potongan",
+                "Rp",
+                this.formatPrice(Math.round(this.selected[i].total_potongan)),
+              ],
+            ];
+    
+            var tb_footer = [
+              [
+                "PENDAPATAN GAJI = Rp " +
+                  formatPrice(Math.round(this.selected[i].pendapatan_gaji)),
+              ],
+              [angkaTerbilang(Math.round(this.selected[i].pendapatan_gaji)).toUpperCase()],
+              ["SISA PINJAMAN = Rp " + this.formatPrice(Math.round(this.selected[i].sisa_bon))],
+            ];
+    
+            doc.autoTable({
+              body: tb_title,
+              startY: 5,
+              theme: "plain",
+              styles: {
+                textColor: "#000000",
+                fontStyle: "bold",
+                fontSize: 10,
+                halign: "center",
+                cellPadding: 1,
+              },
+            });
+    
+            doc.autoTable({
+              body: tb_karyawan,
+              startY: 17,
+              theme: "plain",
+              styles: {
+                textColor: "#000000",
+                fontSize: 8,
+                cellPadding: 1,
+              },
+              columnStyles: {
+                0: {
+                  cellWidth: 45,
+                },
+                1: {
+                  cellWidth: 45,
+                },
+                2: {
+                  cellWidth: 45,
+                },
+                3: {
+                  cellWidth: "auto",
+                },
+              },
+            });
+    
+            doc.autoTable({
+              body: tb_header,
+              startY: 45,
+              theme: "plain",
+              styles: {
+                fontStyle: "bold",
+                textColor: "#000000",
+                fontSize: 9,
+                halign: "center",
+                cellPadding: 1,
+              },
+              columnStyles: {
+                0: {
+                  cellWidth: 90,
+                },
+                1: {
+                  cellWidth: "auto",
+                },
+              },
+    
+              willDrawCell: function (data) {
+                if (data.row.section === "body") {
+                  // draw bottom border
+                  doc.setLineWidth(0.5);
+                  doc.line(
+                    data.cell.x,
+                    data.cell.y + data.cell.height,
+                    data.cell.x + data.cell.width,
+                    data.cell.y + data.cell.height
+                  );
+                  // draw top border
+                  doc.line(
+                    data.cell.x + data.cell.width,
+                    data.cell.y,
+                    data.cell.x,
+                    data.cell.y
+                  );
+                  // draw left border
+                  // doc.line(
+                  //   data.cell.x,
+                  //   data.cell.y + data.cell.height,
+                  //   data.cell.x,
+                  //   data.cell.y
+                  // );
+                  // draw right border
+                  // doc.line(
+                  //   data.cell.x + data.cell.width,
+                  //   data.cell.y,
+                  //   data.cell.x + data.cell.width,
+                  //   data.cell.y + data.cell.height
+                  // );
+                }
+              },
+            });
+    
+            doc.autoTable({
+              body: tb_content,
+              startY: 52,
+              theme: "plain",
+              styles: {
+                textColor: "#000000",
+                fontSize: 8,
+                cellPadding: 1,
+              },
+              columnStyles: {
+                0: {
+                  cellWidth: 52,
+                },
+                1: {
+                  cellWidth: 8,
+                },
+                2: {
+                  cellWidth: 30,
+                  halign: "right",
+                },
+                3: {
+                  cellWidth: 52,
+                },
+                4: {
+                  cellWidth: 8,
+                },
+                5: {
+                  cellWidth: "auto",
+                  halign: "right",
+                },
+              },
+              didParseCell: function (HookData) {
+                if (HookData.row.index == 9) {
+                  HookData.cell.styles.fontStyle = "bold";
+                }
+              },
+            });
+    
+            doc.autoTable({
+              body: tb_footer,
+              startY: 105,
+              theme: "plain",
+              styles: {
+                textColor: "#000000",
+                fontStyle: "bold",
+                fontSize: 8,
+                halign: "center",
+              },
+              willDrawCell: function (data) {
+                if (data.row.section === "body") {
+                  if (data.row.index == 0) {
+                    // draw top border
+                    doc.setLineWidth(0.5);
+                    doc.line(
+                      data.cell.x + data.cell.width,
+                      data.cell.y,
+                      data.cell.x,
+                      data.cell.y
+                    );
+                  }
+    
+                  if (data.row.index == 2) {
+                    // draw bottom border
+                    doc.setLineWidth(0.5);
+                    doc.line(
+                      data.cell.x,
+                      data.cell.y + data.cell.height,
+                      data.cell.x + data.cell.width,
+                      data.cell.y + data.cell.height
+                    );
+                  }
+                  // draw left border
+                  // doc.line(
+                  //   data.cell.x,
+                  //   data.cell.y + data.cell.height,
+                  //   data.cell.x,
+                  //   data.cell.y
+                  // );
+                  // draw right border
+                  // doc.line(
+                  //   data.cell.x + data.cell.width,
+                  //   data.cell.y,
+                  //   data.cell.x + data.cell.width,
+                  //   data.cell.y + data.cell.height
+                  // );
+                }
+              },
+            });
+            if (i < this.selected.length - 1) {
+              doc.addPage();
+            }
+          }
+          var document_name = "Helper "+this.selected[0].periode_start+" - "+this.selected[0].periode_end+".pdf";
+          doc.save(document_name);
+        },
+      },
+      computed: {
+        ...mapGetters(["getStatusPayslip"]),
+        getAllData() {
+          return this.getStatusPayslip.data.sort((a, b) =>{
+            let fa = a.employee.name.toLowerCase();
+          let fb = b.employee.name.toLowerCase();
+          if (fa < fb) {
+            return -1;
+          }
+          if (fa > fb) {
+            return 1;
+          }
+          return 0;
+          });
+        },
+      },
+    };
+    </script>
+    
+    <style>
+  </style>
