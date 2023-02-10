@@ -21,9 +21,16 @@ const actions = {
     // console.log(res.data)
     commit('SET_DATA_EMPLOYEE', res.data);
   },
+  
+  async actionGetAllEmployeeByFilter({ commit }, params) {
+    const res = await httpCommons.get(apiName, { params: params });
+    console.log(res);
+    commit('SET_DATA_EMPLOYEE', res.data);
+  },
+
   async saveBulkEmployee({ commit, dispatch }, data) {
-    console.log('save');
-    console.log(data);
+    // console.log('save');
+    // console.log(data);
     try {
       const res = await httpCommons.post(apiName + '/bulk', data);
       const result = {
@@ -31,7 +38,7 @@ const actions = {
         actions: res.status,
         data: res.data,
       };
-      console.log(result);
+      // console.log(result);
       commit('SET_STATUS_RESPONSE', result);
       dispatch('actionGetAllEmployee');
     } catch (error) {
@@ -45,7 +52,7 @@ const actions = {
   async actionUpdateEmployee({ commit, dispatch }, data) {
     try {
       const res = await httpCommons.patch(apiName + `/${data.id}`, data);
-      console.log('res ' + res);
+      // console.log('res ' + res);
       const result = {
         status: res.statusText,
         actions: res.status,

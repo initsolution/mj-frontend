@@ -34,343 +34,421 @@
           <v-row>
             <v-col cols="12">
               <v-form ref="form" v-model="valid" lazy-validation>
-                <div
-                  class="font-sm grey--text grey lighten-4 px-3 py-1 mb-3 round"
-                >
-                  Data Pribadi
-                </div>
-
-                <v-row>
-                  <v-col class="py-0" cols="7">
-                    <v-text-field
-                      color="grey darken-2"
-                      v-model.trim="name"
-                      required
-                      label="Nama Lengkap*"
-                    ></v-text-field>
-                  </v-col>
-                  <v-col class="py-0" cols="5">
-                    <v-select
-                      :items="employeeType"
-                      v-model.trim="type"
-                      label="Status Karyawan"
-                    ></v-select>
-                  </v-col>
-                </v-row>
-
                 <v-row>
                   <v-col class="py-0" cols="12" sm="12" md="12">
-                    <v-text-field
-                      color="grey darken-2"
-                      v-model.trim="id"
-                      label="NIK*"
-                      :counter="20"
-                      required
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-
-                <v-row>
-                  <v-col class="py-0" cols="12" sm="12" md="6">
-                    <v-text-field
-                      color="grey darken-2"
-                      v-model.trim="bpjs_id"
-                      label="ID BPJS*"
-                      :counter="20"
-                      required
-                    ></v-text-field>
-                  </v-col>
-                  <v-col class="py-0" cols="12" sm="12" md="6">
-                    <v-text-field
-                      color="grey darken-2"
-                      v-model.trim="npwp_id"
-                      label="ID NPWP*"
-                      :counter="20"
-                      required
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-
-                <v-row>
-                  <v-col class="py-0" cols="12" sm="12" md="12">
-                    <v-text-field
-                      color="grey darken-2"
-                      v-model.trim="address"
-                      label="Alamat"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-
-                <v-row>
-                  <v-col class="py-0" cols="12" sm="12" md="12">
-                    <v-menu
-                      v-model="menu3"
-                      :close-on-content-click="false"
-                      :nudge-right="40"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="290px"
+                    <div
+                      class="
+                        font-sm
+                        grey--text grey
+                        lighten-4
+                        px-3
+                        py-1
+                        mb-3
+                        mt-6
+                        round
+                      "
                     >
-                      <template v-slot:activator="{ on }">
+                      Data Pribadi
+                    </div>
+
+                    <v-row>
+                      <v-col class="py-0" cols="7">
                         <v-text-field
                           color="grey darken-2"
-                          v-model="date_of_birth"
-                          label="Tanggal lahir"
-                          readonly
-                          v-on="on"
-                          prepend-inner-icon="mdi-calendar-today"
+                          v-model.trim="name"
+                          required
+                          label="Nama Lengkap*"
                         ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="date_of_birth"
-                        :max="dateNow"
-                        @input="menu3 = false"
-                      ></v-date-picker>
-                    </v-menu>
-                  </v-col>
-                </v-row>
-
-                <v-row>
-                  <v-col class="py-0" cols="12" sm="12" md="12">
-                    <v-text-field
-                      color="grey darken-2"
-                      v-model.trim="phone_no"
-                      label="Nomor Telepon"
-                    ></v-text-field>
-                  </v-col>
-                </v-row>
-
-                <div
-                  class="font-sm grey--text grey lighten-4 px-3 py-1 mb-3 round"
-                >
-                  Data Karyawan
-                </div>
-                <v-row>
-                  <v-col class="py-0" cols="12" sm="6" md="6">
-                    <v-select
-                      v-model.trim="department_id"
-                      :items="listDepartment"
-                      item-text="name"
-                      item-value="id"
-                      v-on:change="getAllAreaByDepartmentId"
-                      label="Departemen"
-                    ></v-select>
-                  </v-col>
-                  <v-col class="py-0" cols="12" sm="6" md="6">
-                    <v-select
-                      v-model.trim="area_id"
-                      :items="listArea"
-                      item-text="name"
-                      item-value="id"
-                      v-on:change="getAllPositionByAreaId"
-                      label="Bagian"
-                    ></v-select>
-                  </v-col>
-                </v-row>
-
-                <v-row>
-                  <v-col class="py-0" cols="12" sm="6" md="6">
-                    <v-select
-                      v-model.trim="position_id"
-                      :items="listPosition"
-                      item-text="name"
-                      item-value="id"
-                      label="Jabatan"
-                    ></v-select>
-                  </v-col>
-                  <v-col class="py-0" cols="12" sm="6" md="6">
-                    <v-select
-                      v-model.trim="shift_id"
-                      :items="listShift"
-                      item-text="name"
-                      item-value="id"
-                      label="Shift"
-                    ></v-select>
-                  </v-col>
-                </v-row>
-                <v-row>
-                  <v-col class="py-0" cols="12" sm="6" md="6">
-                    <v-menu
-                      v-model="menu2"
-                      :close-on-content-click="false"
-                      :nudge-right="40"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-text-field
-                          color="grey darken-2"
-                          v-model="active_date"
-                          label="Tanggal Mulai Kerja"
-                          readonly
-                          v-on="on"
-                          prepend-inner-icon="mdi-calendar-today"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="active_date"
-                        :max="dateNow"
-                        @input="menu2 = false"
-                      ></v-date-picker>
-                    </v-menu>
-                  </v-col>
-                  <v-col class="py-0" cols="12" sm="6" md="6">
-                    <v-row align="center">
-                      <v-col class="py-0" cols="12" sm="6" md="6">
-                        <v-switch
-                          color="primary"
-                          v-model="active"
-                          :label="`${active ? 'Aktif' : 'Tidak aktif'}`"
-                        ></v-switch>
                       </v-col>
-                      <v-col class="py-0" cols="12" sm="6" md="6">
-                        <div class="subtitle">Status keaktifan karyawan</div>
+                      <v-col class="py-0" cols="5">
+                        <v-select
+                          :items="employeeType"
+                          v-model.trim="type"
+                          label="Status Karyawan"
+                        ></v-select>
+                      </v-col>
+                    </v-row>
+
+                    <v-row>
+                      <v-col class="py-0" cols="12" sm="12" md="12">
+                        <v-text-field
+                          color="grey darken-2"
+                          v-model.trim="id"
+                          label="NIK*"
+                          :counter="20"
+                          required
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+
+                    <v-row>
+                      <v-col class="py-0" cols="12" sm="12" md="6">
+                        <v-text-field
+                          color="grey darken-2"
+                          v-model.trim="bpjs_id"
+                          label="ID BPJS*"
+                          :counter="20"
+                          required
+                        ></v-text-field>
+                      </v-col>
+                      <v-col class="py-0" cols="12" sm="12" md="6">
+                        <v-text-field
+                          color="grey darken-2"
+                          v-model.trim="npwp_id"
+                          label="ID NPWP*"
+                          :counter="20"
+                          required
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+
+                    <v-row>
+                      <v-col class="py-0" cols="12" sm="12" md="12">
+                        <v-text-field
+                          color="grey darken-2"
+                          v-model.trim="address"
+                          label="Alamat"
+                        ></v-text-field>
+                      </v-col>
+                    </v-row>
+
+                    <v-row>
+                      <v-col class="py-0" cols="12" sm="12" md="12">
+                        <v-menu
+                          v-model="menu3"
+                          :close-on-content-click="false"
+                          :nudge-right="40"
+                          transition="scale-transition"
+                          offset-y
+                          min-width="290px"
+                        >
+                          <template v-slot:activator="{ on }">
+                            <v-text-field
+                              color="grey darken-2"
+                              v-model="date_of_birth"
+                              label="Tanggal lahir"
+                              readonly
+                              v-on="on"
+                              prepend-inner-icon="mdi-calendar-today"
+                            ></v-text-field>
+                          </template>
+                          <v-date-picker
+                            v-model="date_of_birth"
+                            :max="dateNow"
+                            @input="menu3 = false"
+                          ></v-date-picker>
+                        </v-menu>
+                      </v-col>
+                    </v-row>
+
+                    <v-row>
+                      <v-col class="py-0" cols="12" sm="12" md="12">
+                        <v-text-field
+                          color="grey darken-2"
+                          v-model.trim="phone_no"
+                          label="Nomor Telepon"
+                        ></v-text-field>
                       </v-col>
                     </v-row>
                   </v-col>
                 </v-row>
-                <div
-                  class="font-sm grey--text grey lighten-4 px-3 py-1 mb-6 round"
-                >
-                  Data Komponen Pengajian
-                </div>
-                <div>
-                  <v-row>
-                    <v-col class="py-0 mb-5" cols="12" sm="12" md="12">
-                      <v-currency-field
-                        color="grey darken-2"
-                        :decimal-length="0"
-                        prefix="Rp"
-                        filled
-                        v-bind="currency_config"
-                        v-model.trim="gaji_pokok"
-                        class="currency-input pa-0 ma-0 font-md"
-                        label="Gaji Pokok"
-                      ></v-currency-field>
-                      <div
-                        style="color: red; font-size: 12px"
-                        v-if="gaji_pokok === ''"
-                      >
-                        Data insentif harus diisi
-                      </div>
-                      <v-currency-field
-                        color="grey darken-2"
-                        :decimal-length="0"
-                        prefix="Rp"
-                        filled
-                        v-bind="currency_config"
-                        v-model.trim="extra_full"
-                        class="currency-input pa-0 ma-0 font-md"
-                        label="Extra Full"
-                      ></v-currency-field>
-                      <div
-                        style="color: red; font-size: 12px"
-                        v-if="extra_full === ''"
-                      >
-                        Extra Full harus diisi
-                      </div>
-                      <v-currency-field
-                        color="grey darken-2"
-                        :decimal-length="0"
-                        prefix="Rp"
-                        filled
-                        v-bind="currency_config"
-                        v-model.trim="insentif_extra"
-                        class="currency-input pa-0 ma-0 font-md"
-                        label="Insentif Extra"
-                      ></v-currency-field>
-                      <div
-                        style="color: red; font-size: 12px"
-                        v-if="insentif_extra === ''"
-                      >
-                        Insentif Extra harus diisi
-                      </div>
-                      <v-currency-field
-                        color="grey darken-2"
-                        :decimal-length="0"
-                        prefix="Rp"
-                        filled
-                        v-bind="currency_config"
-                        v-model.trim="extra_tambahan_kerja"
-                        class="currency-input pa-0 ma-0 font-md"
-                        label="Extra Tambahan Kerja"
-                      ></v-currency-field>
-                      <div
-                        style="color: red; font-size: 12px"
-                        v-if="extra_tambahan_kerja === ''"
-                      >
-                        Extra Tambahan Kerja harus diisi
-                      </div>
 
-                      <v-currency-field
-                        color="grey darken-2"
-                        :decimal-length="0"
-                        prefix="Rp"
-                        filled
-                        v-bind="currency_config"
-                        v-model.trim="tunjangan_kehadiran"
-                        class="currency-input pa-0 ma-0 font-md"
-                        label="Tunjangan Kehadiran"
-                      ></v-currency-field>
-                      <div
-                        style="color: red; font-size: 12px"
-                        v-if="tunjangan_kehadiran === ''"
-                      >
-                        Tunjangan Kehadiran harus diisi
-                      </div>
+                <v-row>
+                  <v-col class="py-0" cols="12" sm="12" md="12">
+                    <div
+                      class="
+                        font-sm
+                        grey--text grey
+                        lighten-4
+                        px-3
+                        py-1
+                        mb-3
+                        mt-6
+                        round
+                      "
+                    >
+                      Data Karyawan
+                    </div>
+                    <v-row>
+                      <v-col class="py-0" cols="12" sm="6" md="6">
+                        <v-select
+                          v-model.trim="department_id"
+                          :items="listDepartment"
+                          item-text="name"
+                          item-value="id"
+                          v-on:change="getAllAreaByDepartmentId"
+                          label="Departemen"
+                        ></v-select>
+                      </v-col>
+                      <v-col class="py-0" cols="12" sm="6" md="6">
+                        <v-select
+                          v-model.trim="area_id"
+                          :items="listArea"
+                          item-text="name"
+                          item-value="id"
+                          v-on:change="getAllPositionByAreaId"
+                          label="Bagian"
+                        ></v-select>
+                      </v-col>
+                    </v-row>
 
-                      <v-currency-field
-                        color="grey darken-2"
-                        :decimal-length="0"
-                        prefix="Rp"
-                        filled
-                        v-bind="currency_config"
-                        v-model.trim="iuran_bpjs_tk"
-                        class="currency-input pa-0 ma-0 font-md"
-                        label="Iuran BPJS Ketenagakerjaan"
-                      ></v-currency-field>
-                      <div
-                        style="color: red; font-size: 12px"
-                        v-if="iuran_bpjs_tk === ''"
-                      >
-                        Iuran BPJS Ketenagakerjaan harus diisi
-                      </div>
-                      <v-currency-field
-                        color="grey darken-2"
-                        :decimal-length="0"
-                        prefix="Rp"
-                        filled
-                        v-bind="currency_config"
-                        v-model.trim="iuran_bpjs_ks"
-                        class="currency-input pa-0 ma-0 font-md"
-                        label="Iuran BPJS Kesehatan"
-                      ></v-currency-field>
-                      <div
-                        style="color: red; font-size: 12px"
-                        v-if="iuran_bpjs_ks === ''"
-                      >
-                        Iuran BPJS Kesehatan harus diisi
-                      </div>
-                      <v-currency-field
-                        color="grey darken-2"
-                        :decimal-length="0"
-                        prefix="Rp"
-                        filled
-                        v-bind="currency_config"
-                        v-model.trim="iuran_spsi"
-                        class="currency-input pa-0 ma-0 font-md"
-                        label="Iuran SPSI"
-                      ></v-currency-field>
-                      <div
-                        style="color: red; font-size: 12px"
-                        v-if="iuran_spsi === ''"
-                      >
-                        Iuran BPJS SPSI harus diisi
-                      </div>
-                    </v-col>
-                  </v-row>
-                </div>
+                    <v-row>
+                      <v-col class="py-0" cols="12" sm="6" md="6">
+                        <v-select
+                          v-model.trim="position_id"
+                          :items="listPosition"
+                          item-text="name"
+                          item-value="id"
+                          label="Jabatan"
+                        ></v-select>
+                      </v-col>
+                      <v-col class="py-0" cols="12" sm="6" md="6">
+                        <!-- <v-select
+                          v-model.trim="selectedShift"
+                          :items="listShift"
+                          item-text="name"
+                          item-value="id"
+                          label="Shift"
+                        ></v-select> -->
+                        <v-autocomplete
+                          v-model.trim="selectedShift"
+                          :items="listShift"
+                          color="white"
+                          item-text="name"
+                          label="Shift"
+                          return-object
+                        ></v-autocomplete>
+                      </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col class="py-0" cols="12" sm="6" md="6">
+                        <v-menu
+                          v-model="menu2"
+                          :close-on-content-click="false"
+                          :nudge-right="40"
+                          transition="scale-transition"
+                          offset-y
+                          min-width="290px"
+                        >
+                          <template v-slot:activator="{ on }">
+                            <v-text-field
+                              color="grey darken-2"
+                              v-model="active_date"
+                              label="Tanggal Mulai Kerja"
+                              readonly
+                              v-on="on"
+                              prepend-inner-icon="mdi-calendar-today"
+                            ></v-text-field>
+                          </template>
+                          <v-date-picker
+                            v-model="active_date"
+                            :max="dateNow"
+                            @input="menu2 = false"
+                          ></v-date-picker>
+                        </v-menu>
+                      </v-col>
+                      <v-col class="py-0" cols="12" sm="6" md="6">
+                        <v-row align="center">
+                          <v-col class="py-0" cols="12" sm="6" md="6">
+                            <v-switch
+                              color="primary"
+                              v-model="active"
+                              :label="`${active ? 'Aktif' : 'Tidak aktif'}`"
+                            ></v-switch>
+                          </v-col>
+                          <v-col class="py-0" cols="12" sm="6" md="6">
+                            <div class="subtitle">
+                              Status keaktifan karyawan
+                            </div>
+                          </v-col>
+                        </v-row>
+                      </v-col>
+                    </v-row>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col class="py-0 mb-5 mt-6" cols="6" sm="6" md="6">
+                    <div
+                      class="
+                        font-sm
+                        grey--text grey
+                        lighten-4
+                        px-3
+                        py-1
+                        mb-6
+                        round
+                      "
+                    >
+                      Data Komponen Pengajian
+                    </div>
+                    <v-currency-field
+                      color="grey darken-2"
+                      :decimal-length="0"
+                      prefix="Rp"
+                      filled
+                      v-bind="currency_config"
+                      v-model.trim="gaji_pokok"
+                      class="currency-input pa-0 ma-0 font-md"
+                      label="Gaji Pokok"
+                    ></v-currency-field>
+                    <div
+                      style="color: red; font-size: 12px"
+                      v-if="gaji_pokok === ''"
+                    >
+                      Data insentif harus diisi
+                    </div>
+                    <v-currency-field
+                      color="grey darken-2"
+                      :decimal-length="0"
+                      prefix="Rp"
+                      filled
+                      v-bind="currency_config"
+                      v-model.trim="extra_full"
+                      class="currency-input pa-0 ma-0 font-md"
+                      label="Extra Full"
+                    ></v-currency-field>
+                    <div
+                      style="color: red; font-size: 12px"
+                      v-if="extra_full === ''"
+                    >
+                      Extra Full harus diisi
+                    </div>
+                    <v-currency-field
+                      color="grey darken-2"
+                      :decimal-length="0"
+                      prefix="Rp"
+                      filled
+                      v-bind="currency_config"
+                      v-model.trim="insentif_extra"
+                      class="currency-input pa-0 ma-0 font-md"
+                      label="Insentif Extra"
+                    ></v-currency-field>
+                    <div
+                      style="color: red; font-size: 12px"
+                      v-if="insentif_extra === ''"
+                    >
+                      Insentif Extra harus diisi
+                    </div>
+                    <v-currency-field
+                      color="grey darken-2"
+                      :decimal-length="0"
+                      prefix="Rp"
+                      filled
+                      v-bind="currency_config"
+                      v-model.trim="extra_tambahan_kerja"
+                      class="currency-input pa-0 ma-0 font-md"
+                      label="Extra Tambahan Kerja"
+                    ></v-currency-field>
+                    <div
+                      style="color: red; font-size: 12px"
+                      v-if="extra_tambahan_kerja === ''"
+                    >
+                      Extra Tambahan Kerja harus diisi
+                    </div>
+
+                    <v-currency-field
+                      color="grey darken-2"
+                      :decimal-length="0"
+                      prefix="Rp"
+                      filled
+                      v-bind="currency_config"
+                      v-model.trim="tunjangan_kehadiran"
+                      class="currency-input pa-0 ma-0 font-md"
+                      label="Tunjangan Kehadiran"
+                    ></v-currency-field>
+                    <div
+                      style="color: red; font-size: 12px"
+                      v-if="tunjangan_kehadiran === ''"
+                    >
+                      Tunjangan Kehadiran harus diisi
+                    </div>
+
+                    <v-currency-field
+                      color="grey darken-2"
+                      :decimal-length="0"
+                      prefix="Rp"
+                      filled
+                      v-bind="currency_config"
+                      v-model.trim="iuran_bpjs_tk"
+                      class="currency-input pa-0 ma-0 font-md"
+                      label="Iuran BPJS Ketenagakerjaan"
+                    ></v-currency-field>
+                    <div
+                      style="color: red; font-size: 12px"
+                      v-if="iuran_bpjs_tk === ''"
+                    >
+                      Iuran BPJS Ketenagakerjaan harus diisi
+                    </div>
+                    <v-currency-field
+                      color="grey darken-2"
+                      :decimal-length="0"
+                      prefix="Rp"
+                      filled
+                      v-bind="currency_config"
+                      v-model.trim="iuran_bpjs_ks"
+                      class="currency-input pa-0 ma-0 font-md"
+                      label="Iuran BPJS Kesehatan"
+                    ></v-currency-field>
+                    <div
+                      style="color: red; font-size: 12px"
+                      v-if="iuran_bpjs_ks === ''"
+                    >
+                      Iuran BPJS Kesehatan harus diisi
+                    </div>
+                    <v-currency-field
+                      color="grey darken-2"
+                      :decimal-length="0"
+                      prefix="Rp"
+                      filled
+                      v-bind="currency_config"
+                      v-model.trim="iuran_spsi"
+                      class="currency-input pa-0 ma-0 font-md"
+                      label="Iuran SPSI"
+                    ></v-currency-field>
+                    <div
+                      style="color: red; font-size: 12px"
+                      v-if="iuran_spsi === ''"
+                    >
+                      Iuran BPJS SPSI harus diisi
+                    </div>
+                  </v-col>
+                  <v-col class="py-0 mb-5 mt-6" cols="6" sm="6" md="6">
+                    <div
+                      class="
+                        font-sm
+                        grey--text grey
+                        lighten-4
+                        px-3
+                        py-1
+                        mb-6
+                        round
+                      "
+                    >
+                      Detail Shift
+                    </div>
+                    <v-data-table
+                      :headers="this.headers"
+                      :items="listDetailShift"
+                      class="elevation-1"
+                    >
+                      <template v-slot:[`item.days`]="{ item }"
+                        >{{ convertToDay(item.days - 1) }}
+                      </template>
+                      <template v-slot:[`item.start`]="{ item }">
+                        {{ convertTime(item.start) }}
+                      </template>
+                      <template v-slot:[`item.start_break`]="{ item }">
+                        {{ convertTime(item.start_break) }}
+                      </template>
+                      <template v-slot:[`item.end`]="{ item }">
+                        {{ convertTime(item.end) }}
+                      </template>
+                      <template v-slot:[`item.end_break`]="{ item }">
+                        {{ convertTime(item.end_break) }}
+                      </template>
+                    </v-data-table>
+                  </v-col>
+                </v-row>
               </v-form>
             </v-col>
           </v-row>
@@ -403,6 +481,7 @@
 </template>
 <script>
 import employee from '@/store/modules/employee';
+import { formatDate } from '@/utils/utils';
 import { mapActions, mapGetters } from 'vuex';
 export default {
   name: 'FormKaryawan',
@@ -437,6 +516,7 @@ export default {
       area_id: null,
       position_id: null,
       shift_id: null,
+      selectedShift: null,
       // ------------------
 
       name_: null,
@@ -445,6 +525,7 @@ export default {
       listShift: [],
       listArea: [],
       listPosition: [],
+      listDetailShift: [],
 
       currency_config: {
         decimal: ',',
@@ -456,6 +537,24 @@ export default {
         min: Number.MIN_SAFE_INTEGER,
         max: Number.MAX_SAFE_INTEGER,
       },
+
+      selected_shift: null,
+      headers: [
+        { text: 'Hari', value: 'days' },
+        { text: 'Jam Masuk', value: 'start' },
+        { text: 'Mulai Istirahat', value: 'start_break' },
+        { text: 'Selesai Istirahat', value: 'end_break' },
+        { text: 'Jam Pulang', value: 'end' },
+      ],
+      label_day: [
+        'Minggu',
+        'Senin',
+        'Selasa',
+        'Rabu',
+        'Kamis',
+        'Jumat',
+        'Sabtu',
+      ],
     };
   },
   props: {
@@ -470,11 +569,13 @@ export default {
     },
     dataEmployee: {},
   },
+
   created() {
     console.log('created');
     this.actionGetAllDepartment();
     this.actionGetAllShift();
   },
+
   methods: {
     ...mapActions([
       'actionSaveEmployee',
@@ -483,7 +584,9 @@ export default {
       'actionGetAllAreaByDepartmentId',
       'actionGetAllPositionByAreaId',
       'actionGetAllShift',
+      'actionGetAllDetailShiftByShiftId',
     ]),
+
     save() {
       const newEmployee = {
         id: this.id,
@@ -491,7 +594,7 @@ export default {
         phone_no: this.phone_no,
         address: this.address,
         type: this.type,
-        active: this.active,
+        active: this.active ? 1 : 0,
         active_date: this.active_date,
         bpjs_id: this.bpjs_id,
         npwp_id: this.npwp_id,
@@ -506,7 +609,7 @@ export default {
           id: this.position_id,
         },
         shift: {
-          id: this.shift_id,
+          id: this.selectedShift.id,
         },
         extra_full: this.extra_full,
         iuran_bpjs_tk: this.iuran_bpjs_tk,
@@ -532,11 +635,20 @@ export default {
       this.closeForm();
     },
 
+    convertTime(date, format) {
+      return date.substring(0, 5);
+    },
+
+    convertToDay(day) {
+      return this.label_day[day];
+    },
+
     closeForm() {
       this.department_id = null;
       this.area_id = null;
       this.position_id = null;
-      this.shift_id = null;
+      this.selectedShift = null;
+      this.listDetailShift = [];
       this.$emit('update:dataEmployee', {});
       this.$emit('update:dialogForm', false);
     },
@@ -560,6 +672,15 @@ export default {
         this.actionGetAllPositionByAreaId(param);
       }
     },
+
+    getAllDetailShiftByShiftId() {
+      if (this.selectedShift != null) {
+        const param = new URLSearchParams();
+        param.append('join', 'shift');
+        param.append('filter', 'shift.id||$eq||' + this.selectedShift.id);
+        this.actionGetAllDetailShiftByShiftId(param);
+      }
+    },
   },
 
   watch: {
@@ -572,7 +693,7 @@ export default {
         this.phone_no = this.dataEmployee.phone_no;
         this.address = this.dataEmployee.address;
         this.type = this.dataEmployee.type;
-        this.active = this.dataEmployee.active;
+        this.active = this.dataEmployee.active == 1 ? true : false;
         this.active_date = this.dataEmployee.active_date;
         this.bpjs_id = this.dataEmployee.bpjs_id;
         this.npwp_id = this.dataEmployee.npwp_id;
@@ -600,7 +721,7 @@ export default {
         if (this.dataEmployee.position != null)
           this.position_id = this.dataEmployee.position.id;
         if (this.dataEmployee.shift != null)
-          this.shift_id = this.dataEmployee.shift.id;
+          this.selectedShift = this.dataEmployee.shift;
       },
     },
     getDataAllDepartement: {
@@ -622,6 +743,22 @@ export default {
             name: this.getAllDataShift[i].name,
             id: this.getAllDataShift[i].id,
           });
+        }
+      },
+    },
+
+    selectedShift: {
+      handler() {
+        if (this.selectedShift != null) this.getAllDetailShiftByShiftId();
+      },
+    },
+
+    getAllDetailShift: {
+      handler() {
+        this.listDetailShift = [];
+        console.log(this.getAllDetailShift);
+        for (var i = 0; i < this.getAllDetailShift.length; i++) {
+          this.listDetailShift.push(this.getAllDetailShift[i]);
         }
       },
     },
@@ -661,6 +798,7 @@ export default {
       'getDataAllArea',
       'getDataAllPosition',
       'getAllDataShift',
+      'getAllDetailShift',
     ]),
   },
 };

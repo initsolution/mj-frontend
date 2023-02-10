@@ -58,6 +58,111 @@
             </v-col>
           </v-row>
           <v-row>
+            <v-btn
+              :outlined="!filter"
+              class="elevation-0"
+              :color="filter ? 'primary' : 'grey darken-1'"
+              @click="showFilter"
+            >
+              <v-icon>mdi-filter</v-icon>
+              <span>Filter</span>
+            </v-btn>
+          </v-row>
+          <v-row>
+            <v-col cols="4" class="py-0">
+              <!-- <div class="d-flex flex-row align-center mb-1">
+                  <div class="font-md mb-1">Filter tanggal Mulai</div>
+                </div>
+                <div>
+                  <v-menu
+                    v-model="menuStartDate"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        color="grey darken-2"
+                        label="Tanggal mulai"
+                        v-model="startDate"
+                        readonly
+                        dense
+                        class="white elevation-0"
+                        hide-details
+                        outlined
+                        single-line
+                        v-on="on"
+                        prepend-inner-icon="mdi-calendar"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="startDate"
+                      :max="endDate"
+                      @input="menuStartDate = false"
+                    ></v-date-picker>
+                  </v-menu>
+                </div> -->
+            </v-col>
+            <v-col cols="4" class="py-0">
+              <!-- <div class="d-flex flex-row align-center mb-1">
+                  <div class="font-md mb-1">Filter tanggal Selesai</div>
+                </div>
+                <div>
+                  <v-menu
+                    v-model="menuEndDate"
+                    :close-on-content-click="false"
+                    :nudge-right="40"
+                    transition="scale-transition"
+                    offset-y
+                    min-width="290px"
+                  >
+                    <template v-slot:activator="{ on }">
+                      <v-text-field
+                        color="grey darken-2"
+                        label="Tanggal selesai"
+                        readonly
+                        v-model="endDate"
+                        dense
+                        class="white elevation-0"
+                        hide-details
+                        outlined
+                        single-line
+                        v-on="on"
+                        prepend-inner-icon="mdi-calendar"
+                      ></v-text-field>
+                    </template>
+                    <v-date-picker
+                      v-model="endDate"
+                      :min="startDate"
+                      @input="menuEndDate = false"
+                    ></v-date-picker>
+                  </v-menu>
+                </div> -->
+            </v-col>
+            <v-col cols="4" class="py-0">
+              <div class="d-flex flex-row align-center mb-1">
+                <div class="font-md mb-1">Pencarian Nama Karyawan</div>
+              </div>
+              <v-text-field
+                single-line
+                v-model="keyword"
+                class="white elevation-0"
+                dense
+                hide-details
+                outlined
+                prepend-inner-icon="mdi-select-search"
+                color="grey darken-2"
+                @keyup.enter="searchKeyword"
+                label="Tekan enter untuk mencari"
+              ></v-text-field>
+              <!-- <span class="red--text font-md mt-2"
+                  >Cek kembali kata kunci anda</span
+                > -->
+            </v-col>
+          </v-row>
+          <v-row>
             <v-col md="12">
               <div class="py2" v-if="selected_items.length > 0">
                 <div class="d-flex flex-row align-center justify-space-between">
@@ -101,21 +206,22 @@
                   <a @click="editFunction(item)">{{ item.id }}</a>
                 </template>
                 <template v-slot:[`item.date_of_birth`]="{ item }">
-                  {{ convertDate(item.date_of_birth) }}
+                  {{ convertDate(item.date_of_birth, 'long') }}
                 </template>
                 <template v-slot:[`item.active_date`]="{ item }">
-                  {{ convertYear(item.active_date) }}
+                  {{ convertDate(item.active_date, 'short-date') }}
                 </template>
                 <template v-slot:[`item.lama_kerja`]="{ item }">
-                  {{ hitungLamaKerja(convertYear(item.active_date)) }}
+                  {{ hitungLamaKerja(item.active_date) }}
                 </template>
                 <template v-slot:[`item.active`]="{ item }">
-                  <v-switch
+                  {{ item.active ? 'Aktif' : 'Tidak aktif' }}
+                  <!-- <v-switch
                     color="primary"
                     inset
                     v-model="item.active"
                     :label="`${item.active ? 'Aktif' : 'Tidak aktif'}`"
-                  ></v-switch>
+                  ></v-switch> -->
                 </template>
               </v-data-table>
             </v-col>
@@ -127,7 +233,7 @@
 </template>
 <script>
 import XLSX from 'xlsx';
-import { formatDate } from '@/utils/utils';
+import { formatDate, getDiffDates } from '@/utils/utils';
 import { mapActions, mapGetters } from 'vuex';
 import HapusKaryawan from '@/views/components/HapusKaryawan.vue';
 import FormKaryawan from '@/views/components/FormKaryawan.vue';
@@ -136,13 +242,14 @@ export default {
   name: 'Karyawan',
   data() {
     return {
+      filter: false,
       selectXlsx: null,
       selected_items: [],
       headers: [
         {
           text: 'NIK',
           align: 'right',
-          sortable: false,
+          // sortable: false,
           value: 'id',
         },
         { text: 'Nama', value: 'name' },
@@ -161,6 +268,7 @@ export default {
       employee: {},
       dialogHapusKaryawan: false,
       dialogForm: false,
+      keyword: null,
     };
   },
   components: { HapusKaryawan, FormKaryawan },
@@ -187,16 +295,23 @@ export default {
     // });
   },
   methods: {
-    ...mapActions(['actionGetAllEmployee', 'saveBulkEmployee']),
-    hitungLamaKerja(tahunKerja) {
-      return new Date().getFullYear() - parseInt(tahunKerja);
-    },
-    convertDate(date) {
-      return formatDate(date, 'long');
+    ...mapActions([
+      'actionGetAllEmployee',
+      'saveBulkEmployee',
+      'actionGetAllEmployeeByFilter',
+    ]),
+
+    showFilter() {
+      this.filter = !this.filter;
     },
 
-    convertYear(date) {
-      return formatDate(date, 'year');
+    hitungLamaKerja(tahunKerja) {
+      // console.log(getDiffDates(tahunKerja));
+      return getDiffDates(tahunKerja);
+    },
+
+    convertDate(date, format) {
+      return formatDate(date, format);
     },
 
     convertTime(time) {
@@ -305,8 +420,23 @@ export default {
         };
       }
     },
+
     deleteEmployee() {
       this.dialogHapusKaryawan = true;
+    },
+
+    getDataAllEmployeeByFilter() {
+      const param = new URLSearchParams();
+      if (this.keyword != null) {
+        param.append('filter', 'name||$cont||' + this.keyword);
+      }
+      this.actionGetAllEmployeeByFilter(param);
+    },
+
+    searchKeyword() {
+      if (this.keyword != null && this.keyword.length > 0)
+        this.getDataAllEmployeeByFilter();
+      else this.actionGetAllEmployee();
     },
   },
   computed: {
@@ -315,7 +445,7 @@ export default {
   watch: {
     getDataEmployees: {
       handler() {
-        console.log(this.getDataEmployees);
+        // console.log(this.getDataEmployees);
         this.selected_items = [];
       },
     },

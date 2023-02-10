@@ -1,7 +1,6 @@
+import httpCommons from '../../http-commons';
 
-import httpCommons from '../../http-commons'
-
-const apiName = 'shift'
+const apiName = 'shift';
 
 const state = {
   data: [],
@@ -72,7 +71,7 @@ const mutations = {
   SET_UPDATE_SHIFT(state, status) {
     state.status = status
   },
-}
+};
 
 const getters = {
   getAllDataShift: state => state.data,
