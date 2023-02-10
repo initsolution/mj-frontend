@@ -142,9 +142,10 @@ export default {
   directives: {
     mask,
   },
-  created() {
-    this.actionGetAllEmployee();
-  },
+  // created() {
+  //   console.log("create")
+  //   this.actionGetAllEmployeeByFilter();
+  // },
 
   data() {
     return {
@@ -171,7 +172,7 @@ export default {
     ...mapActions([
       "saveBulkAttendance",
       "saveBulkAttendanceHelper",
-      "actionGetAllEmployee",
+      "actionGetAllEmployeeByFilter",
     ]),
     addOneAttendance() {
       var bulk = [];
@@ -366,6 +367,21 @@ export default {
         }
         return 0;
       });
+    },
+  },
+
+  watch: {
+    dialogTambahKehadiran: {
+      handler() {
+        console.log(this.dialogTambahKehadiran);
+        if (this.dialogTambahKehadiran == true) {
+          const params = new URLSearchParams();
+          params.append("filter", "department.id||$eq||" + this.departementId);
+          params.append("filter", "active||$eq||1");
+          params.append("join", "department");
+          this.actionGetAllEmployeeByFilter(params);
+        }
+      },
     },
   },
 };
