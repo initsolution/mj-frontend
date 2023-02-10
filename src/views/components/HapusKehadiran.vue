@@ -12,7 +12,7 @@
               <v-col cols="12">
                 <span
                   >Apakah anda yakin ingin menghapus data kehadiran yang sudah
-                  dipilih ({{this.deleteItems.length}} data) ?</span
+                  dipilih ({{ this.deleteItems.length }} data) ?</span
                 >
               </v-col>
             </v-row>
@@ -36,19 +36,24 @@ export default {
       default: false,
     },
     deleteItems: [],
-    getDataDepartemen: {},
+    departementId: null,
   },
   data() {
     return {};
   },
   methods: {
-    ...mapActions(["deleteAttendanceById"]),
+    ...mapActions(["deleteAttendanceById", "deleteAttendanceByIdHelper"]),
     deleteAttendance() {
       console.log(this.deleteItems.length);
       if (this.deleteItems.length > 0) {
         for (var i = 0; i < this.deleteItems.length; i++) {
           var id = this.deleteItems[i].id;
-          this.deleteAttendanceById(id);
+          if (this.departementId == 1) {
+            this.deleteAttendanceById(id);
+          } else if(this.departementId == 2) {
+          } else if(this.departementId == 3) {
+            this.deleteAttendanceByIdHelper(id);
+          }
         }
       }
       this.close();

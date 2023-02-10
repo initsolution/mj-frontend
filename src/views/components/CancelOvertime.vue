@@ -71,7 +71,7 @@ export default {
       } else if (this.type_overtime == "late") {
         this.overtime_value = this.dataAttendance.overtime;
       }
-      console.log(this.overtime_value);
+      // console.log(this.overtime_value);
     },
 
     close() {

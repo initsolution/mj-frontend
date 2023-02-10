@@ -41,6 +41,11 @@ export default new Router({
           component: () => import("./views/pages/KehadiranMingguan.vue"),
         },
         {
+          path: "kehadiran_helper",
+          name: "Kehadiran Helper",
+          component: () => import("./views/pages/KehadiranHelper.vue"),
+        },
+        {
           path: "absensi",
           name: "Absensi",
           component: () => import("./views/pages/Absensi.vue"),

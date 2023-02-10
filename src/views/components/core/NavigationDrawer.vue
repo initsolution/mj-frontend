@@ -136,6 +136,11 @@ export default {
             icon: 'mdi-calendar-check',
             to: '/kehadiran_mingguan',
           },
+          {
+            title: 'Helper',
+            icon: 'mdi-calendar-check',
+            to: '/kehadiran_helper',
+          },
         ],
       },
       {

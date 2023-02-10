@@ -110,3 +110,19 @@
     - Tambah, Hapus, dan Edit kehadiran by filter
 - Modul Pinjaman (feedback MJ)
     - Mengganti get data employee    
+
+# 0.0.1 (Update 10/02/2023)
+- Modul Attendance Helper 
+    - Tambah / Hapus berdasarkan tipe attendance
+    - Form Ijin
+    - Form Ganti Shift
+- Modul Attendance Mingguan 
+    - Tambah / Hapus berdasarkan tipe attendance
+    - Tambah, Hapus, dan Edit kehadiran by filter
+- Modul Attendance Bulanan 
+    - Tambah / Hapus berdasarkan tipe attendance
+    - Tambah, Hapus, dan Edit kehadiran by filter 
+- Modul Shift
+    - solving bug switchable selalu true
+- Etc 
+    - remove debug print in each modul

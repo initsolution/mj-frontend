@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import Attendance from "./modules/attendance";
 import AttendanceBulanan from "./modules/attendance-bulanan";
+import AttendanceHelper from "./modules/attendance-helper";
 import Payslip from './modules/payslip'
 import Employee from './modules/employee'
 import Department from './modules/department'
@@ -21,6 +22,7 @@ export default new Vuex.Store({
     // User
     Attendance,
     AttendanceBulanan,
+    AttendanceHelper,
     Payslip,
     Employee,
     Department,

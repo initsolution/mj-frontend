@@ -223,7 +223,7 @@ export default {
       "actionUpdateDetailShift",
     ]),
     add_edit_Shift() {
-      console.log("selected_schedule : " + this.selected_schedule);
+      // console.log("selected_schedule : " + this.selected_schedule);
       var is_flexible = -1;
 
       if (this.shift_name == null) {
@@ -244,7 +244,7 @@ export default {
         }
       }
 
-      console.log("is flexible : " + is_flexible);
+      // console.log("is flexible : " + is_flexible);
       this.switchable = this.switchable == true ? 1 : 0;
 
       for (var i = 0; i < this.list_detailshift.length; i++) {
@@ -258,13 +258,13 @@ export default {
           this.list_detailshift[i].end_break == null ||
           this.list_detailshift[i].end == null
         ) {
-          console.log("babi kecil");
+          // console.log("babi kecil");
           this.notif_text =
             "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
           this.snackbar = true;
           return;
         } else {
-          console.log("babi gede");
+          // console.log("babi gede");
           if (
             this.list_detailshift[i].start.length != 5 ||
             this.list_detailshift[i].start_break.length != 5 ||
@@ -314,32 +314,32 @@ export default {
           60 * (selesaiIstirahat[0] - mulaiIstirahat[0]) +
           (selesaiIstirahat[1] - mulaiIstirahat[1]);
 
-        console.log("hasil : " + hasil);
+        // console.log("hasil : " + hasil);
 
         this.list_detailshift[i].break_duration_h = hasil / 60;
         this.list_detailshift[i].break_duration_m = hasil;
       }
 
       if (this.type == "tambah") {
-        console.log("tambah");
+        // console.log("tambah");
         const dataShift = {
           name: this.shift_name,
           switchable: this.switchable,
           shiftDetail: this.list_detailshift,
         };
-        console.log(dataShift);
+        // console.log(dataShift);
         this.actionSaveShift(dataShift);
       } else if (this.type == "edit") {
-        console.log("edit");
+        // console.log("edit");
         const dataShift = {
           id: this.shift_id,
           name: this.shift_name,
           switchable: this.switchable,
           shiftDetail: this.list_detailshift,
         };
-        console.log(dataShift);
+        // console.log(dataShift);
         this.actionUpdateShift(dataShift);
-        console.log(dataShift);
+        // console.log(dataShift);
         for (var i = 0; i < dataShift.shiftDetail.length; i++) {
           var shiftDetail = dataShift.shiftDetail[i];
           this.actionUpdateDetailShift(shiftDetail);
@@ -382,8 +382,8 @@ export default {
         if(this.getDataShift == null) {
           return;
         }
-        console.log("fs : " + this.type);
-        console.log(this.getDataShift);
+        // console.log("fs : " + this.type);
+        // console.log(this.getDataShift);
         //tambah shift
         if (this.type == "tambah") {
           for (var i = 0; i < this.label_day.length; i++) {
@@ -405,15 +405,15 @@ export default {
         } else if (this.type == "edit") {
           this.shift_id = this.getDataShift.id;
           this.shift_name = this.getDataShift.name;
-          this.switchable = 1;
+          this.switchable = this.getDataShift.switchable;
           this.list_detailshift = this.getDataShift.detailShift;
           var is_flexible = this.getDataShift.detailShift[0].is_flexible;
           this.selected_schedule = this.schedules[is_flexible];
-          console.log(this.list_detailshift);
+          // console.log(this.list_detailshift);
           this.list_detailshift = this.list_detailshift
             .map((item) => item)
             .sort((a, b) => a.days - b.days);
-          console.log(this.list_detailshift);
+          // console.log(this.list_detailshift);
         }
       },
     },
