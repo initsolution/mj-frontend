@@ -41,6 +41,11 @@ export default new Router({
           component: () => import("./views/pages/KehadiranMingguan.vue"),
         },
         {
+          path: "kehadiran_helper",
+          name: "Kehadiran Helper",
+          component: () => import("./views/pages/KehadiranHelper.vue"),
+        },
+        {
           path: "absensi",
           name: "Absensi",
           component: () => import("./views/pages/Absensi.vue"),
@@ -64,6 +69,11 @@ export default new Router({
           path: "viewPayslip",
           name: "ViewPayslip",
           component: () => import("./views/pages/ViewPayslip.vue"),
+        },
+        {
+          path: "viewPayslipHelper",
+          name: "ViewPayslipHelper",
+          component: () => import("./views/pages/ViewPayslipHelper.vue"),
         },
         {
           path: "pengeluaran",

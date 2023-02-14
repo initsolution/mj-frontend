@@ -136,14 +136,16 @@ export default {
     dialogTambahKehadiran: {
       default: false,
     },
+    departementId: null,
   },
 
   directives: {
     mask,
   },
-  created() {
-    this.actionGetAllEmployee();
-  },
+  // created() {
+  //   console.log("create")
+  //   this.actionGetAllEmployeeByFilter();
+  // },
 
   data() {
     return {
@@ -167,7 +169,11 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["saveBulkAttendance", "actionGetAllEmployee"]),
+    ...mapActions([
+      "saveBulkAttendance",
+      "saveBulkAttendanceHelper",
+      "actionGetAllEmployeeByFilter",
+    ]),
     addOneAttendance() {
       var bulk = [];
       var getDate = null;
@@ -315,9 +321,14 @@ export default {
         time_arrive_home: this.arrive_home,
         // time_arrive_home: this.datalist[i].time_arrive_home ? this.datalist[i].time_arrive_home : null,
       };
-      console.log(data);
+      // console.log(data);
       bulk.push(data);
-      this.saveBulkAttendance({ bulk: bulk });
+      if (this.departementId == 1) {
+        this.saveBulkAttendance({ bulk: bulk });
+      } else if (this.departementId == 2) {
+      } else if (this.departementId == 3) {
+        this.saveBulkAttendanceHelper({ bulk: bulk });
+      }
       this.close();
     },
 
@@ -331,8 +342,15 @@ export default {
     close() {
       this.total_leave = "";
       this.$emit("update:dialogTambahKehadiran", false);
-      // this.dataAttendance = null;
-      // this.type_overtime = null;
+      this.employee_data = null;
+      this.selectDate = null;
+      this.check_in = "";
+      this.check_out = "";
+      this.start_for_break = "";
+      this.end_for_break = "";
+      this.start_for_left = "";
+      this.end_for_left = "";
+      this.arrive_home = "";
     },
   },
   computed: {
@@ -349,6 +367,21 @@ export default {
         }
         return 0;
       });
+    },
+  },
+
+  watch: {
+    dialogTambahKehadiran: {
+      handler() {
+        console.log(this.dialogTambahKehadiran);
+        if (this.dialogTambahKehadiran == true) {
+          const params = new URLSearchParams();
+          params.append("filter", "department.id||$eq||" + this.departementId);
+          params.append("filter", "active||$eq||1");
+          params.append("join", "department");
+          this.actionGetAllEmployeeByFilter(params);
+        }
+      },
     },
   },
 };

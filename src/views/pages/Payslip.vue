@@ -113,7 +113,11 @@
                           <v-icon small class="ml-2">mdi-calendar</v-icon>
                         </v-btn>
                       </template>
-                      <v-date-picker v-model="picker" @input="getNewDate()" :allowed-dates="allowedDates">
+                      <v-date-picker
+                        v-model="picker"
+                        @input="getNewDate()"
+                        :allowed-dates="allowedDatesProduksi"
+                      >
                       </v-date-picker>
                     </v-menu>
                   </div>
@@ -142,6 +146,34 @@
                         type="month"
                         @input="getNewMonth()"
                       ></v-date-picker>
+                    </v-menu>
+                  </div>
+                  <div v-if="choosenDepartment.id == 3">
+                    <v-menu
+                      :close-on-content-click="false"
+                      :nudge-right="40"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="290px"
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-btn
+                          color="primary"
+                          dark
+                          v-on="on"
+                          large
+                          class="elevation-0 mr-3"
+                        >
+                          <span>Pilih Tanggal</span>
+                          <v-icon small class="ml-2">mdi-calendar</v-icon>
+                        </v-btn>
+                      </template>
+                      <v-date-picker
+                        v-model="picker"
+                        @input="getNewDate()"
+                        :allowed-dates="allowedDatesHelper"
+                      >
+                      </v-date-picker>
                     </v-menu>
                   </div>
                 </div>
@@ -184,7 +216,12 @@
                 >
                   <span>Lanjutkan</span>
                 </v-btn>
-                <v-snackbar v-model="snackbar" :multi-line="multiLine" top color="orange" >
+                <v-snackbar
+                  v-model="snackbar"
+                  :multi-line="multiLine"
+                  top
+                  color="orange"
+                >
                   {{ notif_text }}
 
                   <template v-slot:action="{ attrs }">
@@ -255,12 +292,13 @@ export default {
   methods: {
     ...mapActions([
       "savePayslip",
-      "actionGetPayslip",
+      "savePayslipHelper",
       "actionGetAllDepartment",
     ]),
 
     //enable hari Jumat saja
-    allowedDates: val => [5].includes(new Date(val).getDay()),
+    allowedDatesProduksi: (val) => [5].includes(new Date(val).getDay()),
+    allowedDatesHelper: (val) => [1].includes(new Date(val).getDay()),
 
     selectDepartment(item) {
       console.log("select department " + this.picker);
@@ -293,7 +331,13 @@ export default {
         periode_end: this.end_date,
         day_off: this.holidays,
       };
-      this.savePayslip(data);
+      if (this.choosenDepartment.id == 1) {
+        this.savePayslip(data);
+      } else if (this.choosenDepartment.id == 2) {
+        // this.savePayslip(data)
+      } else if (this.choosenDepartment.id == 3) {
+        this.savePayslipHelper(data);
+      }
     },
 
     getNewDate() {
@@ -352,9 +396,15 @@ export default {
 
     isLoadingFinish() {
       const status = this.geStatusLoading;
-      // console.log(status);
+      console.log(status);
       if (status.loading == false) {
-        this.$router.push("/viewPayslip").catch(() => {});
+        if (this.choosenDepartment.id == 1) {
+          this.$router.push("/viewPayslip").catch(() => {});
+        }else if (this.choosenDepartment.id == 2) {
+          // this.$router.push("/viewPayslip").catch(() => {});
+        }else if (this.choosenDepartment.id == 3) {
+          this.$router.push("/viewPayslipHelper").catch(() => {});
+        }
       }
     },
 

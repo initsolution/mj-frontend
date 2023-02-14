@@ -61,7 +61,7 @@ export default {
           id: this.areaId,
         },
       };
-      console.log(data);
+      // console.log(data);
       this.actionSavePosition(data);
       this.close();
     },
@@ -70,7 +70,7 @@ export default {
         id: this.getDataPosition.id,
         name: this.getDataPosition.name,
       };
-      console.log(data);
+      // console.log(data);
       this.actionUpdatePosition(data);
       this.close();
     },

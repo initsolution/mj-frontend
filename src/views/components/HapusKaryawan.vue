@@ -44,7 +44,7 @@ export default {
   methods: {
     ...mapActions(["actionUpdateEmployee"]),
     deleteEmployee() {
-      console.log(this.deleteItems.length);
+      // console.log(this.deleteItems.length);
       if (this.deleteItems.length > 0) {
         for (var i = 0; i < this.deleteItems.length; i++) {
           const _employee = {

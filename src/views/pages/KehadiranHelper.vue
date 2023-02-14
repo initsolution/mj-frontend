@@ -1,18 +1,14 @@
 <template>
   <v-container class="pa-8" fluid>
-    <edit-attendance
-      :dialogEditAttendance.sync="dialogEditAttendancelocal"
-      :dataAttendance="dataAttendance"
-      :type_overtime="type_overtime"
+    <form-ijin
+      :dialogIjin.sync="dialogIjin"
+      :idEmployee="idEmployee"
+    ></form-ijin>
+    <form-ganti-shift
+      :dialogGantiShift.sync="dialogGantiShift"
+      :selectAttendance="selectAttendance"
     >
-    </edit-attendance>
-    <cancel-overtime
-      :dialogCancelOvertime.sync="dialogCancelOvertime"
-      :dataAttendance="dataAttendance"
-      :type_overtime="type_overtime"
-    >
-    </cancel-overtime>
-
+    </form-ganti-shift>
     <tambah-kehadiran
       :dialogTambahKehadiran.sync="dialogTambahKehadiran"
       :departementId="departementId"
@@ -32,7 +28,7 @@
             <v-col class="py-0">
               <div class="title d-flex flex-row">
                 <v-icon color="grey" class="mr-2">mdi-calendar-check</v-icon>
-                <div>Data Absensi</div>
+                <div>Data Absensi Helper</div>
               </div>
             </v-col>
             <div class="flex-grow-1"></div>
@@ -178,8 +174,8 @@
                 label="Tekan enter untuk mencari"
               ></v-text-field>
               <!-- <span class="red--text font-md mt-2"
-                >Cek kembali kata kunci anda</span
-              > -->
+                  >Cek kembali kata kunci anda</span
+                > -->
             </v-col>
           </v-row>
           <v-divider class="my-3"></v-divider>
@@ -207,7 +203,7 @@
               <v-data-table
                 v-model="selected_items"
                 :headers="this.headers"
-                :items="getDataAllAttendance"
+                :items="getDataAllAttendanceHelper"
                 class="elevation-1"
                 show-select
               >
@@ -249,7 +245,7 @@
                 <template v-slot:[`item.time_start_for_break`]="{ item }">
                   <!-- start_for_break tidak di hitung-->
                   <!-- <span v-if="isLate(item.time_start_for_break, item.break_hours !=null ? item.break_hours.split('-')[0] : null, 'start_break')" 
-                  class="text-color">{{ convertTime(item.time_start_for_break) }}</span> -->
+                    class="text-color">{{ convertTime(item.time_start_for_break) }}</span> -->
                   <!-- <span v-else>{{ convertTime(item.time_start_for_break) }}</span> -->
                   {{ convertTime(item.time_start_for_break) }}
                 </template>
@@ -279,96 +275,49 @@
                 <template v-slot:[`item.time_end_for_left`]="{ item }">
                   {{ convertTime(item.time_end_for_left) }}
                 </template>
-                <template v-slot:[`item.overtime`]="{ item }">
-                  <div class="text-center">
-                    <v-menu open-on-hover top offset-y>
-                      <template v-slot:activator="{ on, attrs }">
-                        <!-- <v-btn color="primary" dark v-bind="attrs" v-on="on">
-                          Dropdown
-                        </v-btn> -->
-                        <v-chip v-if="item.overtime != null">
-                          <v-chip
-                            :color="getColor(item.overtime)"
-                            dark
-                            v-bind="attrs"
-                            v-on="on"
-                          >
-                            {{ convertToHour(item.overtime) }} jam
-                          </v-chip>
-                        </v-chip>
-                      </template>
-
-                      <v-list v-if="item.overtime > 0" class="py-0">
-                        <v-list-item @click="confirmOvertime(item, 'late')">
-                          <v-list-item-content>
-                            <v-list-item-title>
-                              <v-icon small class="mr-2 green--text"
-                                >check</v-icon
-                              >
-                              <span class="font-md">Terima</span>
-                            </v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item @click="cancelOvertime(item, 'late')">
-                          <v-list-item-content>
-                            <v-list-item-title>
-                              <v-icon small class="mr-2 red--text"
-                                >cancel</v-icon
-                              >
-                              <span class="font-md">Tolak</span>
-                            </v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                      </v-list>
-                    </v-menu>
-                  </div>
-                </template>
-                <template v-slot:[`item.early_overtime`]="{ item }">
-                  <div class="text-center">
-                    <v-menu open-on-hover top offset-y>
-                      <template v-slot:activator="{ on, attrs }">
-                        <!-- <v-btn color="primary" dark v-bind="attrs" v-on="on">
-                          Dropdown
-                        </v-btn> -->
-                        <v-chip v-if="item.early_overtime != null">
-                          <v-chip
-                            :color="getColor(item.early_overtime)"
-                            dark
-                            v-bind="attrs"
-                            v-on="on"
-                          >
-                            {{ convertToHour(item.early_overtime) }} jam
-                          </v-chip>
-                        </v-chip>
-                      </template>
-
-                      <v-list v-if="item.early_overtime > 0" class="py-0">
-                        <v-list-item @click="confirmOvertime(item, 'early')">
-                          <v-list-item-content>
-                            <v-list-item-title>
-                              <v-icon small class="mr-2 green--text"
-                                >check</v-icon
-                              >
-                              <span class="font-md">Terima</span>
-                            </v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                        <v-list-item @click="cancelOvertime(item, 'early')">
-                          <v-list-item-content>
-                            <v-list-item-title>
-                              <v-icon small class="mr-2 red--text"
-                                >cancel</v-icon
-                              >
-                              <span class="font-md">Tolak</span>
-                            </v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                      </v-list>
-                    </v-menu>
-                  </div>
-                </template>
                 <template v-slot:[`item.total_leave`]="{ item }">
-                  {{ calculateTotalLeave(item.total_leave) }}
+                  <div class="text-center">
+                    <v-menu open-on-hover top offset-y>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-chip v-if="item.total_leave != null">
+                          <v-chip
+                            :color="getColor(item.total_leave)"
+                            dark
+                            v-bind="attrs"
+                            v-on="on"
+                          >
+                            {{ calculateTotalLeave(item.total_leave) }}
+                          </v-chip>
+                        </v-chip>
+                      </template>
+
+                      <v-list
+                        v-if="calculateTotalLeave(item.total_leave) > 0"
+                        class="py-0"
+                      >
+                        <v-list-item @click="changeShift(item)">
+                          <v-list-item-content>
+                            <v-list-item-title>
+                              <v-icon small class="mr-2 green--text"
+                                >mdi-refresh</v-icon
+                              >
+                              <span class="font-md">Pindah Jadwal</span>
+                            </v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item @click="formIzin(item.id)">
+                          <v-list-item-content>
+                            <v-list-item-title>
+                              <v-icon small class="mr-2 orange--text"
+                                >check</v-icon
+                              >
+                              <span class="font-md">Ijin</span>
+                            </v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </v-list>
+                    </v-menu>
+                  </div>
                 </template>
               </v-data-table>
             </v-card-text>
@@ -385,15 +334,16 @@
     </v-overlay>
   </v-container>
 </template>
-    
-    <script>
+      
+      <script>
 import XLSX from "xlsx";
 import { mapActions, mapGetters } from "vuex";
 import EditAttendance from "@/components/EditAttendance.vue";
 import { formatPrice, formatDate, manipulateDate } from "@/utils/utils";
 import TambahKehadiran from "@/views/components/TambahKehadiran.vue";
 import HapusKehadiran from "@/views/components/HapusKehadiran.vue";
-import CancelOvertime from "@/views/components/CancelOvertime.vue";
+import FormIjin from "@/views/components/FormIjin.vue";
+import FormGantiShift from "@/views/components/FormGantiShift.vue";
 export default {
   name: "KehadiranMingguan",
 
@@ -422,20 +372,20 @@ export default {
         { text: "Mulai Istirahat", value: "time_start_for_break" },
         { text: "Selesai Istirahat", value: "time_end_for_break" },
         { text: "Pulang", value: "time_check_out" },
-        { text: "Tiba dirumah", value: "time_arrive_home" },
         { text: "Mulai Ijin", value: "time_start_for_left" },
         { text: "Selesai Ijin", value: "time_end_for_left" },
-        { text: "Lembur", value: "overtime" },
-        { text: "Lembur Awal", value: "early_overtime" },
         { text: "Total Ijin", value: "total_leave" },
+        { text: "Status", value: "status_shift" },
       ],
-      departementId: 1,
+      departementId: 3,
       dialogEditAttendancelocal: false,
-      dialogCancelOvertime: false,
+      dialogGantiShift: false,
+      dialogIjin: false,
       dialogTambahKehadiran: false,
       dialogHapusKehadiran: false,
       dataAttendance: null,
-      // selectedItem: null,
+      idEmployee: null,
+      selectAttendance: null,
       type_overtime: null,
       multiLine: false,
       snackbar: false,
@@ -454,7 +404,8 @@ export default {
     EditAttendance,
     HapusKehadiran,
     TambahKehadiran,
-    CancelOvertime,
+    FormIjin,
+    FormGantiShift,
   },
 
   created() {
@@ -467,17 +418,17 @@ export default {
     // today = "18/11/2022"
     // console.log(today);
 
-    this.getAttendanceCustom();
+    this.getAttendanceCustomHelper();
   },
 
   methods: {
     ...mapActions([
-      "saveAttendance",
-      "saveBulkAttendance",
-      "checkAttendance",
-      "actionGetAllAttendence",
-      "actionGetAllAttendenceByFilter",
-      "getAttendanceCustom",
+      "saveAttendanceHelper",
+      "saveBulkAttendanceHelper",
+      "checkAttendanceHelper",
+      "actionGetAllAttendenceHelper",
+      "actionGetAllAttendenceByFilterHelper",
+      "getAttendanceCustomHelper",
     ]),
     manipulasiDate(tgl, operator, val) {
       // console.log(tgl + "-" + operator + "-" + val);
@@ -503,22 +454,17 @@ export default {
           name: this.datalist[i].name,
           attendance_date: this.datalist[i].attendance_date,
           week_of_day: this.datalist[i].week_of_day,
-          attendance_type: this.datalist[i].attendance_type,
           time_check_in: this.datalist[i].time_check_in,
           time_check_out: this.datalist[i].time_check_out,
           time_start_for_break: this.datalist[i].time_start_for_break,
           time_end_for_break: this.datalist[i].time_end_for_break,
           time_start_for_left: this.datalist[i].time_start_for_left,
           time_end_for_left: this.datalist[i].time_end_for_left,
-          time_arrive_home: this.datalist[i].time_arrive_home,
           work_duration: this.datalist[i].work_duration,
-          // time_arrive_home: this.datalist[i].time_arrive_home ? this.datalist[i].time_arrive_home : null,
         };
         bulk.push(data);
       }
-      // console.log(bulk);
-      // this.checkAttendance({ bulk: bulk });
-      this.saveBulkAttendance({ bulk: bulk });
+      this.saveBulkAttendanceHelper({ bulk: bulk });
     },
 
     importAttendance(event) {
@@ -571,9 +517,8 @@ export default {
             var _time_start_for_break = datarow[4] == "" ? null : datarow[4];
             var _time_end_for_break = datarow[5] == "" ? null : datarow[5];
             var _time_check_out = datarow[6] == "" ? null : datarow[6];
-            var _time_arrive_home = datarow[7] == "" ? null : datarow[7];
-            var _time_start_for_left = datarow[8] == "" ? null : datarow[8];
-            var _time_end_for_left = datarow[9] == "" ? null : datarow[9];
+            var _time_start_for_left = datarow[7] == "" ? null : datarow[7];
+            var _time_end_for_left = datarow[8] == "" ? null : datarow[8];
 
             var data = {
               id: _nik,
@@ -583,10 +528,8 @@ export default {
               time_start_for_break: _time_start_for_break,
               time_end_for_break: _time_end_for_break,
               time_check_out: _time_check_out,
-              time_arrive_home: _time_arrive_home,
               time_start_for_left: _time_start_for_left,
               time_end_for_left: _time_end_for_left,
-              attendance_type: _time_arrive_home == null ? 0 : 1,
               week_of_day: -1,
               // work_duration : calculate_work_duration,
             };
@@ -774,12 +717,22 @@ export default {
       return true;
     },
 
+    changeShift(item) {
+      this.selectAttendance = item;
+      this.dialogGantiShift = true;
+    },
+
+    formIzin(id) {
+      this.idEmployee = id;
+      this.dialogIjin = true;
+    },
+
     splitTime(time) {
       return time;
     },
 
     getColor(total_leave) {
-      if (total_leave > 0) return "#EB212E";
+      if (total_leave > 0) return "#FFa500";
       else return "#77DD77";
     },
 
@@ -789,19 +742,6 @@ export default {
 
     getTimeColor(time) {
       return "#00ff00";
-    },
-
-    confirmOvertime(item, type) {
-      this.type_overtime = type;
-      this.dialogEditAttendancelocal = true;
-      this.dataAttendance = item;
-    },
-
-    cancelOvertime(item, type) {
-      // console.log(item);
-      this.dataAttendance = item;
-      this.type_overtime = type;
-      this.dialogCancelOvertime = true;
     },
 
     getUserData(value) {
@@ -827,7 +767,7 @@ export default {
     },
 
     getResAddAttendance() {
-      const status = this.getBulkAttendance;
+      const status = this.getBulkAttendanceHelper;
       // console.log("getResAddAttendance : " + status.data);
       // if (status.actions == 201) {
       //   if (status.status == "Created") {
@@ -853,7 +793,7 @@ export default {
     },
 
     getStatusLoading() {
-      const status = this.getLoadingAttendance;
+      const status = this.getLoadingAttendanceHelper;
       // console.log(status);
       if (status) {
         this.overlay = true;
@@ -863,8 +803,7 @@ export default {
     },
 
     updateStatusAttendance() {
-      const status = this.getStatusAttendance;
-      console.log("f");
+      const status = this.getStatusAttendanceHelper;
       if (status.actions == 200) {
         if (status.status == "OK") {
           this.getDataAllAttendanceByFilter();
@@ -902,7 +841,8 @@ export default {
           param.append("join", "employee");
         }
       }
-      this.actionGetAllAttendenceByFilter(param);
+      param.append("join", "shift");
+      this.actionGetAllAttendenceByFilterHelper(param);
     },
 
     searchKeyword() {
@@ -912,7 +852,7 @@ export default {
         this.startDate == null &&
         this.endDate == null
       ) {
-        this.getAttendanceCustom();
+        this.getAttendanceCustomHelper();
       } else {
         this.getDataAllAttendanceByFilter();
       }
@@ -921,10 +861,10 @@ export default {
 
   computed: {
     ...mapGetters([
-      "getStatusAttendance",
-      "getBulkAttendance",
-      "getDataAllAttendance",
-      "getLoadingAttendance",
+      "getStatusAttendanceHelper",
+      "getBulkAttendanceHelper",
+      "getDataAllAttendanceHelper",
+      "getLoadingAttendanceHelper",
     ]),
     // getCheckAttendance() {
     //   return this.getStatusAttendance.data;
@@ -932,12 +872,12 @@ export default {
   },
 
   watch: {
-    getBulkAttendance: {
+    getBulkAttendanceHelper: {
       handler() {
         this.getResAddAttendance();
       },
     },
-    getDataAllAttendance: {
+    getDataAllAttendanceHelper: {
       handler() {
         this.selected_items = [];
       },
@@ -960,12 +900,12 @@ export default {
         // }
       },
     },
-    getLoadingAttendance: {
+    getLoadingAttendanceHelper: {
       handler() {
         this.getStatusLoading();
       },
     },
-    getStatusAttendance: {
+    getStatusAttendanceHelper: {
       handler() {
         this.updateStatusAttendance();
       },
@@ -973,8 +913,8 @@ export default {
   },
 };
 </script>
-    
-    <style>
+      
+      <style>
 .text-color {
   color: red;
 }

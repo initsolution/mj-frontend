@@ -139,8 +139,8 @@ export default {
       if (this.hasil == null) {
         this.hasil = this.dataAttendance.overtime;
       }
-      console.log("hasil : " + this.hasil);
-      console.log("type_overtime : " + this.type_overtime);
+      // console.log("hasil : " + this.hasil);
+      // console.log("type_overtime : " + this.type_overtime);
       var data = null;
       if (this.type_overtime == "early") {
         data = {
@@ -205,7 +205,7 @@ export default {
       // setter
       set: function (newValue) {
         // your setter here
-        console.log("new value : " + newValue.value);
+        // console.log("new value : " + newValue.value);
         this.hasil = newValue.value;
       },
     },
