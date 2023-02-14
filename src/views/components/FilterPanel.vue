@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-row v-if="options.type !== 'employee'" align="center">
+    <v-row align="center">
       <v-col>
         <div class="d-flex flex-row align-center mb-1">
           <div class="font-md">Filter Departemen</div>
@@ -23,6 +23,7 @@
           outlined
           v-model="filterDepartment"
           :items="listDepartmentFilter"
+          v-on:change="getAllAreaByDepartmentId"
           item-text="name"
           item-value="id"
           label="Departemen"
@@ -30,7 +31,7 @@
       </v-col>
       <v-col>
         <div class="d-flex flex-row align-center mb-2">
-          <div class="font-md">Filter Golongan</div>
+          <div class="font-md">Filter Shift</div>
           <div class="flex-grow-1"></div>
         </div>
         <v-select
@@ -59,6 +60,7 @@
           outlined
           v-model="filterArea"
           :items="listAreaFilter"
+          v-on:change="getAllPositionByAreaId"
           item-text="name"
           item-value="id"
           label="Area"
@@ -88,7 +90,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 export default {
-  name: 'Filter Panel',
+  name: 'FilterPanel',
   data() {
     return {
       filterDepartment: null,
@@ -127,6 +129,7 @@ export default {
       }
     },
   },
+
   watch: {
     getDataAllDepartement: {
       handler() {

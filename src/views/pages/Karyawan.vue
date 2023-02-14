@@ -57,7 +57,7 @@
               </v-btn>
             </v-col>
           </v-row>
-          <v-row>
+          <!-- <v-row>
             <v-btn
               :outlined="!filter"
               class="elevation-0"
@@ -67,79 +67,94 @@
               <v-icon>mdi-filter</v-icon>
               <span>Filter</span>
             </v-btn>
+          </v-row> -->
+          <v-row>
+            <v-col cols="4" class="py-0">
+              <div class="d-flex flex-row align-center mb-1">
+                <div class="font-md mb-1">Filter Departemen</div>
+                <div class="flex-grow-1"></div>
+                <v-btn
+                  @click="clearFilter"
+                  text
+                  color="indigo"
+                  class="py-0"
+                  small
+                  style="text-transform: capitalize"
+                  >Hapus</v-btn
+                >
+              </div>
+              <div>
+                <v-select
+                  v-model.trim="filterDepartmentId"
+                  :items="listDepartment"
+                  v-on:change="getAllAreaByDepartmentId"
+                  item-text="name"
+                  item-value="id"
+                  label="Departemen"
+                ></v-select>
+              </div>
+            </v-col>
+            <v-col cols="4" class="py-0">
+              <div class="d-flex flex-row align-center mb-1">
+                <div class="font-md mb-1">Filter Bagian</div>
+              </div>
+              <div>
+                <v-select
+                  v-model.trim="filterAreaId"
+                  :items="listArea"
+                  item-text="name"
+                  item-value="id"
+                  v-on:change="getAllPositionByAreaId"
+                  label="Bagian"
+                ></v-select>
+              </div>
+            </v-col>
+            <v-col cols="4" class="py-0">
+              <div class="d-flex flex-row align-center mb-1">
+                <div class="font-md mb-1">Filter Jabatan</div>
+              </div>
+              <div>
+                <v-select
+                  v-model.trim="filterPositionId"
+                  :items="listPosition"
+                  v-on:change="filterEmployee"
+                  item-text="name"
+                  item-value="id"
+                  label="Jabatan"
+                ></v-select>
+              </div>
+            </v-col>
           </v-row>
           <v-row>
             <v-col cols="4" class="py-0">
-              <!-- <div class="d-flex flex-row align-center mb-1">
-                  <div class="font-md mb-1">Filter tanggal Mulai</div>
-                </div>
-                <div>
-                  <v-menu
-                    v-model="menuStartDate"
-                    :close-on-content-click="false"
-                    :nudge-right="40"
-                    transition="scale-transition"
-                    offset-y
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        color="grey darken-2"
-                        label="Tanggal mulai"
-                        v-model="startDate"
-                        readonly
-                        dense
-                        class="white elevation-0"
-                        hide-details
-                        outlined
-                        single-line
-                        v-on="on"
-                        prepend-inner-icon="mdi-calendar"
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker
-                      v-model="startDate"
-                      :max="endDate"
-                      @input="menuStartDate = false"
-                    ></v-date-picker>
-                  </v-menu>
-                </div> -->
+              <div class="d-flex flex-row align-center mb-1">
+                <div class="font-md mb-1">Filter Shift</div>
+              </div>
+              <div>
+                <v-select
+                  v-model.trim="filterShiftId"
+                  :items="listShift"
+                  v-on:change="filterEmployee"
+                  item-text="name"
+                  item-value="id"
+                  label="Shift"
+                ></v-select>
+              </div>
             </v-col>
             <v-col cols="4" class="py-0">
-              <!-- <div class="d-flex flex-row align-center mb-1">
-                  <div class="font-md mb-1">Filter tanggal Selesai</div>
-                </div>
-                <div>
-                  <v-menu
-                    v-model="menuEndDate"
-                    :close-on-content-click="false"
-                    :nudge-right="40"
-                    transition="scale-transition"
-                    offset-y
-                    min-width="290px"
-                  >
-                    <template v-slot:activator="{ on }">
-                      <v-text-field
-                        color="grey darken-2"
-                        label="Tanggal selesai"
-                        readonly
-                        v-model="endDate"
-                        dense
-                        class="white elevation-0"
-                        hide-details
-                        outlined
-                        single-line
-                        v-on="on"
-                        prepend-inner-icon="mdi-calendar"
-                      ></v-text-field>
-                    </template>
-                    <v-date-picker
-                      v-model="endDate"
-                      :min="startDate"
-                      @input="menuEndDate = false"
-                    ></v-date-picker>
-                  </v-menu>
-                </div> -->
+              <div class="d-flex flex-row align-center mb-1">
+                <div class="font-md mb-1">Filter Aktif/Tidak Aktif</div>
+              </div>
+              <div>
+                <v-select
+                  v-model.trim="filterIsActive"
+                  :items="listIsActive"
+                  v-on:change="filterEmployee"
+                  item-text="name"
+                  item-value="value"
+                  label="Aktif/Tidak Aktif"
+                ></v-select>
+              </div>
             </v-col>
             <v-col cols="4" class="py-0">
               <div class="d-flex flex-row align-center mb-1">
@@ -154,7 +169,7 @@
                 outlined
                 prepend-inner-icon="mdi-select-search"
                 color="grey darken-2"
-                @keyup.enter="searchKeyword"
+                @keyup.enter="filterEmployee"
                 label="Tekan enter untuk mencari"
               ></v-text-field>
               <!-- <span class="red--text font-md mt-2"
@@ -162,6 +177,7 @@
                 > -->
             </v-col>
           </v-row>
+
           <v-row>
             <v-col md="12">
               <div class="py2" v-if="selected_items.length > 0">
@@ -243,6 +259,19 @@ export default {
   data() {
     return {
       filter: false,
+      filterDepartmentId: null,
+      filterAreaId: null,
+      filterPositionId: null,
+      filterShiftId: null,
+      filterIsActive: null,
+      listDepartment: [],
+      listShift: [],
+      listArea: [],
+      listPosition: [],
+      listIsActive: [
+        { name: 'Aktif', value: 1 },
+        { name: 'Tidak Aktif', value: 0 },
+      ],
       selectXlsx: null,
       selected_items: [],
       headers: [
@@ -274,35 +303,35 @@ export default {
   components: { HapusKaryawan, FormKaryawan },
   created() {
     this.actionGetAllEmployee();
-    // this.datalist.push({
-    //   id: "01",
-    //   name: "AA",
-    //   active_date: "2009/02/01",
-    //   type: "REGULER",
-    //   date_of_birth: "1992/12/08",
-    //   address: "Demak",
-    //   phone_no: "081xxxxxxx3",
-    //   npwp_id: "",
-    //   bpjs_id: "",
-    //   gaji_pokok: "203000",
-    //   insentif_extra: "28000",
-    //   extra_tambahan_kerja: "9000",
-    //   tunjangan_kehadiran: "2000",
-    //   extra_full: "10000",
-    //   iuran_bpjs_tk: "25000",
-    //   iuran_bpjs_ks: "13000",
-    //   iuran_spsi: "0",
-    // });
+    this.actionGetAllDepartment();
+    this.actionGetAllShift();
   },
+
   methods: {
     ...mapActions([
       'actionGetAllEmployee',
       'saveBulkEmployee',
       'actionGetAllEmployeeByFilter',
+      'actionGetAllDepartment',
+      'actionGetAllAreaByDepartmentId',
+      'actionGetAllPositionByAreaId',
+      'actionGetAllShift',
     ]),
 
     showFilter() {
       this.filter = !this.filter;
+    },
+
+    clearFilter() {
+      this.filterDepartmentId = null;
+      this.filterAreaId = null;
+      this.filterPositionId = null;
+      this.filterShiftId = null;
+      this.filterIsActive = null;
+      this.keyword = null;
+      this.listArea = [];
+      this.listPosition = [];
+      this.filterEmployee();
     },
 
     hitungLamaKerja(tahunKerja) {
@@ -427,26 +456,145 @@ export default {
 
     getDataAllEmployeeByFilter() {
       const param = new URLSearchParams();
-      if (this.keyword != null) {
+      param.append('join', 'department');
+      param.append('join', 'area');
+      param.append('join', 'position');
+      param.append('join', 'shift');
+      if (this.keyword != null && this.keyword.length > 0) {
         param.append('filter', 'name||$cont||' + this.keyword);
+      }
+      if (this.filterDepartmentId != null) {
+        param.append(
+          'filter',
+          'department.id||$eq||' + this.filterDepartmentId,
+        );
+      }
+      if (this.filterAreaId != null) {
+        param.append('filter', 'area.id||$eq||' + this.filterAreaId);
+      }
+      if (this.filterPositionId != null) {
+        param.append('filter', 'position.id||$eq||' + this.filterPositionId);
+      }
+      if (this.filterShiftId != null) {
+        param.append('filter', 'shift.id||$eq||' + this.filterShiftId);
+      }
+      if (this.filterIsActive != null) {
+        console.log(this.filterIsActive);
+        param.append('filter', 'active||$eq||' + this.filterIsActive);
       }
       this.actionGetAllEmployeeByFilter(param);
     },
 
-    searchKeyword() {
-      if (this.keyword != null && this.keyword.length > 0)
+    filterEmployee() {
+      if (
+        (this.keyword != null && this.keyword.length > 0) ||
+        this.filterDepartmentId != null ||
+        this.filterAreaId != null ||
+        this.filterPositionId != null ||
+        this.filterShiftId != null ||
+        this.filterIsActive != null
+      )
         this.getDataAllEmployeeByFilter();
       else this.actionGetAllEmployee();
     },
+
+    getAllAreaByDepartmentId() {
+      this.listArea = [];
+      this.listPosition = [];
+      this.filterAreaId = null;
+      this.filterPositionId = null;
+      if (this.filterDepartmentId != null) {
+        const param = new URLSearchParams();
+        param.append('join', 'department');
+        param.append(
+          'filter',
+          'department.id||$eq||' + this.filterDepartmentId,
+        );
+        this.actionGetAllAreaByDepartmentId(param);
+
+        this.filterEmployee();
+      }
+    },
+
+    getAllPositionByAreaId() {
+      // console.log(this.area_id);
+      this.filterPositionId = null;
+      if (this.filterAreaId != null) {
+        const param = new URLSearchParams();
+        param.append('join', 'area');
+        param.append('filter', 'area.id||$eq||' + this.filterAreaId);
+        this.actionGetAllPositionByAreaId(param);
+
+        this.filterEmployee();
+      }
+    },
   },
+
   computed: {
-    ...mapGetters(['getDataEmployees']),
+    ...mapGetters([
+      'getDataEmployees',
+      'getDataAllDepartement',
+      'getDataAllArea',
+      'getDataAllPosition',
+      'getAllDataShift',
+    ]),
   },
+
   watch: {
     getDataEmployees: {
       handler() {
         // console.log(this.getDataEmployees);
         this.selected_items = [];
+      },
+    },
+
+    getDataAllDepartement: {
+      handler() {
+        for (var i = 0; i < this.getDataAllDepartement.length; i++) {
+          this.listDepartment.push({
+            name: this.getDataAllDepartement[i].name,
+            id: this.getDataAllDepartement[i].id,
+          });
+        }
+      },
+    },
+    getAllDataShift: {
+      handler() {
+        for (var i = 0; i < this.getAllDataShift.length; i++) {
+          this.listShift.push({
+            name: this.getAllDataShift[i].name,
+            id: this.getAllDataShift[i].id,
+          });
+        }
+      },
+    },
+    getDataAllArea: {
+      handler() {
+        this.listArea = [];
+        if (this.getDataAllArea.length > 0) {
+          for (var i = 0; i < this.getDataAllArea.length; i++) {
+            this.listArea.push({
+              name: this.getDataAllArea[i].name,
+              id: this.getDataAllArea[i].id,
+            });
+          }
+          this.getAllPositionByAreaId();
+        }
+      },
+    },
+    getDataAllPosition: {
+      handler() {
+        if (this.filterAreaId != null) {
+          this.listPosition = [];
+          if (this.getDataAllPosition.length > 0) {
+            for (var i = 0; i < this.getDataAllPosition.length; i++) {
+              this.listPosition.push({
+                name: this.getDataAllPosition[i].name,
+                id: this.getDataAllPosition[i].id,
+              });
+            }
+          }
+        }
       },
     },
   },

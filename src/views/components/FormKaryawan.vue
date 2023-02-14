@@ -654,7 +654,11 @@ export default {
     },
 
     getAllAreaByDepartmentId() {
-      // console.log(this.department_id);
+      // console.log('dept' + this.department_id);
+      this.listArea = [];
+      this.listPosition = [];
+      this.area_id = null;
+      this.position_id = null;
       if (this.department_id != null) {
         const param = new URLSearchParams();
         param.append('join', 'department');
