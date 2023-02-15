@@ -133,3 +133,16 @@
     - cetak payslip helper
 - Modul Pinjaman
     - ganti cara mendapatkan employee bedasarkan filters    
+
+# 0.0.1 (Update 15/02/2023)
+- Modul Pinjaman
+    - Menambahkan total pinjaman setiap departemen
+- Modul Attendance Produksi
+    - menghapus v-chip ijin
+- Modul Attendance Helper
+    - membedakan ijin dan telat
+    - menghapus v-chip ijin
+- Modul Absensi Produksi   
+    - menambahkan filter tanggal
+- Etc
+    - mengganti kehadiran mingguan menjadi mingguan produksi         

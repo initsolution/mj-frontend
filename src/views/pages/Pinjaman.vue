@@ -52,7 +52,9 @@
                 <v-icon color="grey" class="mr-2">mdi-calendar-check</v-icon>
                 <div>Data Pinjaman</div>
                 <div>
-                  <v-btn @click="openBuatPinjaman">Tambah Pinjaman</v-btn>
+                  <v-btn color="primary elevation-0" @click="openBuatPinjaman"
+                    >Tambah Pinjaman</v-btn
+                  >
                 </div>
               </div>
             </v-col>
@@ -60,6 +62,29 @@
             <v-col class="text-right py-0"> </v-col>
           </v-row>
           <v-divider class="my-3"></v-divider>
+          <v-card class="mb-5">
+            <v-card-text>
+              <div class="black--text mb-3 body-1">
+                Rincian Pinjaman Per Departemen
+              </div>
+              <v-divider></v-divider>
+              <v-row align="start" class="mt-2">
+                <v-col
+                  class="py-0"
+                  cols="3"
+                  v-for="(item, index) in totalLoanByDepartment"
+                  :key="index"
+                >
+                  <div>{{ item.department_name }}</div>
+                  <div class="black--text mt-3" style="font-size: 24px">
+                    {{
+                      item.total_loan ? formatPrice(item.total_loan) : "-"
+                    }}
+                  </div>
+                </v-col>
+              </v-row>
+            </v-card-text>
+          </v-card>
           <v-data-table :headers="headers" :items="getAllData">
             <template v-slot:[`item.sisa_pinjaman`]="{ item }">
               {{ checkLoan(item.loan) }}
@@ -109,7 +134,7 @@ export default {
     this.getDataLoan();
   },
   methods: {
-    ...mapActions(["actionGetAllEmployeeByFilter", "inputLoan"]),
+    ...mapActions(["actionGetAllEmployeeByFilter", "inputLoan", "getTotalLoanPerDepartment"]),
     getDataLoan() {
       const params = new URLSearchParams();
       params.append("join", "loan");
@@ -117,7 +142,7 @@ export default {
       params.append("sort", "loan.created_at,DESC");
       // this.actionGetAllEmployee(params);
       this.actionGetAllEmployeeByFilter(params);
-      
+      this.getTotalLoanPerDepartment()
     },
     formatPrice(value) {
       return formatPrice(value);
@@ -168,7 +193,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["getDataEmployees", "getStatusLoan"]),
+    ...mapGetters(["getDataEmployees", "getStatusLoan", 'getDataLoanByDept']),
     getAllData() {
       return this.getDataEmployees.filter(function (val) {
         return val.loan.length > 0;
@@ -187,6 +212,9 @@ export default {
         return 0;
       });
     },
+    totalLoanByDepartment(){
+      return this.getDataLoanByDept
+    }
   },
 };
 </script>

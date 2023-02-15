@@ -182,7 +182,7 @@
               > -->
             </v-col>
           </v-row>
-          <v-divider class="my-3"></v-divider>
+          <div style="margin-bottom: 30px"></div>
           <div class="py2" v-if="selected_items.length > 0">
             <div class="d-flex flex-row align-center justify-space-between">
               <div>
@@ -286,15 +286,14 @@
                         <!-- <v-btn color="primary" dark v-bind="attrs" v-on="on">
                           Dropdown
                         </v-btn> -->
-                        <v-chip v-if="item.overtime != null">
-                          <v-chip
-                            :color="getColor(item.overtime)"
-                            dark
-                            v-bind="attrs"
-                            v-on="on"
-                          >
-                            {{ convertToHour(item.overtime) }} jam
-                          </v-chip>
+                        <v-chip
+                          v-if="item.overtime != null"
+                          :color="getColor(item.overtime)"
+                          dark
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          {{ convertToHour(item.overtime) }} jam
                         </v-chip>
                       </template>
 
@@ -330,15 +329,14 @@
                         <!-- <v-btn color="primary" dark v-bind="attrs" v-on="on">
                           Dropdown
                         </v-btn> -->
-                        <v-chip v-if="item.early_overtime != null">
-                          <v-chip
-                            :color="getColor(item.early_overtime)"
-                            dark
-                            v-bind="attrs"
-                            v-on="on"
-                          >
-                            {{ convertToHour(item.early_overtime) }} jam
-                          </v-chip>
+                        <v-chip
+                          v-if="item.early_overtime != null"
+                          :color="getColor(item.early_overtime)"
+                          dark
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          {{ convertToHour(item.early_overtime) }} jam
                         </v-chip>
                       </template>
 

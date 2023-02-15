@@ -132,7 +132,7 @@ export default {
             to: '/kehadiran_bulanan',
           },
           {
-            title: 'Mingguan',
+            title: 'Produksi',
             icon: 'mdi-calendar-check',
             to: '/kehadiran_mingguan',
           },

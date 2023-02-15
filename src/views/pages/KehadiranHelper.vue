@@ -279,16 +279,14 @@
                   <div class="text-center">
                     <v-menu open-on-hover top offset-y>
                       <template v-slot:activator="{ on, attrs }">
-                        <v-chip v-if="item.total_leave != null">
-                          <v-chip
+                          <v-chip v-if="item.total_leave != null"
                             :color="getColor(item.total_leave)"
                             dark
                             v-bind="attrs"
                             v-on="on"
                           >
-                            {{ calculateTotalLeave(item.total_leave) }}
+                            {{ convertToHour(calculateTotalLeave(item.total_leave)) }} jam
                           </v-chip>
-                        </v-chip>
                       </template>
 
                       <v-list
@@ -318,6 +316,9 @@
                       </v-list>
                     </v-menu>
                   </div>
+                </template>
+                <template v-slot:[`item.total_telat`]="{ item }">
+                  {{ calculateTotalTelat(item.total_leave) }} menit
                 </template>
               </v-data-table>
             </v-card-text>
@@ -374,6 +375,7 @@ export default {
         { text: "Pulang", value: "time_check_out" },
         { text: "Mulai Ijin", value: "time_start_for_left" },
         { text: "Selesai Ijin", value: "time_end_for_left" },
+        { text: "Total Telat", value: "total_telat", width: 100 },
         { text: "Total Ijin", value: "total_leave" },
         { text: "Status", value: "status_shift" },
       ],
@@ -684,8 +686,21 @@ export default {
       }
 
       var tempData = data.split(",");
+      var sum = tempData[tempData.length-1];
+      // for (var i = 0; i < tempData.length; i++) {
+      //   sum += parseInt(tempData[i]);
+      // }
+      return sum;
+    },
+    
+    calculateTotalTelat(data) {
+      if (data == null) {
+        return data;
+      }
+
+      var tempData = data.split(",");
       var sum = 0;
-      for (var i = 0; i < tempData.length; i++) {
+      for (var i = 0; i < (tempData.length)-1; i++) {
         sum += parseInt(tempData[i]);
       }
       return sum;
