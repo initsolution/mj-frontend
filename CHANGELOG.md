@@ -146,3 +146,14 @@
     - menambahkan filter tanggal
 - Etc
     - mengganti kehadiran mingguan menjadi mingguan produksi         
+
+# 0.0.1 (Update 16/02/2023)
+- Modul Kehadiran Mingguan
+    - margin bottom
+- Modul Kehadiran Bulanan
+    - ongoing kehadiran bulanan
+- Modul Kehadiran Helper
+    - margin bottom
+- Modul Tambah Kehadiran
+    - tambah status masuk / tidak masuk karyawan
+    

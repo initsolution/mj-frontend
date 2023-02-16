@@ -6,26 +6,27 @@ const state = {
   data: [],
   status: {},
   update: {},
+  loading: Boolean
 };
 
 const actions = {
-  async getAttendanceCustomBulanan({commit}){
-    console.log('get custom attendance')
-    const res = await httpCommons.get(apiName+'/customGetAttendance');
+  async getAttendanceCustomBulanan({ commit }) {
+    // console.log('get custom attendance')
+    const res = await httpCommons.get(apiName + '/customGetAttendance');
     console.log(res)
     commit("SET_GET_DATA_ATTENDANCE", res.data);
   },
-  
+
   async actionGetAllAttendenceBulanan({ commit }) {
     // if (date == null) {
     //   console.log("date kosong");
-      var today = new Date();
-      var dd = String(today.getDate()).padStart(2, "0");
-      var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-      var yyyy = today.getFullYear();
-      const today1 = today
-      var todayDate = yyyy + "-" + mm + "-" + dd;
-      console.log(todayDate)
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, "0");
+    var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+    var yyyy = today.getFullYear();
+    const today1 = today
+    var todayDate = yyyy + "-" + mm + "-" + dd;
+    // console.log(todayDate)
     //   // today = "18/11/2022"
     //   // console.log(today);
     //   date = today;
@@ -44,16 +45,16 @@ const actions = {
     // const path = `?s=${filter}`;
     // const res = await httpCommons.get(apiName + path)
     const params = new URLSearchParams();
-    params.append("filter", "created_at||cont||"+todayDate)
-    
-    const res = await httpCommons.get(apiName, {params : params});
-    console.log(res)
+    params.append("filter", "created_at||cont||" + todayDate)
+
+    const res = await httpCommons.get(apiName, { params: params });
+    // console.log(res)
     commit("SET_GET_DATA_ATTENDANCE", res.data);
   },
 
-  async actionGetAllAttendenceBulananByFilter({ commit }, param) {
-    const res = await httpCommons.get(apiName, {params : param});
-    console.log(res);
+  async actionGetAllAttendenceByFilterBulanan({ commit }, param) {
+    const res = await httpCommons.get(apiName, { params: param });
+    // console.log(res);
     commit("SET_GET_DATA_ATTENDANCE", res.data);
   },
 
@@ -75,7 +76,8 @@ const actions = {
   },
 
   async saveBulkAttendanceBulanan({ commit, dispatch }, data) {
-    console.log(data);
+    // console.log(data);
+    commit("SET_LOADING_ATTENDANCE", true);
     try {
       const res = await httpCommons.post(apiName + "/bulk", data);
       const result = {
@@ -83,22 +85,64 @@ const actions = {
         actions: res.status,
         data: res.data,
       };
-      console.log("res : " + res);
-      console.log(result);
+      // console.log("res : " + res);
+      // console.log(result);
       commit("SET_CHECK_ATTENDANCE", result);
-      dispatch("actionGetAllAttendence");
+      dispatch("getAttendanceCustomBulanan");
+
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       const result = {
         status: "duplicate",
         actions: 201,
       };
       commit("SET_CHECK_ATTENDANCE", result);
     }
+    commit("SET_LOADING_ATTENDANCE", false);
+  },
+
+  async updateIjin({ commit, dispatch }, data) {
+    try {
+      const res = await httpCommons.patch(apiName + `/${data.id}`, data);
+      // console.log(res);
+      const result = {
+        status: res.statusText,
+        actions: res.status,
+        data: res.data,
+      };
+      // console.log(result);
+      commit("SET_UPDATE_ATTENDANCE", result);
+      // dispatch("actionGetAllAttendence");
+    } catch (error) {
+      const result = {
+        status: "duplicate",
+        actions: 201,
+      };
+      commit("SET_UPDATE_ATTENDANCE", result);
+    }
+  },
+
+  async actionSwitchShift({ commit, dispatch }, data) {
+    try {
+      const res = await httpCommons.patch(apiName + "/updateAttendanceByShift", data);
+      // console.log(res);
+      const result = {
+        status: res.statusText,
+        actions: res.status,
+        data: res.data,
+      };
+      commit("SET_UPDATE_ATTENDANCE", result);
+    } catch (error) {
+      const result = {
+        status: "duplicate",
+        actions: 201,
+      };
+      commit("SET_UPDATE_SHIFT", result);
+    }
   },
 
   async checkAttendanceBulanan({ commit, dispatch }, data) {
-    console.log(data);
+    // console.log(data);
     try {
       const res = await httpCommons.post(apiName + "/checkAttendance", data);
       const result = {
@@ -106,7 +150,7 @@ const actions = {
         actions: res.status,
         data: res.data,
       };
-      console.log(result.data);
+      // console.log(result.data);
       commit("SET_CHECK_ATTENDANCE", result);
     } catch (error) {
       const result = {
@@ -117,18 +161,18 @@ const actions = {
     }
   },
 
-  // async deleteAttendanceById({ commit, dispatch }, id) {
-  //   try {
-  //     const res = await httpCommons.delete(apiName + "/" + id);
-  //     console.log("res " + res);
-  //     const result = {
-  //       status: res.statusText,
-  //       actions: res.status,
-  //     };
-  //     commit("SET_DELETE_ATTENDANCE", result);
-  //     dispatch("actionGetAllAttendence");
-  //   } catch (error) { }
-  // },
+  async deleteAttendanceByIdBulanan({ commit, dispatch }, id) {
+    try {
+      const res = await httpCommons.delete(apiName + "/" + id);
+      // console.log("res " + res);
+      const result = {
+        status: res.statusText,
+        actions: res.status,
+      };
+      commit("SET_DELETE_ATTENDANCE", result);
+      // dispatch("actionGetAllAttendence");
+    } catch (error) { }
+  },
 };
 
 const mutations = {
@@ -138,6 +182,10 @@ const mutations = {
 
   SET_CHECK_ATTENDANCE(state, status) {
     state.status = status;
+  },
+
+  SET_LOADING_ATTENDANCE(state, loading) {
+    state.loading = loading;
   },
 
   SET_UPDATE_ATTENDANCE(state, status) {
@@ -153,6 +201,7 @@ const getters = {
   getDataAllAttendanceBulanan: (state) => state.data,
   getStatusAttendanceBulanan: (state) => state.status,
   getBulkAttendanceBulanan: (state) => state.status,
+  getLoadingAttendanceBulanan: (state) => state.loading,
 };
 
 export default {

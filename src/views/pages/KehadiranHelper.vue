@@ -178,7 +178,7 @@
                 > -->
             </v-col>
           </v-row>
-          <v-divider class="my-3"></v-divider>
+          <div style="margin-bottom: 30px"></div>
           <div class="py2" v-if="selected_items.length > 0">
             <div class="d-flex flex-row align-center justify-space-between">
               <div>
@@ -279,14 +279,18 @@
                   <div class="text-center">
                     <v-menu open-on-hover top offset-y>
                       <template v-slot:activator="{ on, attrs }">
-                          <v-chip v-if="item.total_leave != null"
-                            :color="getColor(item.total_leave)"
-                            dark
-                            v-bind="attrs"
-                            v-on="on"
-                          >
-                            {{ convertToHour(calculateTotalLeave(item.total_leave)) }} jam
-                          </v-chip>
+                        <v-chip
+                          v-if="item.total_leave != null"
+                          :color="getColor(item.total_leave)"
+                          dark
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          {{
+                            convertToHour(calculateTotalLeave(item.total_leave))
+                          }}
+                          jam
+                        </v-chip>
                       </template>
 
                       <v-list
@@ -318,7 +322,9 @@
                   </div>
                 </template>
                 <template v-slot:[`item.total_telat`]="{ item }">
-                  {{ calculateTotalTelat(item.total_leave) }} menit
+                  <span v-if="item.total_leave != null"
+                    >{{ calculateTotalTelat(item.total_leave) }} menit</span
+                  >
                 </template>
               </v-data-table>
             </v-card-text>
@@ -346,7 +352,7 @@ import HapusKehadiran from "@/views/components/HapusKehadiran.vue";
 import FormIjin from "@/views/components/FormIjin.vue";
 import FormGantiShift from "@/views/components/FormGantiShift.vue";
 export default {
-  name: "KehadiranMingguan",
+  name: "KehadiranHelper",
 
   data() {
     return {
@@ -686,13 +692,13 @@ export default {
       }
 
       var tempData = data.split(",");
-      var sum = tempData[tempData.length-1];
+      var sum = tempData[tempData.length - 1];
       // for (var i = 0; i < tempData.length; i++) {
       //   sum += parseInt(tempData[i]);
       // }
       return sum;
     },
-    
+
     calculateTotalTelat(data) {
       if (data == null) {
         return data;
@@ -700,7 +706,7 @@ export default {
 
       var tempData = data.split(",");
       var sum = 0;
-      for (var i = 0; i < (tempData.length)-1; i++) {
+      for (var i = 0; i < tempData.length - 1; i++) {
         sum += parseInt(tempData[i]);
       }
       return sum;

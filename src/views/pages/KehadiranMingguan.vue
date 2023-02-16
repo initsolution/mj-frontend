@@ -862,7 +862,7 @@ export default {
 
     updateStatusAttendance() {
       const status = this.getStatusAttendance;
-      console.log("f");
+      // console.log("f");
       if (status.actions == 200) {
         if (status.status == "OK") {
           this.getDataAllAttendanceByFilter();

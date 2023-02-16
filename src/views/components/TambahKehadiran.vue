@@ -44,6 +44,15 @@
                     @input="date_menu = false"
                   ></v-date-picker>
                 </v-menu>
+
+                <v-combobox
+                  :items="label_kehadiran"
+                  v-model="select"
+                  label="Kehadiran"
+                  outlined
+                  dense
+                >
+                </v-combobox>
                 <v-text-field
                   label="Jam Tiba di Kantor"
                   v-mask="mask"
@@ -156,6 +165,17 @@ export default {
         .toISOString()
         .substring(0, 10),
       mask: "##:##",
+      label_kehadiran: [
+        {
+          text: "Masuk",
+          value: "1",
+        },
+        {
+          text: "Tidak Masuk",
+          value: "0",
+        },
+      ],
+      select_kehadiran: null,
       check_in: "",
       check_out: "",
       start_for_break: "",
@@ -178,6 +198,7 @@ export default {
       var bulk = [];
       var getDate = null;
       var week_of_day = -1;
+      var data = null;
 
       if (this.employee_data == null) {
         this.notif_text = "Pilih karyawan terlebih dahulu";
@@ -194,133 +215,158 @@ export default {
         week_of_day = getDate.getDay() + 1;
       }
 
-      if (
-        this.check_in.length != 5 ||
-        this.check_out.length != 5 ||
-        this.start_for_break.length != 5 ||
-        this.end_for_break.length != 5
-      ) {
-        this.notif_text =
-          "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+      if (this.select_kehadiran == null) {
+        this.notif_text = "Pilih Kehadiran terlebih dahulu";
         this.snackbar = true;
         return;
       }
 
-      if (this.arrive_home != null) {
-        if (this.arrive_home.length != 0 && this.arrive_home.length != 5) {
-          this.notif_text =
-            "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
-          this.snackbar = true;
-          return;
-        }
-      }
-
-      if (this.start_for_left != null) {
+      if (this.select_kehadiran.value == 0) {
+        data = {
+          employee: {
+            id: this.employee_data.id,
+          },
+          name: this.employee_data.name,
+          attendance_date: this.selectDate,
+          week_of_day: week_of_day,
+          attendance_type: attendance_type,
+          time_check_in: null,
+          time_check_out: null,
+          time_start_for_break: null,
+          time_end_for_break: null,
+          time_start_for_left: null,
+          time_end_for_left: null,
+          time_arrive_home: null,
+        };
+      } else if (this.select_kehadiran.value == 1) {
         if (
-          this.start_for_left.length != 0 &&
-          this.start_for_left.length != 5
+          this.check_in.length != 5 ||
+          this.check_out.length != 5 ||
+          this.start_for_break.length != 5 ||
+          this.end_for_break.length != 5
         ) {
           this.notif_text =
             "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
           this.snackbar = true;
           return;
-        } else if (this.end_for_left != null) {
-          if (
-            this.start_for_left.length == 5 &&
-            this.end_for_left.length != 5
-          ) {
-            //jika start_for_left ada data, maka end_for_left harus diisi
+        }
+
+        if (this.arrive_home != null) {
+          if (this.arrive_home.length != 0 && this.arrive_home.length != 5) {
             this.notif_text =
               "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
             this.snackbar = true;
             return;
           }
         }
-      }
 
-      this.arrive_home = this.arrive_home == "" ? null : this.arrive_home;
-      this.start_for_left =
-        this.start_for_left == "" ? null : this.start_for_left;
-      this.end_for_left = this.end_for_left == "" ? null : this.end_for_left;
+        if (this.start_for_left != null) {
+          if (
+            this.start_for_left.length != 0 &&
+            this.start_for_left.length != 5
+          ) {
+            this.notif_text =
+              "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+            this.snackbar = true;
+            return;
+          } else if (this.end_for_left != null) {
+            if (
+              this.start_for_left.length == 5 &&
+              this.end_for_left.length != 5
+            ) {
+              //jika start_for_left ada data, maka end_for_left harus diisi
+              this.notif_text =
+                "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+              this.snackbar = true;
+              return;
+            }
+          }
+        }
 
-      var attendance_type = this.arrive_home != null ? 1 : 0;
+        this.arrive_home = this.arrive_home == "" ? null : this.arrive_home;
+        this.start_for_left =
+          this.start_for_left == "" ? null : this.start_for_left;
+        this.end_for_left = this.end_for_left == "" ? null : this.end_for_left;
 
-      var result_check_in = this.checkTime(
-        this.check_in.split(":")[0],
-        this.check_in.split(":")[1]
-      );
-      var result_check_out = this.checkTime(
-        this.check_out.split(":")[0],
-        this.check_out.split(":")[1]
-      );
-      var result_start_for_break = this.checkTime(
-        this.start_for_break.split(":")[0],
-        this.start_for_break.split(":")[1]
-      );
-      var result_end_for_break = this.checkTime(
-        this.end_for_break.split(":")[0],
-        this.end_for_break.split(":")[1]
-      );
+        var attendance_type = this.arrive_home != null ? 1 : 0;
 
-      if (
-        result_check_in != "" ||
-        result_check_out != "" ||
-        result_start_for_break != "" ||
-        result_end_for_break != ""
-      ) {
-        this.notif_text =
-          "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
-        this.snackbar = true;
-        return;
-      }
-
-      if (this.start_for_left != null || this.end_for_left != null) {
-        var result_start_for_left = this.checkTime(
-          this.start_for_left.split(":")[0],
-          this.start_for_left.split(":")[1]
+        var result_check_in = this.checkTime(
+          this.check_in.split(":")[0],
+          this.check_in.split(":")[1]
         );
-        var result_end_for_left = this.checkTime(
-          this.end_for_left.split(":")[0],
-          this.end_for_left.split(":")[1]
+        var result_check_out = this.checkTime(
+          this.check_out.split(":")[0],
+          this.check_out.split(":")[1]
         );
-        if (result_start_for_left != "" || result_end_for_left != "") {
+        var result_start_for_break = this.checkTime(
+          this.start_for_break.split(":")[0],
+          this.start_for_break.split(":")[1]
+        );
+        var result_end_for_break = this.checkTime(
+          this.end_for_break.split(":")[0],
+          this.end_for_break.split(":")[1]
+        );
+
+        if (
+          result_check_in != "" ||
+          result_check_out != "" ||
+          result_start_for_break != "" ||
+          result_end_for_break != ""
+        ) {
           this.notif_text =
             "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
           this.snackbar = true;
           return;
         }
-      }
 
-      if (this.arrive_home != null) {
-        var result_arrive_home = this.checkTime(
-          this.arrive_home.split(":")[0],
-          this.arrive_home.split(":")[1]
-        );
-        if (result_arrive_home != "") {
-          this.notif_text =
-            "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
-          this.snackbar = true;
-          return;
+        if (this.start_for_left != null || this.end_for_left != null) {
+          var result_start_for_left = this.checkTime(
+            this.start_for_left.split(":")[0],
+            this.start_for_left.split(":")[1]
+          );
+          var result_end_for_left = this.checkTime(
+            this.end_for_left.split(":")[0],
+            this.end_for_left.split(":")[1]
+          );
+          if (result_start_for_left != "" || result_end_for_left != "") {
+            this.notif_text =
+              "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+            this.snackbar = true;
+            return;
+          }
         }
+
+        if (this.arrive_home != null) {
+          var result_arrive_home = this.checkTime(
+            this.arrive_home.split(":")[0],
+            this.arrive_home.split(":")[1]
+          );
+          if (result_arrive_home != "") {
+            this.notif_text =
+              "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+            this.snackbar = true;
+            return;
+          }
+        }
+
+        data = {
+          employee: {
+            id: this.employee_data.id,
+          },
+          name: this.employee_data.name,
+          attendance_date: this.selectDate,
+          week_of_day: week_of_day,
+          attendance_type: attendance_type,
+          time_check_in: this.check_in,
+          time_check_out: this.check_out,
+          time_start_for_break: this.start_for_break,
+          time_end_for_break: this.end_for_break,
+          time_start_for_left: this.start_for_left,
+          time_end_for_left: this.end_for_left,
+          time_arrive_home: this.arrive_home,
+        };
       }
 
-      const data = {
-        employee: {
-          id: this.employee_data.id,
-        },
-        name: this.employee_data.name,
-        attendance_date: this.selectDate,
-        week_of_day: week_of_day,
-        attendance_type: attendance_type,
-        time_check_in: this.check_in,
-        time_check_out: this.check_out,
-        time_start_for_break: this.start_for_break,
-        time_end_for_break: this.end_for_break,
-        time_start_for_left: this.start_for_left,
-        time_end_for_left: this.end_for_left,
-        time_arrive_home: this.arrive_home,
-        // time_arrive_home: this.datalist[i].time_arrive_home ? this.datalist[i].time_arrive_home : null,
-      };
       // console.log(data);
       bulk.push(data);
       if (this.departementId == 1) {
@@ -351,6 +397,7 @@ export default {
       this.start_for_left = "";
       this.end_for_left = "";
       this.arrive_home = "";
+      this.select_kehadiran = null;
     },
   },
   computed: {
@@ -368,12 +415,23 @@ export default {
         return 0;
       });
     },
+    select: {
+      get: function () {
+        return this.select_kehadiran;
+      },
+      // setter
+      set: function (newValue) {
+        // your setter here
+        // console.log("new value : " + newValue);
+        this.select_kehadiran = newValue;
+      },
+    },
   },
 
   watch: {
     dialogTambahKehadiran: {
       handler() {
-        console.log(this.dialogTambahKehadiran);
+        // console.log(this.dialogTambahKehadiran);
         if (this.dialogTambahKehadiran == true) {
           const params = new URLSearchParams();
           params.append("filter", "department.id||$eq||" + this.departementId);
