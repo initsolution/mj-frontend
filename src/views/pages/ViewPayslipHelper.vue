@@ -1,105 +1,110 @@
 <template>
-    <v-container class="pa-8" fluid>
+  <v-container class="pa-8" fluid>
+    <v-card>
+      <v-card-title>Payslip Helper</v-card-title>
+      <v-card-text>
+        <v-data-table
+          v-model="selected"
+          show-select
+          :headers="headers"
+          :items.sync="getAllData"
+        >
+          <template v-slot:[`item.periode_start`]="{ item }">
+            {{ formatDateUtils(item.periode_start) }}
+          </template>
+          <template v-slot:[`item.periode_end`]="{ item }">
+            {{ formatDateUtils(item.periode_end) }}
+          </template>
+          <template v-slot:[`item.gaji_pokok`]="{ item }">
+            {{ formatPrice(Math.round(item.gaji_pokok)) }}
+          </template>
+          <template v-slot:[`item.bonus_lama_kerja`]="{ item }">
+            {{ formatPrice(Math.round(item.bonus_lama_kerja)) }}
+          </template>
+          <template v-slot:[`item.upah_n_hari`]="{ item }">
+            {{ formatPrice(Math.round(item.upah_n_hari)) }}
+          </template>
+          <template v-slot:[`item.extra_full`]="{ item }">
+            {{ formatPrice(Math.round(item.extra_full)) }}
+          </template>
+          <template v-slot:[`item.total_pendapatan`]="{ item }">
+            {{ formatPrice(Math.round(item.total_pendapatan)) }}
+          </template>
+          <template v-slot:[`item.potongan_terlambat_ijin`]="{ item }">
+            {{ formatPrice(Math.round(item.potongan_terlambat_ijin)) }}
+          </template>
+          <template v-slot:[`item.potongan_bpjs_tk`]="{ item }">
+            {{ formatPrice(Math.round(item.potongan_bpjs_tk)) }}
+          </template>
+          <template v-slot:[`item.potongan_bpjs_ks`]="{ item }">
+            {{ formatPrice(Math.round(item.potongan_bpjs_ks)) }}
+          </template>
+          <template v-slot:[`item.potongan_spsi`]="{ item }">
+            {{ formatPrice(Math.round(item.potongan_spsi)) }}
+          </template>
+          <template v-slot:[`item.potongan_bon`]="{ item }">
+            <div v-if="item.potongan_bon == 0 && item.sisa_bon > 0">
+            <v-btn
+              
+              color="blue darken-1"
+              small
+              class="mr-3 elevation-0"
+              @click="openDialogBon(item)"
+              >{{ formatPrice(Math.round(item.potongan_bon)) }}</v-btn>
+          </div>
+          <div v-else>{{ formatPrice(Math.round(item.potongan_bon)) }}</div>
+          </template>
+          <template v-slot:[`item.potongan_lain`]="{ item }">
+            {{ formatPrice(Math.round(item.potongan_lain)) }}
+          </template>
+          <template v-slot:[`item.total_potongan`]="{ item }">
+            {{ formatPrice(Math.round(item.total_potongan)) }}
+          </template>
+          <template v-slot:[`item.pendapatan_gaji`]="{ item }">
+            {{ formatPrice(Math.round(item.pendapatan_gaji)) }}
+          </template>
+          <template v-slot:[`item.sisa_bon`]="{ item }">
+            {{ formatPrice(Math.round(item.sisa_bon)) }}
+          </template>
+        </v-data-table>
+      </v-card-text>
+      <v-card-actions>
+        <v-btn color="green darken-1" @click="print">Print</v-btn>
+      </v-card-actions>
+    </v-card>
+    <v-dialog v-model="dialogPay" max-width="600">
       <v-card>
-        <v-card-title>Payslip Helper</v-card-title>
+        <v-card-title>Tambah Bon</v-card-title>
         <v-card-text>
-          <v-data-table
-            v-model="selected"
-            show-select
-            :headers="headers"
-            :items.sync="getAllData"
-          >
-            <template v-slot:[`item.periode_start`]="{ item }">
-              {{ formatDateUtils(item.periode_start) }}
-            </template>
-            <template v-slot:[`item.periode_end`]="{ item }">
-              {{ formatDateUtils(item.periode_end) }}
-            </template>
-            <template v-slot:[`item.gaji_pokok`]="{ item }">
-              {{ formatPrice(Math.round(item.gaji_pokok)) }}
-            </template>
-            <template v-slot:[`item.bonus_lama_kerja`]="{ item }">
-              {{ formatPrice(Math.round(item.bonus_lama_kerja)) }}
-            </template>
-            <template v-slot:[`item.upah_n_hari`]="{ item }">
-              {{ formatPrice(Math.round(item.upah_n_hari)) }}
-            </template>
-            <template v-slot:[`item.extra_full`]="{ item }">
-              {{ formatPrice(Math.round(item.extra_full)) }}
-            </template>
-            <template v-slot:[`item.total_pendapatan`]="{ item }">
-              {{ formatPrice(Math.round(item.total_pendapatan)) }}
-            </template>
-            <template v-slot:[`item.potongan_terlambat_ijin`]="{ item }">
-              {{ formatPrice(Math.round(item.potongan_terlambat_ijin)) }}
-            </template>
-            <template v-slot:[`item.potongan_bpjs_tk`]="{ item }">
-              {{ formatPrice(Math.round(item.potongan_bpjs_tk)) }}
-            </template>
-            <template v-slot:[`item.potongan_bpjs_ks`]="{ item }">
-              {{ formatPrice(Math.round(item.potongan_bpjs_ks)) }}
-            </template>
-            <template v-slot:[`item.potongan_spsi`]="{ item }">
-              {{ formatPrice(Math.round(item.potongan_spsi)) }}
-            </template>
-            <template v-slot:[`item.potongan_bon`]="{ item }">
-              <v-btn
-                v-if="item.potongan_bon == 0"
-                color="blue darken-1"
-                small
-                class="mr-3 elevation-0"
-                @click="openDialogBon(item)"
-                >{{ formatPrice(Math.round(item.potongan_bon)) }}</v-btn
-              >
-              <div v-else>{{ formatPrice(Math.round(item.potongan_bon)) }}</div>
-            </template>
-            <template v-slot:[`item.potongan_lain`]="{ item }">
-              {{ formatPrice(Math.round(item.potongan_lain)) }}
-            </template>
-            <template v-slot:[`item.total_potongan`]="{ item }">
-              {{ formatPrice(Math.round(item.total_potongan)) }}
-            </template>
-            <template v-slot:[`item.pendapatan_gaji`]="{ item }">
-              {{ formatPrice(Math.round(item.pendapatan_gaji)) }}
-            </template>
-            <template v-slot:[`item.sisa_bon`]="{ item }">
-              {{ formatPrice(Math.round(item.sisa_bon)) }}
-            </template>
-          </v-data-table>
+          <v-currency-field
+            color="grey darken-2"
+            :decimal-length="0"
+            prefix="Rp"
+            filled
+            v-bind="currency_config"
+            v-model.trim="loan.nominal"
+            class="currency-input pa-0 ma-0 font-md"
+            label="Nominal Pinjaman"
+          />
+          <v-text-field
+            color="grey darken-2"
+            v-model.trim="loan.description"
+            label="Deskripsi"
+          ></v-text-field>
         </v-card-text>
         <v-card-actions>
-          <v-btn color="green darken-1" @click="print">Print</v-btn>
+          <div class="flex-grow-1"></div>
+          <v-btn class="elevation-0 grey darken-2" dark @click="dismisDialog"
+            >Batal</v-btn
+          >
+          <v-btn class="elevation-0 primary" @click.stop="saveLoan"
+            >Simpan</v-btn
+          >
         </v-card-actions>
       </v-card>
-      <v-dialog v-model="dialogPay" max-width="600">
-        <v-card>
-          <v-card-text>
-            <v-text-field
-              color="grey darken-2"
-              prefix="Rp"
-              v-model.trim="loan.nominal"
-              label="Nominal Pinjaman"
-              required
-            ></v-text-field>
-            <v-text-field
-              color="grey darken-2"
-              v-model.trim="loan.description"
-              label="Deskripsi"
-            ></v-text-field>
-          </v-card-text>
-          <v-card-actions>
-            <div class="flex-grow-1"></div>
-            <v-btn class="elevation-0 grey darken-2" dark @click="dismisDialog"
-              >Batal</v-btn
-            >
-            <v-btn class="elevation-0 primary" @click.stop="saveLoan"
-              >Simpan</v-btn
-            >
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-container>
-  </template>
+    </v-dialog>
+  </v-container>
+</template>
     
     <script lang="js">
     import { mapActions, mapGetters } from "vuex";
@@ -151,10 +156,20 @@
             { text: "Pendapatan gaji", value: "pendapatan_gaji", align: "right" },
             { text: "Sisa bon", value: "sisa_bon", align: "right" },
           ],
+          currency_config: {
+            decimal: ',',
+            thousands: '.',
+            prefix: 'Rp',
+            precision: 0,
+            masked: false,
+            allowBlank: false,
+            min: Number.MIN_SAFE_INTEGER,
+            max: Number.MAX_SAFE_INTEGER,
+          },
         };
       },
       methods: {
-        ...mapActions(['updatePayslipWithBon']),
+        ...mapActions(['updatePayslipHelperWithBon']),
         formatPrice(value) {
           return formatPrice(value);
         },
@@ -204,8 +219,8 @@
             note: this.loan.description,
             type: "bayar",
           };
-          this.updatePayslipWithBon(data)
-          console.log(data)
+          this.updatePayslipHelperWithBon(data)
+          // console.log(data)
           this.dismisDialog()
           // this.inputLoan(data);
         },
@@ -537,4 +552,3 @@
     </script>
     
     <style>
-  </style>
