@@ -19,13 +19,17 @@
             label="Nama"
             return-object
           ></v-autocomplete>
-          <v-text-field
+          <v-currency-field
             color="grey darken-2"
+            :decimal-length="0"
             prefix="Rp"
+            filled
+            v-bind="currency_config"
             v-model.trim="loan.nominal"
+            class="currency-input pa-0 ma-0 font-md"
             label="Nominal Pinjaman"
-            required
-          ></v-text-field>
+          />
+          
           <v-text-field
             color="grey darken-2"
             v-model.trim="loan.description"
@@ -77,9 +81,7 @@
                 >
                   <div>{{ item.department_name }}</div>
                   <div class="black--text mt-3" style="font-size: 24px">
-                    {{
-                      item.total_loan ? formatPrice(item.total_loan) : "-"
-                    }}
+                    {{ item.total_loan ? formatPrice(item.total_loan) : "-" }}
                   </div>
                 </v-col>
               </v-row>
@@ -128,13 +130,27 @@ export default {
         { text: "Pilihan", value: "action" },
       ],
       employee: {},
+      currency_config: {
+        decimal: ',',
+        thousands: '.',
+        prefix: 'Rp',
+        precision: 0,
+        masked: false,
+        allowBlank: false,
+        min: Number.MIN_SAFE_INTEGER,
+        max: Number.MAX_SAFE_INTEGER,
+      },
     };
   },
   created() {
     this.getDataLoan();
   },
   methods: {
-    ...mapActions(["actionGetAllEmployeeByFilter", "inputLoan", "getTotalLoanPerDepartment"]),
+    ...mapActions([
+      "actionGetAllEmployeeByFilter",
+      "inputLoan",
+      "getTotalLoanPerDepartment",
+    ]),
     getDataLoan() {
       const params = new URLSearchParams();
       params.append("join", "loan");
@@ -142,7 +158,7 @@ export default {
       params.append("sort", "loan.created_at,DESC");
       // this.actionGetAllEmployee(params);
       this.actionGetAllEmployeeByFilter(params);
-      this.getTotalLoanPerDepartment()
+      this.getTotalLoanPerDepartment();
     },
     formatPrice(value) {
       return formatPrice(value);
@@ -193,7 +209,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["getDataEmployees", "getStatusLoan", 'getDataLoanByDept']),
+    ...mapGetters(["getDataEmployees", "getStatusLoan", "getDataLoanByDept"]),
     getAllData() {
       return this.getDataEmployees.filter(function (val) {
         return val.loan.length > 0;
@@ -212,9 +228,9 @@ export default {
         return 0;
       });
     },
-    totalLoanByDepartment(){
-      return this.getDataLoanByDept
-    }
+    totalLoanByDepartment() {
+      return this.getDataLoanByDept;
+    },
   },
 };
 </script>

@@ -381,6 +381,7 @@ export default {
         { text: "Pulang", value: "time_check_out" },
         { text: "Mulai Ijin", value: "time_start_for_left" },
         { text: "Selesai Ijin", value: "time_end_for_left" },
+        { text: "Durasi Kerja", value: "work_duration" },
         { text: "Total Telat", value: "total_telat", width: 100 },
         { text: "Total Ijin", value: "total_leave" },
         { text: "Status", value: "status_shift" },

@@ -113,21 +113,21 @@ const actions = {
         // commit('SET_LOADING', true)
         const res = await httpCommons.patch(apiNameProduksi+'/updatePayslipWithBon', data)
         console.log(res)
-        commit('SET_CHECK_PAYSLIP', res.data)
+        commit('SET_CHECK_PAYSLIP', res)
     },
     
     async updatePayslipHelperWithBon({commit, dispatch}, data){
         // commit('SET_LOADING', true)
         const res = await httpCommons.patch(apiNameHelper+'/updatePayslipWithBon', data)
         console.log(res)
-        commit('SET_CHECK_PAYSLIP', res.data)
+        commit('SET_CHECK_PAYSLIP', res)
     },
 
     async updatePayslipOfficeWithBon({commit, dispatch}, data){
         // commit('SET_LOADING', true)
         const res = await httpCommons.patch(apiNameHelper+'/updatePayslipWithBon', data)
         console.log(res)
-        commit('SET_CHECK_PAYSLIP', res.data)
+        commit('SET_CHECK_PAYSLIP', res)
     }
 }
 
