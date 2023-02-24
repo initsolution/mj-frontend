@@ -9,7 +9,10 @@ const state = {
     data: [],
     status: {},
     update: {},
-    isLoading : {},
+    isLoading: {},
+    dataPengeluaranDepartemen: [],
+    dataDetailPengeluaran: [],
+    statusDetailPengeluaran : {},
 }
 
 const actions = {
@@ -50,7 +53,7 @@ const actions = {
             const result = {
                 status: res.statusText,
                 actions: res.status,
-                data : res.data,
+                data: res.data,
             }
             console.log(result);
             commit('SET_CHECK_PAYSLIP', result)
@@ -72,7 +75,7 @@ const actions = {
             const result = {
                 status: res.statusText,
                 actions: res.status,
-                data : res.data,
+                data: res.data,
             }
             console.log(result);
             commit('SET_CHECK_PAYSLIP', result)
@@ -94,7 +97,7 @@ const actions = {
             const result = {
                 status: res.statusText,
                 actions: res.status,
-                data : res.data,
+                data: res.data,
             }
             console.log(result);
             commit('SET_CHECK_PAYSLIP', result)
@@ -108,49 +111,90 @@ const actions = {
             commit('SET_CHECK_PAYSLIP', result)
         }
     },
-    
-    async updatePayslipWithBon({commit, dispatch}, data){
+
+    async updatePayslipWithBon({ commit, dispatch }, data) {
         // commit('SET_LOADING', true)
-        const res = await httpCommons.patch(apiNameProduksi+'/updatePayslipWithBon', data)
-        console.log(res)
-        commit('SET_CHECK_PAYSLIP', res)
-    },
-    
-    async updatePayslipHelperWithBon({commit, dispatch}, data){
-        // commit('SET_LOADING', true)
-        const res = await httpCommons.patch(apiNameHelper+'/updatePayslipWithBon', data)
+        const res = await httpCommons.patch(apiNameProduksi + '/updatePayslipWithBon', data)
         console.log(res)
         commit('SET_CHECK_PAYSLIP', res)
     },
 
-    async updatePayslipOfficeWithBon({commit, dispatch}, data){
+    async updatePayslipHelperWithBon({ commit, dispatch }, data) {
         // commit('SET_LOADING', true)
-        const res = await httpCommons.patch(apiNameHelper+'/updatePayslipWithBon', data)
+        const res = await httpCommons.patch(apiNameHelper + '/updatePayslipWithBon', data)
         console.log(res)
         commit('SET_CHECK_PAYSLIP', res)
+    },
+
+    async updatePayslipOfficeWithBon({ commit, dispatch }, data) {
+        // commit('SET_LOADING', true)
+        const res = await httpCommons.patch(apiNameHelper + '/updatePayslipWithBon', data)
+        console.log(res)
+        commit('SET_CHECK_PAYSLIP', res)
+    },
+
+    async pengeluaranDepartemen({ commit }, param) {
+        let link
+        if (param.departmentId == 1) {
+            link =  apiNameProduksi
+        } else if(param.departmentId == 3){
+            link =  apiNameHelper
+        }
+        
+        const res = await httpCommons.get(link + '/getTotalPengeluaran/' + param.bulantahun);
+        commit('SET_DATA_TOTAL_PENGELUARAN_DEPARTEMEN', res.data)
+    },
+
+    async pengeluaranDetail({ commit }, param) {
+        let link
+        if (param.departmentId == 1) {
+            link =  apiNameProduksi
+        } else if(param.departmentId == 3){
+            link =  apiNameHelper
+        }
+        const res = await httpCommons.get(link + '/getDetailPengeluaran/' + param.periodeAwal + '/' + param.periodeAkhir);
+        // console.log(res)
+        commit('STATUS_DETAIL_PENGELUARAN', {
+            status: res.status,
+            statusText: res.statusText}
+        )
+        commit('SET_DATA_DETAIL_PENGELUARAN', res.data)
     }
 }
 
 const mutations = {
-    SET_LOADING(state, isLoading){
-        state.isLoading ={
-            loading : isLoading
+    SET_LOADING(state, isLoading) {
+        state.isLoading = {
+            loading: isLoading
         }
     },
-    
+
     SET_GET_DATA_PAYSLIP(state, rows) {
         state.data = rows
     },
-   
+
     SET_CHECK_PAYSLIP(state, status) {
         state.status = status
     },
+    SET_DATA_TOTAL_PENGELUARAN_DEPARTEMEN(state, data) {
+        state.dataPengeluaranDepartemen = data
+    },
+
+    SET_DATA_DETAIL_PENGELUARAN(state, data) {
+        state.dataDetailPengeluaran = data
+    },
+    STATUS_DETAIL_PENGELUARAN(state, data){
+        state.statusDetailPengeluaran = data
+    }
 }
 
 const getters = {
     getDataAllPayslip: state => state.data,
     getStatusPayslip: state => state.status,
     geStatusLoading: state => state.isLoading,
+    getdataPengeluaranDepartemen: state => state.dataPengeluaranDepartemen,
+    getDataDetailPengeluaran: state => state.dataDetailPengeluaran,
+    getStatusDetailPengeluaran: state => state.statusDetailPengeluaran
 }
 
 export default {

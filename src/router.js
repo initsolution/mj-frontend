@@ -80,6 +80,11 @@ export default new Router({
           name: "Pengeluaran",
           component: () => import("./views/pages/Pengeluaran.vue"),
         },
+        {
+          path: "detail_pengeluaran",
+          name: "Detail Pengeluaran",
+          component: () => import("./views/pages/DetailPengeluaran.vue"),
+        },
       ],
     },
   ],

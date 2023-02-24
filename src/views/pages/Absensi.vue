@@ -1,90 +1,107 @@
 <template>
   <v-container class="pa-8" fluid>
-    <v-card>
-      <v-card-title></v-card-title>
-      <v-card-text>
-        <v-row>
-          <v-col cols="4" class="py-0">
-            <div class="d-flex flex-row align-center mb-1">
-              <div class="font-md mb-1">Filter tanggal Mulai</div>
-            </div>
-            <div>
-              <v-menu
-                v-model="menuStartDate"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                transition="scale-transition"
-                offset-y
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    color="grey darken-2"
-                    label="Tanggal mulai"
-                    v-model="startDate"
-                    readonly
-                    dense
-                    class="white elevation-0"
-                    hide-details
-                    outlined
-                    single-line
-                    v-on="on"
-                    prepend-inner-icon="mdi-calendar"
-                  ></v-text-field>
+    <v-row>
+      <v-col>
+        <div flat>
+          <v-row align="center" justify="space-between">
+            <v-col class="py-0">
+              <div class="title d-flex flex-row">
+                <v-icon color="grey" class="mr-2">mdi-account-box</v-icon>
+                <div>Data Absensi</div>
+              </div>
+            </v-col>
+            <div class="flex-grow-1"></div>
+            <v-col class="text-right py-0"> </v-col>
+          </v-row>
+          <v-divider class="my-3"></v-divider>
+          <v-card>
+            <v-card-title></v-card-title>
+            <v-card-text>
+              <v-row>
+                <v-col cols="4" class="py-0">
+                  <div class="d-flex flex-row align-center mb-1">
+                    <div class="font-md mb-1">Filter tanggal Mulai</div>
+                  </div>
+                  <div>
+                    <v-menu
+                      v-model="menuStartDate"
+                      :close-on-content-click="false"
+                      :nudge-right="40"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="290px"
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-text-field
+                          color="grey darken-2"
+                          label="Tanggal mulai"
+                          v-model="startDate"
+                          readonly
+                          dense
+                          class="white elevation-0"
+                          hide-details
+                          outlined
+                          single-line
+                          v-on="on"
+                          prepend-inner-icon="mdi-calendar"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="startDate"
+                        :max="endDate"
+                        @input="menuStartDate = false"
+                      ></v-date-picker>
+                    </v-menu>
+                  </div>
+                </v-col>
+                <v-col cols="4" class="py-0">
+                  <div class="d-flex flex-row align-center mb-1">
+                    <div class="font-md mb-1">Filter tanggal Selesai</div>
+                  </div>
+                  <div>
+                    <v-menu
+                      v-model="menuEndDate"
+                      :close-on-content-click="false"
+                      :nudge-right="40"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="290px"
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-text-field
+                          color="grey darken-2"
+                          label="Tanggal selesai"
+                          readonly
+                          v-model="endDate"
+                          dense
+                          class="white elevation-0"
+                          hide-details
+                          outlined
+                          single-line
+                          v-on="on"
+                          prepend-inner-icon="mdi-calendar"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker
+                        v-model="endDate"
+                        :min="startDate"
+                        @input="menuEndDate = false"
+                      ></v-date-picker>
+                    </v-menu>
+                  </div>
+                </v-col>
+              </v-row>
+              <div style="margin: 20px"></div>
+              <v-data-table :headers="headers" :items.sync="getAllData">
+                <template v-slot:[`item.attendance_date`]="{ item }">
+                  {{ formatDateUtils(item.attendance_date) }}
                 </template>
-                <v-date-picker
-                  v-model="startDate"
-                  :max="endDate"
-                  @input="menuStartDate = false"
-                ></v-date-picker>
-              </v-menu>
-            </div>
-          </v-col>
-          <v-col cols="4" class="py-0">
-            <div class="d-flex flex-row align-center mb-1">
-              <div class="font-md mb-1">Filter tanggal Selesai</div>
-            </div>
-            <div>
-              <v-menu
-                v-model="menuEndDate"
-                :close-on-content-click="false"
-                :nudge-right="40"
-                transition="scale-transition"
-                offset-y
-                min-width="290px"
-              >
-                <template v-slot:activator="{ on }">
-                  <v-text-field
-                    color="grey darken-2"
-                    label="Tanggal selesai"
-                    readonly
-                    v-model="endDate"
-                    dense
-                    class="white elevation-0"
-                    hide-details
-                    outlined
-                    single-line
-                    v-on="on"
-                    prepend-inner-icon="mdi-calendar"
-                  ></v-text-field>
-                </template>
-                <v-date-picker
-                  v-model="endDate"
-                  :min="startDate"
-                  @input="menuEndDate = false"
-                ></v-date-picker>
-              </v-menu>
-            </div>
-          </v-col>
-        </v-row>
-        <div style="margin: 20px"></div>
-        <v-data-table :headers="headers" :items.sync="getAllData">
-          <template v-slot:[`item.attendance_date`]="{ item }">
-            {{ formatDateUtils(item.attendance_date) }}
-          </template>
-        </v-data-table>
-      </v-card-text>
-    </v-card>
+              </v-data-table>
+            </v-card-text>
+          </v-card>
+        </div>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 <script lang="js">

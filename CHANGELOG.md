@@ -166,4 +166,12 @@
     - Menambahkan Vue-currency untuk bon
 - Modul Attendance Bulanan 
     - Menyiapkan modul
-    
+
+# 0.0.1 (Update 24/02/2023)    
+- Modul Pengeluaran
+	- Menambahkan filter by department, bulan dan thun
+	- Menambahkan Detail pengeluaran
+- Modul Pinjaman
+	- Menambahkan filter by department dan nama
+- Modul Absensi
+	- memperbaiki UI
