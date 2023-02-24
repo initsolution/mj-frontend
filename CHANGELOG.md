@@ -156,4 +156,19 @@
     - margin bottom
 - Modul Tambah Kehadiran
     - tambah status masuk / tidak masuk karyawan
+
+# 0.0.1 (Update 16/02/2023)
+- Modul Payslip
+    - tambah dialog konfirmasi untuk cetak payslip
+    
+
+# 0.0.1 (Update 22/02/2023)
+- Modul Payslip Produksi
+    - Solve Payslip update bon auto refresh
+    - Menambahkan Vue-currency untuk bon
+- Modul Payslip Helper
+    - Solve Payslip update bon auto refresh
+    - Menambahkan Vue-currency untuk bon
+- Modul Attendance Bulanan 
+    - Menyiapkan modul
     

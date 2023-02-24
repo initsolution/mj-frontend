@@ -288,10 +288,20 @@
             { text: "Pendapatan gaji", value: "pendapatan_gaji", align: "right" },
             { text: "Sisa bon", value: "sisa_bon", align: "right" },
           ],
+          currency_config: {
+            decimal: ',',
+            thousands: '.',
+            prefix: 'Rp',
+            precision: 0,
+            masked: false,
+            allowBlank: false,
+            min: Number.MIN_SAFE_INTEGER,
+            max: Number.MAX_SAFE_INTEGER,
+          },
         };
       },
       methods: {
-        ...mapActions(['updatePayslipWithBon']),
+        ...mapActions(['updatePayslipHelperWithBon']),
         formatPrice(value) {
           return formatPrice(value);
         },
@@ -341,8 +351,8 @@
             note: this.loan.description,
             type: "bayar",
           };
-          this.updatePayslipWithBon(data)
-          console.log(data)
+          this.updatePayslipHelperWithBon(data)
+          // console.log(data)
           this.dismisDialog()
           // this.inputLoan(data);
         },

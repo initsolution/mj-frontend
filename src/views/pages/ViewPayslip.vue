@@ -1,7 +1,7 @@
 <template>
   <v-container class="pa-8" fluid>
     <v-card>
-      <v-card-title>Payslip Prouksi</v-card-title>
+      <v-card-title>Payslip Produksi</v-card-title>
       <v-card-text>
         <v-data-table
           v-model="selected"
@@ -259,13 +259,16 @@
     <v-dialog v-model="dialogPay" max-width="600">
       <v-card>
         <v-card-text>
-          <v-text-field
+          <v-currency-field
             color="grey darken-2"
+            :decimal-length="0"
             prefix="Rp"
+            filled
+            v-bind="currency_config"
             v-model.trim="loan.nominal"
+            class="currency-input pa-0 ma-0 font-md"
             label="Nominal Pinjaman"
-            required
-          ></v-text-field>
+          />
           <v-text-field
             color="grey darken-2"
             v-model.trim="loan.description"
@@ -347,6 +350,16 @@
           { text: "Pendapatan gaji", value: "pendapatan_gaji", align: "right" },
           { text: "Sisa bon", value: "sisa_bon", align: "right" },
         ],
+        currency_config: {
+            decimal: ',',
+            thousands: '.',
+            prefix: 'Rp',
+            precision: 0,
+            masked: false,
+            allowBlank: false,
+            min: Number.MIN_SAFE_INTEGER,
+            max: Number.MAX_SAFE_INTEGER,
+          },
       };
     },
     methods: {
@@ -404,7 +417,7 @@
           type: "bayar",
         };
         this.updatePayslipWithBon(data)
-        console.log(data)
+        // console.log(data)
         this.dismisDialog()
         // this.inputLoan(data);
       },
