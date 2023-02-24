@@ -1,5 +1,11 @@
 <template>
   <v-container class="pa-7" fluid>
+    <dialog-generate-payslip
+      :dialogGeneratePayslip.sync="dialogGeneratePayslip"
+      :departementId="departementId"
+      :dataPayslip="dataPayslip"
+    >
+    </dialog-generate-payslip>
     <v-card class="mb-3">
       <v-card-text>
         <!-- <div class="d-flex flex-row align-start justify-space-between mt-5">
@@ -245,10 +251,13 @@
 </template>
 <script>
 import { mapActions, mapGetters } from "vuex";
+import DialogGeneratePayslip from "@/views/components/DialogGeneratePayslip.vue";
 
 export default {
   name: "Payslip",
-  components: {},
+  components: {
+    DialogGeneratePayslip,
+  },
   data() {
     return {
       picker: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
@@ -266,22 +275,9 @@ export default {
       multiLine: false,
       snackbar: false,
       notif_text: "",
-      // getDataAllDepartement: [
-      //   {
-      //     id: 1,
-      //     created_at: "2022-12-02T09:44:44.809Z",
-      //     updated_at: "2022-12-29T05:53:40.997Z",
-      //     name: "PRODUKSI",
-      //     umr: 2439814,
-      //   },
-      //   {
-      //     id: 2,
-      //     created_at: "2022-12-02T09:44:44.809Z",
-      //     updated_at: "2022-12-29T05:53:40.997Z",
-      //     name: "BULANAN",
-      //     umr: 2439814,
-      //   },
-      // ],
+      dialogGeneratePayslip: false,
+      departementId: null,
+      dataPayslip: null,
     };
   },
 
@@ -331,13 +327,17 @@ export default {
         periode_end: this.end_date,
         day_off: this.holidays,
       };
-      if (this.choosenDepartment.id == 1) {
-        this.savePayslip(data);
-      } else if (this.choosenDepartment.id == 2) {
-        // this.savePayslip(data)
-      } else if (this.choosenDepartment.id == 3) {
-        this.savePayslipHelper(data);
-      }
+
+      this.departementId = this.choosenDepartment.id;
+      this.dataPayslip = data;
+      this.dialogGeneratePayslip = true;
+      // if (this.choosenDepartment.id == 1) {
+      //   this.savePayslip(data);
+      // } else if (this.choosenDepartment.id == 2) {
+      //   // this.savePayslip(data)
+      // } else if (this.choosenDepartment.id == 3) {
+      //   this.savePayslipHelper(data);
+      // }
     },
 
     getNewDate() {
@@ -400,9 +400,9 @@ export default {
       if (status.loading == false) {
         if (this.choosenDepartment.id == 1) {
           this.$router.push("/viewPayslip").catch(() => {});
-        }else if (this.choosenDepartment.id == 2) {
+        } else if (this.choosenDepartment.id == 2) {
           // this.$router.push("/viewPayslip").catch(() => {});
-        }else if (this.choosenDepartment.id == 3) {
+        } else if (this.choosenDepartment.id == 3) {
           this.$router.push("/viewPayslipHelper").catch(() => {});
         }
       }

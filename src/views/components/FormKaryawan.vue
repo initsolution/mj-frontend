@@ -3,16 +3,7 @@
   <v-dialog v-model="dialogForm" persistent max-width="1000">
     <v-card>
       <v-card-title
-        class="
-          subheading
-          px-8
-          d-flex
-          flex-row
-          grey
-          lighten-5
-          align-center
-          justify-space-between
-        "
+        class="subheading px-8 d-flex flex-row grey lighten-5 align-center justify-space-between"
       >
         <div>
           <div>
@@ -33,20 +24,11 @@
         <v-container>
           <v-row>
             <v-col cols="12">
-              <v-form ref="form" v-model="valid" lazy-validation>
+              <v-form ref="form">
                 <v-row>
                   <v-col class="py-0" cols="12" sm="12" md="12">
                     <div
-                      class="
-                        font-sm
-                        grey--text grey
-                        lighten-4
-                        px-3
-                        py-1
-                        mb-3
-                        mt-6
-                        round
-                      "
+                      class="font-sm grey--text grey lighten-4 px-3 py-1 mb-3 mt-6 round"
                     >
                       Data Pribadi
                     </div>
@@ -56,8 +38,12 @@
                         <v-text-field
                           color="grey darken-2"
                           v-model.trim="name"
-                          required
                           label="Nama Lengkap*"
+                          :error-messages="nameErrors"
+                          :counter="100"
+                          @input="$v.name.$touch()"
+                          @blur="$v.name.$touch()"
+                          required
                         ></v-text-field>
                       </v-col>
                       <v-col class="py-0" cols="5">
@@ -75,7 +61,10 @@
                           color="grey darken-2"
                           v-model.trim="id"
                           label="NIK*"
-                          :counter="20"
+                          :error-messages="idErrors"
+                          :counter="100"
+                          @input="$v.id.$touch()"
+                          @blur="$v.id.$touch()"
                           required
                         ></v-text-field>
                       </v-col>
@@ -87,8 +76,10 @@
                           color="grey darken-2"
                           v-model.trim="bpjs_id"
                           label="ID BPJS*"
-                          :counter="20"
-                          required
+                          :error-messages="bpjsIdErrors"
+                          :counter="30"
+                          @input="$v.bpjs_id.$touch()"
+                          @blur="$v.bpjs_id.$touch()"
                         ></v-text-field>
                       </v-col>
                       <v-col class="py-0" cols="12" sm="12" md="6">
@@ -96,8 +87,10 @@
                           color="grey darken-2"
                           v-model.trim="npwp_id"
                           label="ID NPWP*"
-                          :counter="20"
-                          required
+                          :error-messages="npwpIdErrors"
+                          :counter="30"
+                          @input="$v.npwp_id.$touch()"
+                          @blur="$v.npwp_id.$touch()"
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -108,6 +101,10 @@
                           color="grey darken-2"
                           v-model.trim="address"
                           label="Alamat"
+                          :error-messages="addressErrors"
+                          :counter="100"
+                          @input="$v.address.$touch()"
+                          @blur="$v.address.$touch()"
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -147,6 +144,10 @@
                           color="grey darken-2"
                           v-model.trim="phone_no"
                           label="Nomor Telepon"
+                          :error-messages="phoneNoErrors"
+                          :counter="20"
+                          @input="$v.phone_no.$touch()"
+                          @blur="$v.phone_no.$touch()"
                         ></v-text-field>
                       </v-col>
                     </v-row>
@@ -156,16 +157,7 @@
                 <v-row>
                   <v-col class="py-0" cols="12" sm="12" md="12">
                     <div
-                      class="
-                        font-sm
-                        grey--text grey
-                        lighten-4
-                        px-3
-                        py-1
-                        mb-3
-                        mt-6
-                        round
-                      "
+                      class="font-sm grey--text grey lighten-4 px-3 py-1 mb-3 mt-6 round"
                     >
                       Data Karyawan
                     </div>
@@ -269,18 +261,24 @@
                 <v-row>
                   <v-col class="py-0 mb-5 mt-6" cols="6" sm="6" md="6">
                     <div
-                      class="
-                        font-sm
-                        grey--text grey
-                        lighten-4
-                        px-3
-                        py-1
-                        mb-6
-                        round
-                      "
+                      class="font-sm grey--text grey lighten-4 px-3 py-1 mb-6 round"
                     >
                       Data Komponen Pengajian
                     </div>
+                    <!-- <v-currency-field
+                      color="grey darken-2"
+                      :decimal-length="0"
+                      prefix="Rp"
+                      filled
+                      v-bind="currency_config"
+                      v-model.trim="gaji_pokok"
+                      class="currency-input pa-0 ma-0 font-md"
+                      label="Gaji Pokok"
+                      :error-messages="gajiPokokErrors"
+                      @input="$v.gaji_pokok.$touch()"
+                      @blur="$v.gaji_pokok.$touch()"
+                      required
+                    ></v-currency-field> -->
                     <v-currency-field
                       color="grey darken-2"
                       :decimal-length="0"
@@ -414,15 +412,7 @@
                   </v-col>
                   <v-col class="py-0 mb-5 mt-6" cols="6" sm="6" md="6">
                     <div
-                      class="
-                        font-sm
-                        grey--text grey
-                        lighten-4
-                        px-3
-                        py-1
-                        mb-6
-                        round
-                      "
+                      class="font-sm grey--text grey lighten-4 px-3 py-1 mb-6 round"
                     >
                       Detail Shift
                     </div>
@@ -483,6 +473,13 @@
 import employee from '@/store/modules/employee';
 import { formatDate } from '@/utils/utils';
 import { mapActions, mapGetters } from 'vuex';
+import {
+  required,
+  minLength,
+  maxLength,
+  email,
+} from 'vuelidate/lib/validators';
+
 export default {
   name: 'FormKaryawan',
   data() {
@@ -501,17 +498,17 @@ export default {
       bpjs_id: null,
       npwp_id: null,
       date_of_birth: null,
-      extra_full: null,
-      iuran_bpjs_tk: null,
-      iuran_bpjs_ks: null,
-      iuran_spsi: null,
-      insentif_extra: null,
-      extra_tambahan_kerja: null,
-      gaji_pokok: null,
-      tunjangan_kehadiran: null,
-      owner_rate: null,
-      owner_bonus_khusus: null,
-      owner_overtime_rate: null,
+      extra_full: 0,
+      iuran_bpjs_tk: 0,
+      iuran_bpjs_ks: 0,
+      iuran_spsi: 0,
+      insentif_extra: 0,
+      extra_tambahan_kerja: 0,
+      gaji_pokok: 0,
+      tunjangan_kehadiran: 0,
+      owner_rate: 0,
+      owner_bonus_khusus: 0,
+      owner_overtime_rate: 0,
       department_id: null,
       area_id: null,
       position_id: null,
@@ -520,7 +517,6 @@ export default {
       // ------------------
 
       name_: null,
-      valid: true,
       listDepartment: [],
       listShift: [],
       listArea: [],
@@ -557,6 +553,56 @@ export default {
       ],
     };
   },
+  validations: {
+    id: {
+      required,
+      maxLength: maxLength(20),
+    },
+    name: {
+      required,
+      maxLength: maxLength(100),
+    },
+    phone_no: {
+      maxLength: maxLength(20),
+    },
+    address: {
+      maxLength: maxLength(100),
+    },
+    bpjs_id: {
+      maxLength: maxLength(30),
+    },
+    npwp_id: {
+      maxLength: maxLength(30),
+    },
+    // gaji_pokok: {
+    //   required,
+    // },
+    // extra_full: {
+    //   required,
+    // },
+
+    // insentif_extra: {
+    //   required,
+    // },
+    // extra_tambahan_kerja: {
+    //   required,
+    // },
+
+    // tunjangan_kehadiran: {
+    //   required,
+    // },
+    // iuran_bpjs_tk: {
+    //   required,
+    // },
+
+    // iuran_bpjs_ks: {
+    //   required,
+    // },
+    // iuran_spsi: {
+    //   required,
+    // },
+  },
+
   props: {
     employeeType: {
       type: Array,
@@ -588,6 +634,11 @@ export default {
     ]),
 
     save() {
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        return;
+      }
+
       const newEmployee = {
         id: this.id,
         name: this.name,
@@ -609,7 +660,7 @@ export default {
           id: this.position_id,
         },
         shift: {
-          id: this.selectedShift.id,
+          id: this.selectedShift != null ? this.selectedShift.id : null,
         },
         extra_full: this.extra_full,
         iuran_bpjs_tk: this.iuran_bpjs_tk,
@@ -651,6 +702,7 @@ export default {
       this.listDetailShift = [];
       this.$emit('update:dataEmployee', {});
       this.$emit('update:dialogForm', false);
+      this.$v.$reset();
     },
 
     getAllAreaByDepartmentId() {
@@ -804,6 +856,95 @@ export default {
       'getAllDataShift',
       'getAllDetailShift',
     ]),
+    nameErrors() {
+      const errors = [];
+      if (!this.$v.name.$dirty) return errors;
+      !this.$v.name.maxLength && errors.push('Panjang Nama Max 50 Karakter');
+      !this.$v.name.required && errors.push('Nama harus diisi.');
+      return errors;
+    },
+    idErrors() {
+      const errors = [];
+      if (!this.$v.id.$dirty) return errors;
+      !this.$v.id.maxLength && errors.push('NIK Max 20 Karakter');
+      !this.$v.id.required && errors.push('NIK harus diisi.');
+      return errors;
+    },
+    bpjsIdErrors() {
+      const errors = [];
+      if (!this.$v.bpjs_id.$dirty) return errors;
+      !this.$v.bpjs_id.maxLength && errors.push('BPJS ID Max 30 Karakter');
+      return errors;
+    },
+    npwpIdErrors() {
+      const errors = [];
+      if (!this.$v.npwp_id.$dirty) return errors;
+      !this.$v.npwp_id.maxLength && errors.push('NPWP ID Max 30 Karakter');
+      return errors;
+    },
+    addressErrors() {
+      const errors = [];
+      if (!this.$v.address.$dirty) return errors;
+      !this.$v.address.maxLength && errors.push('Alamat Max 100 Karakter');
+      return errors;
+    },
+    phoneNoErrors() {
+      const errors = [];
+      if (!this.$v.phone_no.$dirty) return errors;
+      !this.$v.phone_no.maxLength && errors.push('No Telepon 20 Karakter');
+      return errors;
+    },
+    // gajiPokokErrors() {
+    //   const errors = [];
+    //   if (!this.$v.gaji_pokok.$dirty) return errors;
+    //   !this.$v.gaji_pokok.required && errors.push('Gaji pokok harus diisi.');
+    //   return errors;
+    // },
+
+    // extraFullErrors() {
+    //   const errors = [];
+    //   if (!this.$v.extra_full.$dirty) return errors;
+    //   !this.$v.extra_full.required && errors.push('Extra full harus diisi.');
+    //   return errors;
+    // },
+
+    // insentifExtraErrors() {
+    //   const errors = [];
+    //   if (!this.$v.insentif_extra.$dirty) return errors;
+    //   !this.$v.insentif_extra.required && errors.push('Insentif extra harus diisi.');
+    //   return errors;
+    // },
+    // extraTambahanKerjaErrors() {
+    //   const errors = [];
+    //   if (!this.$v.extra_tambahan_kerja.$dirty) return errors;
+    //   !this.$v.extra_tambahan_kerja.required && errors.push('Extra tambahan kerja harus diisi.');
+    //   return errors;
+    // },
+    // tunjanganKehadiranErrors() {
+    //   const errors = [];
+    //   if (!this.$v.tunjangan_kehadiran.$dirty) return errors;
+    //   !this.$v.tunjangan_kehadiran.required && errors.push('Tunjangan kehadiran harus diisi.');
+    //   return errors;
+    // },
+
+    // iuranBpjsTkErrors() {
+    //   const errors = [];
+    //   if (!this.$v.iuran_bpjs_tk.$dirty) return errors;
+    //   !this.$v.iuran_bpjs_tk.required && errors.push('Iuran BPJS TK harus diisi.');
+    //   return errors;
+    // },
+    // iuranBpjsKsErrors() {
+    //   const errors = [];
+    //   if (!this.$v.iuran_bpjs_ks.$dirty) return errors;
+    //   !this.$v.iuran_bpjs_ks.required && errors.push('Iuran BPJS KS harus diisi.');
+    //   return errors;
+    // },
+    // iuranSpsiErrors() {
+    //   const errors = [];
+    //   if (!this.$v.iuran_spsi.$dirty) return errors;
+    //   !this.$v.iuran_spsi.required && errors.push('Iuran SPSI harus diisi.');
+    //   return errors;
+    // },
   },
 };
 </script>

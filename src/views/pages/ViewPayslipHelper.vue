@@ -8,7 +8,143 @@
           show-select
           :headers="headers"
           :items.sync="getAllData"
+          :expanded.sync="expanded"
+          item-key="employee.id"
+          show-expand
         >
+          <template v-slot:expanded-item="{ headers, item }">
+            <td style="border: none; background: #fafafa"></td>
+            <td
+              :colspan="headers.length"
+              class="py-3"
+              style="border: none; background: #fafafa"
+            >
+              <div>
+                <v-row>
+                  <v-col cols="4">
+                    <v-simple-table>
+                      <template v-slot:default>
+                        <tbody>
+                          <tr>
+                            <td>Lama Kerja</td>
+                            <td>{{ item.lama_kerja }} Tahun</td>
+                          </tr>
+                          <tr>
+                            <td>Total Hari Kerja</td>
+                            <td>{{ item.total_hari_kerja }} Hari</td>
+                          </tr>
+                          <tr>
+                            <td>Total Hari Masuk</td>
+                            <td>{{ item.total_hari_masuk }} Hari</td>
+                          </tr>
+                          <tr>
+                            <td>Total Hari Tidak Masuk</td>
+                            <td>{{ item.total_hari_off }} Hari</td>
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col cols="8">
+                    <v-simple-table>
+                      <template v-slot:default>
+                        <thead>
+                          <tr>
+                            <th colspan="2" class="text-left">PENDAPATAN</th>
+                            <th colspan="2" class="text-left">PENGELUARAN</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <td>Gaji Pokok</td>
+                            <td>
+                              {{ formatPrice(Math.round(item.gaji_pokok)) }}
+                            </td>
+                            <td>Potongan Terlambat</td>
+                            <td>
+                              {{
+                                formatPrice(
+                                  Math.round(item.potongan_terlambat_ijin),
+                                )
+                              }}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Bonus Lama Kerja</td>
+                            <td>
+                              {{
+                                formatPrice(Math.round(item.bonus_lama_kerja))
+                              }}
+                            </td>
+                            <td>Pot BPJS TK</td>
+                            <td>
+                              {{
+                                formatPrice(Math.round(item.potongan_bpjs_tk))
+                              }}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Upah 1 Minggu</td>
+                            <td>
+                              {{ formatPrice(Math.round(item.upah_n_hari)) }}
+                            </td>
+                            <td>Pot BPJS KS</td>
+                            <td>
+                              {{
+                                formatPrice(Math.round(item.potongan_bpjs_ks))
+                              }}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Extra Full</td>
+                            <td>
+                              {{ formatPrice(Math.round(item.extra_full)) }}
+                            </td>
+                            <td>Pot SPSI</td>
+                            <td>
+                              {{ formatPrice(Math.round(item.potongan_spsi)) }}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td></td>
+                            <td>Pot Bon</td>
+                            <td>
+                              <!-- {{ formatPrice(Math.round(item.potongan_bon)) }} -->
+
+                              <v-btn
+                                v-if="item.potongan_bon == 0"
+                                color="blue darken-1"
+                                small
+                                class="mr-3 elevation-0"
+                                @click="openDialogBon(item)"
+                                >{{
+                                  formatPrice(Math.round(item.potongan_bon))
+                                }}</v-btn
+                              >
+                              <div v-else>
+                                {{ formatPrice(Math.round(item.potongan_bon)) }}
+                              </div>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td></td>
+                            <td>Pot Lain</td>
+                            <td>
+                              {{ formatPrice(Math.round(item.potongan_lain)) }}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </template>
+                    </v-simple-table>
+                  </v-col>
+                </v-row>
+              </div>
+            </td>
+          </template>
           <template v-slot:[`item.periode_start`]="{ item }">
             {{ formatDateUtils(item.periode_start) }}
           </template>
@@ -43,16 +179,15 @@
             {{ formatPrice(Math.round(item.potongan_spsi)) }}
           </template>
           <template v-slot:[`item.potongan_bon`]="{ item }">
-            <div v-if="item.potongan_bon == 0 && item.sisa_bon > 0">
             <v-btn
-              
+              v-if="item.potongan_bon == 0"
               color="blue darken-1"
               small
               class="mr-3 elevation-0"
               @click="openDialogBon(item)"
-              >{{ formatPrice(Math.round(item.potongan_bon)) }}</v-btn>
-          </div>
-          <div v-else>{{ formatPrice(Math.round(item.potongan_bon)) }}</div>
+              >{{ formatPrice(Math.round(item.potongan_bon)) }}</v-btn
+            >
+            <div v-else>{{ formatPrice(Math.round(item.potongan_bon)) }}</div>
           </template>
           <template v-slot:[`item.potongan_lain`]="{ item }">
             {{ formatPrice(Math.round(item.potongan_lain)) }}
@@ -74,18 +209,14 @@
     </v-card>
     <v-dialog v-model="dialogPay" max-width="600">
       <v-card>
-        <v-card-title>Tambah Bon</v-card-title>
         <v-card-text>
-          <v-currency-field
+          <v-text-field
             color="grey darken-2"
-            :decimal-length="0"
             prefix="Rp"
-            filled
-            v-bind="currency_config"
             v-model.trim="loan.nominal"
-            class="currency-input pa-0 ma-0 font-md"
             label="Nominal Pinjaman"
-          />
+            required
+          ></v-text-field>
           <v-text-field
             color="grey darken-2"
             v-model.trim="loan.description"
@@ -116,6 +247,7 @@
       name: "ViewPayslipHelper",
       data() {
         return {
+          expanded: [],
           selected: [],
           dialogPay : false,
           loan : {},
@@ -125,33 +257,33 @@
             { text: "Nama", value: "employee.name" },
             { text: "Periode awal", value: "periode_start" },
             { text: "Periode akhir", value: "periode_end" },
-            { text: "Total hari kerja", value: "total_hari_kerja" },
-            { text: "Total hari masuk", value: "total_hari_masuk" },
-            { text: "Total hari off", value: "total_hari_off" },
-            { text: "Lama kerja", value: "lama_kerja", align: "right" },
-            { text: "Gaji Pokok", value: "gaji_pokok", align: "right" },
-            { text: "Bonus lama kerja", value: "bonus_lama_kerja", align: "right" },
-            { text: "Upah 1 minggu", value: "upah_n_hari", align: "right" },
-            { text: "Extra full", value: "extra_full", align: "right" },
+            // { text: "Total hari kerja", value: "total_hari_kerja" },
+            // { text: "Total hari masuk", value: "total_hari_masuk" },
+            // { text: "Total hari off", value: "total_hari_off" },
+            // { text: "Lama kerja", value: "lama_kerja", align: "right" },
+            // { text: "Gaji Pokok", value: "gaji_pokok", align: "right" },
+            // { text: "Bonus lama kerja", value: "bonus_lama_kerja", align: "right" },
+            // { text: "Upah 1 minggu", value: "upah_n_hari", align: "right" },
+            // { text: "Extra full", value: "extra_full", align: "right" },
             { text: "Total pendapatan", value: "total_pendapatan", align: "right" },
-            {
-              text: "Potongan terlambat dan ijin",
-              value: "potongan_terlambat_ijin",
-              align: "right",
-            },
-            {
-              text: "Potongan BPJS tenaga kerja",
-              value: "potongan_bpjs_tk",
-              align: "right",
-            },
-            {
-              text: "Potongan BPJS kesehatan",
-              value: "potongan_bpjs_ks",
-              align: "right",
-            },
-            { text: "Potongan SPSI", value: "potongan_spsi", align: "right" },
-            { text: "Potongan bon", value: "potongan_bon", align: "right" },
-            { text: "Potongan lain", value: "potongan_lain", align: "right" },
+            // {
+            //   text: "Potongan terlambat dan ijin",
+            //   value: "potongan_terlambat_ijin",
+            //   align: "right",
+            // },
+            // {
+            //   text: "Potongan BPJS tenaga kerja",
+            //   value: "potongan_bpjs_tk",
+            //   align: "right",
+            // },
+            // {
+            //   text: "Potongan BPJS kesehatan",
+            //   value: "potongan_bpjs_ks",
+            //   align: "right",
+            // },
+            // { text: "Potongan SPSI", value: "potongan_spsi", align: "right" },
+            // { text: "Potongan bon", value: "potongan_bon", align: "right" },
+            // { text: "Potongan lain", value: "potongan_lain", align: "right" },
             { text: "Total potongan", value: "total_potongan", align: "right" },
             { text: "Pendapatan gaji", value: "pendapatan_gaji", align: "right" },
             { text: "Sisa bon", value: "sisa_bon", align: "right" },
@@ -552,3 +684,4 @@
     </script>
     
     <style>
+</style>

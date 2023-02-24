@@ -25,50 +25,52 @@
           </v-row>
           <v-divider class="my-3"></v-divider>
           <v-row>
-            <v-col md="8">
+            <v-col cols="8">
               <v-file-input
                 accept=".xlsx"
                 label="File input"
-                outlined
                 v-model="selectXlsx"
+                density="compact"
                 show-size
               ></v-file-input>
             </v-col>
 
-            <v-col md="4">
+            <v-col cols="4">
               <v-btn
                 color="primary elevation-0"
                 @click="onUpload"
                 class="mt-3 mr-2 icon-box"
               >
-                Upload
+                <v-icon>mdi-file-upload-outline</v-icon>
               </v-btn>
 
-              <v-btn color="primary elevation-0" class="mt-3 mr-2 icon-box">
-                Download
+              <v-btn color="success elevation-0" class="mt-3 mr-2 icon-box">
+                <v-icon>mdi-file-download-outline</v-icon>
               </v-btn>
 
               <v-btn
                 @click="addFunction"
-                color="primary elevation-0"
+                color="error elevation-0"
                 class="mt-3 icon-box"
               >
-                Tambah
+                <v-icon color="white">mdi-plus</v-icon> Tambah
               </v-btn>
             </v-col>
           </v-row>
-          <!-- <v-row>
-            <v-btn
-              :outlined="!filter"
-              class="elevation-0"
-              :color="filter ? 'primary' : 'grey darken-1'"
-              @click="showFilter"
-            >
-              <v-icon>mdi-filter</v-icon>
-              <span>Filter</span>
-            </v-btn>
-          </v-row> -->
           <v-row>
+            <v-col cols="12"
+              ><v-btn
+                :outlined="!filter"
+                class="elevation-0"
+                :color="filter ? 'primary' : 'grey darken-1'"
+                @click="showFilter"
+              >
+                <v-icon>mdi-filter</v-icon>
+                <span>Filter</span>
+              </v-btn></v-col
+            >
+          </v-row>
+          <v-row v-if="filter">
             <v-col cols="4" class="py-0">
               <div class="d-flex flex-row align-center mb-1">
                 <div class="font-md mb-1">Filter Departemen</div>
@@ -125,7 +127,7 @@
               </div>
             </v-col>
           </v-row>
-          <v-row>
+          <v-row v-if="filter">
             <v-col cols="4" class="py-0">
               <div class="d-flex flex-row align-center mb-1">
                 <div class="font-md mb-1">Filter Shift</div>
