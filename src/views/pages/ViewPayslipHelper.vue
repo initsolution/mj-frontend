@@ -183,6 +183,7 @@
               v-if="item.potongan_bon == 0"
               color="blue darken-1"
               small
+              dark
               class="mr-3 elevation-0"
               @click="openDialogBon(item)"
               >{{ formatPrice(Math.round(item.potongan_bon)) }}</v-btn
@@ -209,14 +210,20 @@
     </v-card>
     <v-dialog v-model="dialogPay" max-width="600">
       <v-card>
+        <v-card-title>
+          <div>Pembayaran Bon Pinjaman</div>
+        </v-card-title>
         <v-card-text>
-          <v-text-field
+          <v-currency-field
             color="grey darken-2"
+            :decimal-length="0"
             prefix="Rp"
+            filled
+            v-bind="currency_config"
             v-model.trim="loan.nominal"
-            label="Nominal Pinjaman"
-            required
-          ></v-text-field>
+            class="currency-input pa-0 ma-0 font-md"
+            label="Nominal Potongan"
+          />
           <v-text-field
             color="grey darken-2"
             v-model.trim="loan.description"

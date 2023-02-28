@@ -180,3 +180,7 @@
 	- Menambahkan filter by department dan nama
 - Modul Absensi
 	- memperbaiki UI
+
+# 0.0.1 (Update 28/02/2023)
+- Modul Payslip helper
+    - menambahkan fitur currency di potongan bon
