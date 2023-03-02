@@ -184,3 +184,8 @@
 # 0.0.1 (Update 28/02/2023)
 - Modul Payslip helper
     - menambahkan fitur currency di potongan bon
+
+# 0.0.1 (Update 02/03/2023)
+- Modul Payslip Helper & Produksi
+    - Menambahkan potongan lain
+    - jika tidak punya bon, maka potongan bon tidak tampil button    

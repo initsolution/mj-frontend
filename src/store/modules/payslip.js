@@ -132,6 +132,20 @@ const actions = {
         console.log(res)
         commit('SET_CHECK_PAYSLIP', res)
     },
+    
+    
+    async updatePayslipWithPotonganLain({ commit, dispatch }, data) {
+        // commit('SET_LOADING', true)
+        let apiname = ''
+        if(data.jenis_potongan == 'produksi'){
+            apiname = apiNameProduksi
+        }else if(data.jenis_potongan == 'helper'){
+            apiname = apiNameHelper
+        }
+        const res = await httpCommons.patch(apiname + '/updatePayslipWithPotonganLain', data)
+        // console.log(res)
+        commit('SET_CHECK_PAYSLIP', res)
+    },
 
     async pengeluaranDepartemen({ commit }, param) {
         let link
