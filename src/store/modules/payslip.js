@@ -2,7 +2,7 @@
 import httpCommons from '../../http-commons'
 
 const apiNameProduksi = 'payslip-produksi'
-const apiNameHelper = 'payslip-helper'
+const apiNameCs = 'payslip-helper'
 const apiNameBulanan = 'payslip-bulanan'
 
 const state = {
@@ -68,10 +68,10 @@ const actions = {
         }
     },
 
-    async savePayslipHelper({ commit, dispatch }, data) {
+    async savePayslipCs({ commit, dispatch }, data) {
         try {
             commit('SET_LOADING', true)
-            const res = await httpCommons.post(apiNameHelper, data)
+            const res = await httpCommons.post(apiNameCs, data)
             const result = {
                 status: res.statusText,
                 actions: res.status,
@@ -119,17 +119,31 @@ const actions = {
         commit('SET_CHECK_PAYSLIP', res)
     },
 
-    async updatePayslipHelperWithBon({ commit, dispatch }, data) {
+    async updatePayslipCsWithBon({ commit, dispatch }, data) {
         // commit('SET_LOADING', true)
-        const res = await httpCommons.patch(apiNameHelper + '/updatePayslipWithBon', data)
+        const res = await httpCommons.patch(apiNameCs + '/updatePayslipWithBon', data)
         console.log(res)
         commit('SET_CHECK_PAYSLIP', res)
     },
 
     async updatePayslipOfficeWithBon({ commit, dispatch }, data) {
         // commit('SET_LOADING', true)
-        const res = await httpCommons.patch(apiNameHelper + '/updatePayslipWithBon', data)
+        const res = await httpCommons.patch(apiNameCs + '/updatePayslipWithBon', data)
         console.log(res)
+        commit('SET_CHECK_PAYSLIP', res)
+    },
+    
+    
+    async updatePayslipWithPotonganLain({ commit, dispatch }, data) {
+        // commit('SET_LOADING', true)
+        let apiname = ''
+        if(data.jenis_potongan == 'produksi'){
+            apiname = apiNameProduksi
+        }else if(data.jenis_potongan == 'cs'){
+            apiname = apiNameCs
+        }
+        const res = await httpCommons.patch(apiname + '/updatePayslipWithPotonganLain', data)
+        // console.log(res)
         commit('SET_CHECK_PAYSLIP', res)
     },
 
@@ -138,7 +152,7 @@ const actions = {
         if (param.departmentId == 1) {
             link =  apiNameProduksi
         } else if(param.departmentId == 3){
-            link =  apiNameHelper
+            link =  apiNameCs
         }
         
         const res = await httpCommons.get(link + '/getTotalPengeluaran/' + param.bulantahun);
@@ -150,7 +164,7 @@ const actions = {
         if (param.departmentId == 1) {
             link =  apiNameProduksi
         } else if(param.departmentId == 3){
-            link =  apiNameHelper
+            link =  apiNameCs
         }
         const res = await httpCommons.get(link + '/getDetailPengeluaran/' + param.periodeAwal + '/' + param.periodeAkhir);
         // console.log(res)

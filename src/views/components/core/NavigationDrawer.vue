@@ -137,9 +137,9 @@ export default {
             to: '/kehadiran_mingguan',
           },
           {
-            title: 'Helper',
+            title: 'Cleaning Service',
             icon: 'mdi-calendar-check',
-            to: '/kehadiran_helper',
+            to: '/kehadiran_cs',
           },
         ],
       },

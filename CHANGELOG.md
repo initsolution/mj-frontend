@@ -192,3 +192,7 @@
     - text merah saat istirahat sebelum start_for_break
     - jika ada ijin menjadi warna kuning
     - tambah work hour di tabel
+# 0.0.1 (Update 02/03/2023)
+- Modul Payslip Helper & Produksi
+    - Menambahkan potongan lain
+    - jika tidak punya bon, maka potongan bon tidak tampil button    

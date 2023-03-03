@@ -191,7 +191,7 @@ export default {
   methods: {
     ...mapActions([
       "saveBulkAttendance",
-      "saveBulkAttendanceHelper",
+      "saveBulkAttendanceCs",
       "actionGetAllEmployeeByFilter",
     ]),
     addOneAttendance() {
@@ -373,7 +373,7 @@ export default {
         this.saveBulkAttendance({ bulk: bulk });
       } else if (this.departementId == 2) {
       } else if (this.departementId == 3) {
-        this.saveBulkAttendanceHelper({ bulk: bulk });
+        this.saveBulkAttendanceCs({ bulk: bulk });
       }
       this.close();
     },

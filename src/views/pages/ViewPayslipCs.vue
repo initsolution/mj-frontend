@@ -1,7 +1,7 @@
 <template>
   <v-container class="pa-8" fluid>
     <v-card>
-      <v-card-title>Payslip Helper</v-card-title>
+      <v-card-title>Payslip Cleaning Service</v-card-title>
       <v-card-text>
         <v-data-table
           v-model="selected"
@@ -66,7 +66,7 @@
                             <td>
                               {{
                                 formatPrice(
-                                  Math.round(item.potongan_terlambat_ijin),
+                                  Math.round(item.potongan_terlambat_ijin)
                                 )
                               }}
                             </td>
@@ -115,7 +115,7 @@
                               <!-- {{ formatPrice(Math.round(item.potongan_bon)) }} -->
 
                               <v-btn
-                                v-if="item.potongan_bon == 0"
+                              v-if="item.potongan_bon == 0 && item.sisa_bon > 0"
                                 color="blue darken-1"
                                 small
                                 class="mr-3 elevation-0"
@@ -134,7 +134,20 @@
                             <td></td>
                             <td>Pot Lain</td>
                             <td>
-                              {{ formatPrice(Math.round(item.potongan_lain)) }}
+                              <v-btn
+                                v-if="item.potongan_lain == 0 "
+                                color="blue darken-1"
+                                small
+                                class="mr-3 elevation-0"
+                                @click="openDialogPotongan(item)"
+                                >{{
+                                  formatPrice(Math.round(item.potongan_bon))
+                                }}</v-btn
+                              >
+                              <div v-else>
+                                {{ formatPrice(Math.round(item.potongan_lain)) }}
+                              </div>
+                              
                             </td>
                           </tr>
                         </tbody>
@@ -180,7 +193,7 @@
           </template>
           <template v-slot:[`item.potongan_bon`]="{ item }">
             <v-btn
-              v-if="item.potongan_bon == 0"
+              v-if="item.sisa_bon > 0"
               color="blue darken-1"
               small
               dark
@@ -241,6 +254,35 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="dialogPotonganLain" max-width="600">
+      <v-card>
+        <v-card-title>Potongan</v-card-title>
+        <v-card-text>
+          <v-currency-field
+            color="grey darken-2"
+            :decimal-length="0"
+            prefix="Rp"
+            filled
+            v-bind="currency_config"
+            v-model.trim="potongan_lain"
+            class="currency-input pa-0 ma-0 font-md"
+            label="Nominal Potongan"
+          />
+        </v-card-text>
+        <v-card-actions>
+          <div class="flex-grow-1"></div>
+          <v-btn
+            class="elevation-0 grey darken-2"
+            dark
+            @click="dismisDialogPotonganLain"
+            >Batal</v-btn
+          >
+          <v-btn class="elevation-0 primary" @click.stop="savePotonganLain"
+            >Simpan</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
     
@@ -251,7 +293,7 @@
     import autoTable from "jspdf-autotable";
     import angkaTerbilang from "@develoka/angka-terbilang-js";
     export default {
-      name: "ViewPayslipHelper",
+      name: "ViewPayslipCs",
       data() {
         return {
           expanded: [],
@@ -259,6 +301,8 @@
           dialogPay : false,
           loan : {},
           dataPayslip : {},
+          dialogPotonganLain : false,
+          potongan_lain : 0,
           headers: [
             { text: "Employee_ID", value: "employee.id" },
             { text: "Nama", value: "employee.name" },
@@ -308,14 +352,31 @@
         };
       },
       methods: {
-        ...mapActions(['updatePayslipHelperWithBon']),
+        ...mapActions(['updatePayslipCsWithBon', 'updatePayslipWithPotonganLain']),
         formatPrice(value) {
           return formatPrice(value);
         },
         formatDateUtils(val){
           return  formatDate(val, 'short-date')
         },
-    
+        savePotonganLain(){
+        const data = {
+          idPayslip : this.dataPayslip.id, 
+          potongan_lain: this.potongan_lain,
+          jenis_potongan: "cs",
+        };
+        this.updatePayslipWithPotonganLain(data)
+        // console.log(data)
+        this.dismisDialogPotonganLain()
+      },
+      openDialogPotongan(item){
+        // console.log(item)
+        this.dataPayslip =item
+        this.dialogPotonganLain = true
+      },
+      dismisDialogPotonganLain() {
+        this.dialogPotonganLain = false;
+      },
         formatDateBulan(date) {
           date = new Date(date);
           var bulan = [
@@ -358,14 +419,14 @@
             note: this.loan.description,
             type: "bayar",
           };
-          this.updatePayslipHelperWithBon(data)
+          this.updatePayslipCsWithBon(data)
           // console.log(data)
           this.dismisDialog()
           // this.inputLoan(data);
         },
     
         print() {
-        //   console.log(this.selected);
+          console.log(this.selected);
           this.selected.sort((a, b)=> a.employee.name.localeCompare(b.employee.name))
           const doc = new jsPDF("l", "mm", "a5");
           for (var i = 0; i < this.selected.length; i++) {
@@ -667,7 +728,7 @@
               doc.addPage();
             }
           }
-          var document_name = "Helper "+this.selected[0].periode_start+" - "+this.selected[0].periode_end+".pdf";
+          var document_name = "CS "+this.selected[0].periode_start+" - "+this.selected[0].periode_end+".pdf";
           doc.save(document_name);
         },
       },

@@ -42,7 +42,7 @@ export default {
     return {};
   },
   methods: {
-    ...mapActions(["deleteAttendanceById", "deleteAttendanceByIdHelper"]),
+    ...mapActions(["deleteAttendanceById", "deleteAttendanceByIdCs"]),
     deleteAttendance() {
       console.log(this.deleteItems.length);
       if (this.deleteItems.length > 0) {
@@ -52,7 +52,7 @@ export default {
             this.deleteAttendanceById(id);
           } else if(this.departementId == 2) {
           } else if(this.departementId == 3) {
-            this.deleteAttendanceByIdHelper(id);
+            this.deleteAttendanceByIdCs(id);
           }
         }
       }
