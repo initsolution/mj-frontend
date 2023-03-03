@@ -184,3 +184,11 @@
 # 0.0.1 (Update 28/02/2023)
 - Modul Payslip helper
     - menambahkan fitur currency di potongan bon
+
+# 0.0.1 (Update 03/03/2023)
+- Modul Detail Pinjaman
+    - ubah textfield menjadi currency
+- Modul Kehadiran
+    - text merah saat istirahat sebelum start_for_break
+    - jika ada ijin menjadi warna kuning
+    - tambah work hour di tabel

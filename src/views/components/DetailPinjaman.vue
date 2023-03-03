@@ -79,13 +79,15 @@
           </div>
         </v-card-title>
         <v-card-text>
-          <v-text-field
+          <v-currency-field
             color="grey darken-2"
+            :decimal-length="0"
             prefix="Rp"
+            v-bind="currency_config"
             v-model.trim="loan.nominal"
             label="Nominal Pinjaman"
             required
-          ></v-text-field>
+          ></v-currency-field>
           <v-text-field
             color="grey darken-2"
             v-model.trim="loan.description"
@@ -131,6 +133,16 @@ export default {
         { text: "Jenis", value: "jenis" },
         { text: "Nominal", value: "nominal" },
       ],
+      currency_config: {
+        decimal: ",",
+        thousands: ".",
+        prefix: "Rp",
+        precision: 0,
+        masked: false,
+        allowBlank: false,
+        min: Number.MIN_SAFE_INTEGER,
+        max: Number.MAX_SAFE_INTEGER,
+      },
     };
   },
   methods: {
