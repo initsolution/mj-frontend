@@ -10,14 +10,14 @@ const state = {
 };
 
 const actions = {
-  async getAttendanceCustomHelper({commit}){
+  async getAttendanceCustomCs({commit}){
     // console.log('get custom attendance')
     const res = await httpCommons.get(apiName+'/customGetAttendance');
     console.log(res)
     commit("SET_GET_DATA_ATTENDANCE", res.data);
   },
   
-  async actionGetAllAttendenceHelper({ commit }) {
+  async actionGetAllAttendenceCs({ commit }) {
     // if (date == null) {
     //   console.log("date kosong");
       var today = new Date();
@@ -52,13 +52,13 @@ const actions = {
     commit("SET_GET_DATA_ATTENDANCE", res.data);
   },
 
-  async actionGetAllAttendenceByFilterHelper({ commit }, param) {
+  async actionGetAllAttendenceByFilterCs({ commit }, param) {
     const res = await httpCommons.get(apiName, {params : param});
     // console.log(res);
     commit("SET_GET_DATA_ATTENDANCE", res.data);
   },
 
-  async saveAttendanceHelper({ commit, dispatch }, data) {
+  async saveAttendanceCs({ commit, dispatch }, data) {
     try {
       const res = await httpCommons.post(apiName, data);
       const result = {
@@ -75,7 +75,7 @@ const actions = {
     }
   },
 
-  async saveBulkAttendanceHelper({ commit, dispatch }, data) {
+  async saveBulkAttendanceCs({ commit, dispatch }, data) {
     // console.log(data);
     commit("SET_LOADING_ATTENDANCE", true);
     try {
@@ -88,7 +88,7 @@ const actions = {
       // console.log("res : " + res);
       // console.log(result);
       commit("SET_CHECK_ATTENDANCE", result);
-      dispatch("getAttendanceCustomHelper");
+      dispatch("getAttendanceCustomCs");
       
     } catch (error) {
       // console.log(error);
@@ -141,7 +141,7 @@ const actions = {
     }
   },
 
-  async checkAttendanceHelper({ commit, dispatch }, data) {
+  async checkAttendanceCs({ commit, dispatch }, data) {
     // console.log(data);
     try {
       const res = await httpCommons.post(apiName + "/checkAttendance", data);
@@ -161,7 +161,7 @@ const actions = {
     }
   },
 
-  async deleteAttendanceByIdHelper({ commit, dispatch }, id) {
+  async deleteAttendanceByIdCs({ commit, dispatch }, id) {
     try {
       const res = await httpCommons.delete(apiName + "/" + id);
       // console.log("res " + res);
@@ -198,10 +198,10 @@ const mutations = {
 };
 
 const getters = {
-  getDataAllAttendanceHelper: (state) => state.data,
-  getStatusAttendanceHelper: (state) => state.status,
-  getBulkAttendanceHelper: (state) => state.status,
-  getLoadingAttendanceHelper: (state) => state.loading,
+  getDataAllAttendanceCs: (state) => state.data,
+  getStatusAttendanceCs: (state) => state.status,
+  getBulkAttendanceCs: (state) => state.status,
+  getLoadingAttendanceCs: (state) => state.loading,
 };
 
 export default {

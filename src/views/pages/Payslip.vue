@@ -177,7 +177,7 @@
                       <v-date-picker
                         v-model="picker"
                         @input="getNewDate()"
-                        :allowed-dates="allowedDatesHelper"
+                        :allowed-dates="allowedDatesCs"
                       >
                       </v-date-picker>
                     </v-menu>
@@ -288,13 +288,13 @@ export default {
   methods: {
     ...mapActions([
       "savePayslip",
-      "savePayslipHelper",
+      "savePayslipCs",
       "actionGetAllDepartment",
     ]),
 
     //enable hari Jumat saja
     allowedDatesProduksi: (val) => [5].includes(new Date(val).getDay()),
-    allowedDatesHelper: (val) => [1].includes(new Date(val).getDay()),
+    allowedDatesCs: (val) => [1].includes(new Date(val).getDay()),
 
     selectDepartment(item) {
       console.log("select department " + this.picker);
@@ -336,7 +336,7 @@ export default {
       // } else if (this.choosenDepartment.id == 2) {
       //   // this.savePayslip(data)
       // } else if (this.choosenDepartment.id == 3) {
-      //   this.savePayslipHelper(data);
+      //   this.savePayslipCs(data);
       // }
     },
 
@@ -403,7 +403,7 @@ export default {
         } else if (this.choosenDepartment.id == 2) {
           // this.$router.push("/viewPayslip").catch(() => {});
         } else if (this.choosenDepartment.id == 3) {
-          this.$router.push("/viewPayslipHelper").catch(() => {});
+          this.$router.push("/viewPayslipCs").catch(() => {});
         }
       }
     },

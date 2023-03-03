@@ -38,7 +38,7 @@ export default {
     return {};
   },
   methods: {
-    ...mapActions(["savePayslip", "savePayslipHelper"]),
+    ...mapActions(["savePayslip", "savePayslipCs"]),
     generatePayslip() {
       console.log(this.departementId);
       console.log(this.dataPayslip);
@@ -47,7 +47,7 @@ export default {
       } else if (this.departementId == 2) {
         // this.savePayslip(data)
       } else if (this.departementId == 3) {
-        this.savePayslipHelper(this.dataPayslip);
+        this.savePayslipCs(this.dataPayslip);
       }
       this.close();
     },

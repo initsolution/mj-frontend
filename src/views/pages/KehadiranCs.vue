@@ -28,7 +28,7 @@
             <v-col class="py-0">
               <div class="title d-flex flex-row">
                 <v-icon color="grey" class="mr-2">mdi-calendar-check</v-icon>
-                <div>Data Absensi Helper</div>
+                <div>Data Absensi CS</div>
               </div>
             </v-col>
             <div class="flex-grow-1"></div>
@@ -203,7 +203,7 @@
               <v-data-table
                 v-model="selected_items"
                 :headers="this.headers"
-                :items="getDataAllAttendanceHelper"
+                :items="getDataAllAttendanceCs"
                 class="elevation-1"
                 show-select
               >
@@ -352,7 +352,7 @@ import HapusKehadiran from "@/views/components/HapusKehadiran.vue";
 import FormIjin from "@/views/components/FormIjin.vue";
 import FormGantiShift from "@/views/components/FormGantiShift.vue";
 export default {
-  name: "KehadiranHelper",
+  name: "KehadiranCs",
 
   data() {
     return {
@@ -426,17 +426,17 @@ export default {
     // today = "18/11/2022"
     // console.log(today);
 
-    this.getAttendanceCustomHelper();
+    this.getAttendanceCustomCs();
   },
 
   methods: {
     ...mapActions([
-      "saveAttendanceHelper",
-      "saveBulkAttendanceHelper",
-      "checkAttendanceHelper",
-      "actionGetAllAttendenceHelper",
-      "actionGetAllAttendenceByFilterHelper",
-      "getAttendanceCustomHelper",
+      "saveAttendanceCs",
+      "saveBulkAttendanceCs",
+      "checkAttendanceCs",
+      "actionGetAllAttendenceCs",
+      "actionGetAllAttendenceByFilterCs",
+      "getAttendanceCustomCs",
     ]),
     manipulasiDate(tgl, operator, val) {
       // console.log(tgl + "-" + operator + "-" + val);
@@ -472,7 +472,7 @@ export default {
         };
         bulk.push(data);
       }
-      this.saveBulkAttendanceHelper({ bulk: bulk });
+      this.saveBulkAttendanceCs({ bulk: bulk });
     },
 
     importAttendance(event) {
@@ -788,7 +788,7 @@ export default {
     },
 
     getResAddAttendance() {
-      const status = this.getBulkAttendanceHelper;
+      const status = this.getBulkAttendanceCs;
       // console.log("getResAddAttendance : " + status.data);
       // if (status.actions == 201) {
       //   if (status.status == "Created") {
@@ -814,7 +814,7 @@ export default {
     },
 
     getStatusLoading() {
-      const status = this.getLoadingAttendanceHelper;
+      const status = this.getLoadingAttendanceCs;
       // console.log(status);
       if (status) {
         this.overlay = true;
@@ -824,7 +824,7 @@ export default {
     },
 
     updateStatusAttendance() {
-      const status = this.getStatusAttendanceHelper;
+      const status = this.getStatusAttendanceCs;
       if (status.actions == 200) {
         if (status.status == "OK") {
           this.getDataAllAttendanceByFilter();
@@ -863,7 +863,7 @@ export default {
         }
       }
       param.append("join", "shift");
-      this.actionGetAllAttendenceByFilterHelper(param);
+      this.actionGetAllAttendenceByFilterCs(param);
     },
 
     searchKeyword() {
@@ -873,7 +873,7 @@ export default {
         this.startDate == null &&
         this.endDate == null
       ) {
-        this.getAttendanceCustomHelper();
+        this.getAttendanceCustomCs();
       } else {
         this.getDataAllAttendanceByFilter();
       }
@@ -882,10 +882,10 @@ export default {
 
   computed: {
     ...mapGetters([
-      "getStatusAttendanceHelper",
-      "getBulkAttendanceHelper",
-      "getDataAllAttendanceHelper",
-      "getLoadingAttendanceHelper",
+      "getStatusAttendanceCs",
+      "getBulkAttendanceCs",
+      "getDataAllAttendanceCs",
+      "getLoadingAttendanceCs",
     ]),
     // getCheckAttendance() {
     //   return this.getStatusAttendance.data;
@@ -893,12 +893,12 @@ export default {
   },
 
   watch: {
-    getBulkAttendanceHelper: {
+    getBulkAttendanceCs: {
       handler() {
         this.getResAddAttendance();
       },
     },
-    getDataAllAttendanceHelper: {
+    getDataAllAttendanceCs: {
       handler() {
         this.selected_items = [];
       },
@@ -921,12 +921,12 @@ export default {
         // }
       },
     },
-    getLoadingAttendanceHelper: {
+    getLoadingAttendanceCs: {
       handler() {
         this.getStatusLoading();
       },
     },
-    getStatusAttendanceHelper: {
+    getStatusAttendanceCs: {
       handler() {
         this.updateStatusAttendance();
       },

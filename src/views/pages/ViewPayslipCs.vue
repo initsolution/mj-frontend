@@ -1,7 +1,7 @@
 <template>
   <v-container class="pa-8" fluid>
     <v-card>
-      <v-card-title>Payslip Helper</v-card-title>
+      <v-card-title>Payslip Cleaning Service</v-card-title>
       <v-card-text>
         <v-data-table
           v-model="selected"
@@ -293,7 +293,7 @@
     import autoTable from "jspdf-autotable";
     import angkaTerbilang from "@develoka/angka-terbilang-js";
     export default {
-      name: "ViewPayslipHelper",
+      name: "ViewPayslipCs",
       data() {
         return {
           expanded: [],
@@ -352,7 +352,7 @@
         };
       },
       methods: {
-        ...mapActions(['updatePayslipHelperWithBon', 'updatePayslipWithPotonganLain']),
+        ...mapActions(['updatePayslipCsWithBon', 'updatePayslipWithPotonganLain']),
         formatPrice(value) {
           return formatPrice(value);
         },
@@ -363,7 +363,7 @@
         const data = {
           idPayslip : this.dataPayslip.id, 
           potongan_lain: this.potongan_lain,
-          jenis_potongan: "helper",
+          jenis_potongan: "cs",
         };
         this.updatePayslipWithPotonganLain(data)
         // console.log(data)
@@ -419,7 +419,7 @@
             note: this.loan.description,
             type: "bayar",
           };
-          this.updatePayslipHelperWithBon(data)
+          this.updatePayslipCsWithBon(data)
           // console.log(data)
           this.dismisDialog()
           // this.inputLoan(data);
@@ -728,7 +728,7 @@
               doc.addPage();
             }
           }
-          var document_name = "Helper "+this.selected[0].periode_start+" - "+this.selected[0].periode_end+".pdf";
+          var document_name = "CS "+this.selected[0].periode_start+" - "+this.selected[0].periode_end+".pdf";
           doc.save(document_name);
         },
       },
