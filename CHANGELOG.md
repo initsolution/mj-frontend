@@ -196,3 +196,10 @@
 - Modul Payslip Helper & Produksi
     - Menambahkan potongan lain
     - jika tidak punya bon, maka potongan bon tidak tampil button    
+# 0.0.1 (Update 06/03/2023)
+- Modul KehadiranCs
+    - Tambah Jam Kerja dan Jam Istirahat
+- Modul Shift
+    - Ubah Tampilan saat jam kerja tetap & jam kerja bebas
+- Modul TambahEditShift
+    - Ubah Tampilan Jam kerja bebas (istirahat berdasarkan durasi)    
