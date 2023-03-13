@@ -49,6 +49,29 @@ const actions = {
       commit('SET_STATUS_RESPONSE', result);
     }
   },
+
+  async saveCustomBulkEmployee({ commit, dispatch }, data) {
+    console.log('save');
+    console.log(data);
+    try {
+      const res = await httpCommons.post(apiName + '/customCreateAll', data);
+      const result = {
+        status: res.statusText,
+        actions: res.status,
+        data: res.data,
+      };
+      // console.log(result);
+      commit('SET_STATUS_RESPONSE', result);
+      dispatch('actionGetAllEmployee');
+    } catch (error) {
+      const result = {
+        status: 'duplicate',
+        actions: 201,
+      };
+      commit('SET_STATUS_RESPONSE', result);
+    }
+  },
+
   async actionUpdateEmployee({ commit, dispatch }, data) {
     try {
       const res = await httpCommons.patch(apiName + `/${data.id}`, data);

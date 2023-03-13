@@ -313,6 +313,7 @@ export default {
     ...mapActions([
       'actionGetAllEmployee',
       'saveBulkEmployee',
+      'saveCustomBulkEmployee',
       'actionGetAllEmployeeByFilter',
       'actionGetAllDepartment',
       'actionGetAllAreaByDepartmentId',
@@ -392,8 +393,8 @@ export default {
               break;
             }
 
-            for (var col = 65; col <= 81; col++) {
-              var c = String.fromCharCode(col); // get 'A', 'B', 'C' ... 'Q'
+            for (var col = 65; col <= 85; col++) {
+              var c = String.fromCharCode(col); // get 'A', 'B', 'C' ... 'U'
               var key = '' + c + row;
               if (sheet[key] == null) {
                 datarow.push(null); //jika row .. column .. = null
@@ -405,19 +406,20 @@ export default {
 
             // reformat active_date
             if (datarow[2] != null) {
-              var date = datarow[2].split('-');
+              var date = datarow[2].split('/');
+              // console.log(datarow[2]);
               var year = date[2];
-              var month = Number.parseInt(date[1]);
-              var days = Number.parseInt(date[0]);
+              var month = date[1];
+              var days = date[0];
               datarow[2] = year + '-' + month + '-' + days;
             }
             // reformat date_of_birth
-            if (datarow[4] != null) {
-              date = datarow[4].split('-');
+            if (datarow[8] != null) {
+              date = datarow[8].split('/');
               year = date[2];
-              month = Number.parseInt(date[1]);
-              days = Number.parseInt(date[0]);
-              datarow[4] = year + '-' + month + '-' + days;
+              month = date[1];
+              days = date[0];
+              datarow[8] = year + '-' + month + '-' + days;
             }
 
             this.datalist.push({
@@ -425,19 +427,23 @@ export default {
               name: datarow[1],
               active_date: datarow[2],
               type: datarow[3],
-              date_of_birth: datarow[4],
-              address: datarow[5],
-              phone_no: datarow[6],
-              npwp_id: datarow[7],
-              bpjs_id: datarow[8],
-              gaji_pokok: datarow[9],
-              insentif_extra: datarow[10],
-              extra_tambahan_kerja: datarow[11],
-              tunjangan_kehadiran: datarow[12],
-              extra_full: datarow[13],
-              iuran_bpjs_tk: datarow[14],
-              iuran_bpjs_ks: datarow[15],
-              iuran_spsi: datarow[16],
+              department: { name: datarow[4] },
+              area: { name: datarow[5] },
+              position: { name: datarow[6] },
+              shift: { name: datarow[7] },
+              date_of_birth: datarow[8],
+              address: datarow[9],
+              phone_no: datarow[10],
+              npwp_id: datarow[11],
+              bpjs_id: datarow[12],
+              gaji_pokok: datarow[13],
+              insentif_extra: datarow[14],
+              extra_tambahan_kerja: datarow[15],
+              tunjangan_kehadiran: datarow[16],
+              extra_full: datarow[17],
+              iuran_bpjs_tk: datarow[18],
+              iuran_bpjs_ks: datarow[19],
+              iuran_spsi: datarow[20],
             });
           }
         };
@@ -447,7 +453,8 @@ export default {
         reader.onloadend = (e) => {
           console.log('datalist len = ' + this.datalist.length);
           console.log(this.datalist);
-          this.saveBulkEmployee({ bulk: this.datalist });
+          // this.saveBulkEmployee({ bulk: this.datalist });
+          this.saveCustomBulkEmployee({ bulk: this.datalist });
         };
       }
     },
