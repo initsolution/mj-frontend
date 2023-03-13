@@ -140,6 +140,12 @@
                   <template v-slot:[`item.break_duration_m`]="{ item }"
                     >{{ item.break_duration_m }} menit
                   </template>
+                  <template v-slot:[`item.start`]="{ item }"
+                    >{{ convertTime(item.start) }}
+                  </template>
+                  <template v-slot:[`item.end`]="{ item }"
+                    >{{ convertTime(item.end) }}
+                  </template>
                 </v-data-table>
               </div>
               <div v-else
@@ -152,6 +158,18 @@
                 >
                   <template v-slot:[`item.days`]="{ item }"
                     >{{ convertToDay(item.days - 1) }}
+                  </template>
+                  <template v-slot:[`item.start`]="{ item }"
+                    >{{ convertTime(item.start) }}
+                  </template>
+                  <template v-slot:[`item.start_break`]="{ item }"
+                    >{{ convertTime(item.start_break) }}
+                  </template>
+                  <template v-slot:[`item.end_break`]="{ item }"
+                    >{{ convertTime(item.end_break) }}
+                  </template>
+                  <template v-slot:[`item.end`]="{ item }"
+                    >{{ convertTime(item.end) }}
                   </template>
                 </v-data-table>
               </div>
@@ -218,6 +236,10 @@ export default {
 
     convertToDay(day) {
       return this.label_day[day];
+    },
+    
+    convertTime(time){
+      return time.substring(0,5);
     },
 
     editShift() {

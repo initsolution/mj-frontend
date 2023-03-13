@@ -830,11 +830,11 @@ export default {
         if (status.status == "OK") {
           this.getDataAllAttendanceByFilter();
         }
-      } else if (status.actions == 201) {
-        if (status.status == "duplicate") {
-          this.notif_text = "Ada duplikasi data";
-          this.snackbar = true;
-        }
+      } else if (status.actions == 500) {
+        // if (status.status == "duplicate") {
+        this.notif_text = status.status;
+        this.snackbar = true;
+        // }
       }
     },
 

@@ -93,8 +93,8 @@ const actions = {
     } catch (error) {
       // console.log(error);
       const result = {
-        status: "duplicate",
-        actions: 201,
+        status: error.response.data.message,
+        actions: error.response.data.statusCode,
       };
       commit("SET_CHECK_ATTENDANCE", result);
     }

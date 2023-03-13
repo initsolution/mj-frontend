@@ -286,11 +286,7 @@ export default {
   },
 
   methods: {
-    ...mapActions([
-      "savePayslip",
-      "savePayslipCs",
-      "actionGetAllDepartment",
-    ]),
+    ...mapActions(["savePayslip", "savePayslipCs", "actionGetAllDepartment"]),
 
     //enable hari Jumat saja
     allowedDatesProduksi: (val) => [5].includes(new Date(val).getDay()),
@@ -437,11 +433,26 @@ export default {
       date = date.split("-");
       return date[2] + " " + month[parseInt(date[1]) - 1] + " " + date[0];
     },
+
+    getResponseGeneratePayslip() {
+      if (this.getStatusPayslip.status == 404) {
+        if (this.getStatusPayslip.data == "Not found Attendance") {
+          this.notif_text =
+            "Kehadiran tidak ditemukan";
+          this.snackbar = true;
+        }
+      }
+    },
   },
   watch: {
     geStatusLoading: {
       handler() {
         this.isLoadingFinish();
+      },
+    },
+    getStatusPayslip: {
+      handler() {
+        this.getResponseGeneratePayslip();
       },
     },
   },

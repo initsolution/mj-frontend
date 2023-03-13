@@ -203,3 +203,10 @@
     - Ubah Tampilan saat jam kerja tetap & jam kerja bebas
 - Modul TambahEditShift
     - Ubah Tampilan Jam kerja bebas (istirahat berdasarkan durasi)    
+# 0.0.1 (Update 13/03/2023)
+- Modul KehadiranCs, Produksi, dan Bulanan
+    - Muncul data dengan NIK jika ada duplikasi data
+- Modul Payslip
+    - Notifikasi tidak bisa generate payslip jika kehadiran kosong
+- Modul Shift
+    - Remove second(detik) pada detailShift

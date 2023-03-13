@@ -61,8 +61,8 @@ const actions = {
             // dispatch('actionGetAllAttendence')
         } catch (error) {
             const result = {
-                status: 'duplicate',
-                actions: 201
+                status: error.response.data.statusCode,
+                data: error.response.data.data,
             }
             commit('SET_CHECK_PAYSLIP', result)
         }
@@ -83,8 +83,8 @@ const actions = {
             // dispatch('actionGetAllAttendence')
         } catch (error) {
             const result = {
-                status: 'duplicate',
-                actions: 201
+                status: error.response.data.statusCode,
+                data: error.response.data.data,
             }
             commit('SET_CHECK_PAYSLIP', result)
         }
@@ -105,8 +105,8 @@ const actions = {
             // dispatch('actionGetAllAttendence')
         } catch (error) {
             const result = {
-                status: 'duplicate',
-                actions: 201
+                status: error.response.data.statusCode,
+                data: error.response.data.data,
             }
             commit('SET_CHECK_PAYSLIP', result)
         }
