@@ -185,7 +185,21 @@
 - Modul Payslip helper
     - menambahkan fitur currency di potongan bon
 
+# 0.0.1 (Update 03/03/2023)
+- Modul Detail Pinjaman
+    - ubah textfield menjadi currency
+- Modul Kehadiran
+    - text merah saat istirahat sebelum start_for_break
+    - jika ada ijin menjadi warna kuning
+    - tambah work hour di tabel
 # 0.0.1 (Update 02/03/2023)
 - Modul Payslip Helper & Produksi
     - Menambahkan potongan lain
     - jika tidak punya bon, maka potongan bon tidak tampil button    
+# 0.0.1 (Update 06/03/2023)
+- Modul KehadiranCs
+    - Tambah Jam Kerja dan Jam Istirahat
+- Modul Shift
+    - Ubah Tampilan saat jam kerja tetap & jam kerja bebas
+- Modul TambahEditShift
+    - Ubah Tampilan Jam kerja bebas (istirahat berdasarkan durasi)    

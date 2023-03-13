@@ -122,16 +122,39 @@
                   <div class="black--text">Data Jadwal</div>
                 </div>
               </div>
-              <v-data-table
-                :headers="headers"
-                :sort-by.sync="sortBy"
-                class="elevation-1"
-                :items="detailShift"
+              <div
+                v-if="
+                  detailShift[0].start_break == null ||
+                  detailShift[0].end_break == null
+                "
               >
-                <template v-slot:[`item.days`]="{ item }"
-                  >{{ convertToDay(item.days - 1) }}
-                </template>
-              </v-data-table>
+                <v-data-table
+                  :headers="headers_istirahat_bebas"
+                  :sort-by.sync="sortBy"
+                  class="elevation-1"
+                  :items="detailShift"
+                >
+                  <template v-slot:[`item.days`]="{ item }"
+                    >{{ convertToDay(item.days - 1) }}
+                  </template>
+                  <template v-slot:[`item.break_duration_m`]="{ item }"
+                    >{{ item.break_duration_m }} menit
+                  </template>
+                </v-data-table>
+              </div>
+              <div v-else
+              >
+                <v-data-table
+                  :headers="headers_istirahat_tetap"
+                  :sort-by.sync="sortBy"
+                  class="elevation-1"
+                  :items="detailShift"
+                >
+                  <template v-slot:[`item.days`]="{ item }"
+                    >{{ convertToDay(item.days - 1) }}
+                  </template>
+                </v-data-table>
+              </div>
             </div>
           </v-card-text>
         </v-card>
@@ -150,13 +173,19 @@ export default {
   data() {
     return {
       getDataShift: null,
-      type : null,
+      type: null,
       dialogTambahEditShift: false,
-      headers: [
+      headers_istirahat_tetap: [
         { text: "Hari", value: "days" },
         { text: "Jam Masuk", value: "start" },
         { text: "Mulai Istirahat", value: "start_break" },
         { text: "Selesai Istirahat", value: "end_break" },
+        { text: "Jam Pulang", value: "end" },
+      ],
+      headers_istirahat_bebas: [
+        { text: "Hari", value: "days" },
+        { text: "Jam Masuk", value: "start" },
+        { text: "Durasi Istirahat", value: "break_duration_m" },
         { text: "Jam Pulang", value: "end" },
       ],
       sortBy: "days",
@@ -229,7 +258,7 @@ export default {
         if (this.selected_shift == null) {
           return;
         }
-        
+
         for (var i = 0; i < this.getAllDataShift.length; i++) {
           var id = this.getAllDataShift[i].id;
           if (this.selected_id == id) {

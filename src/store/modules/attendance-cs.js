@@ -12,21 +12,21 @@ const state = {
 const actions = {
   async getAttendanceCustomCs({commit}){
     // console.log('get custom attendance')
-    const res = await httpCommons.get(apiName+'/customGetAttendance');
-    console.log(res)
+    const res = await httpCommons.get(apiName + '/customGetAttendance');
+    // console.log(res)
     commit("SET_GET_DATA_ATTENDANCE", res.data);
   },
   
   async actionGetAllAttendenceCs({ commit }) {
     // if (date == null) {
     //   console.log("date kosong");
-      var today = new Date();
-      var dd = String(today.getDate()).padStart(2, "0");
-      var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-      var yyyy = today.getFullYear();
-      const today1 = today
-      var todayDate = yyyy + "-" + mm + "-" + dd;
-      // console.log(todayDate)
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, "0");
+    var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+    var yyyy = today.getFullYear();
+    const today1 = today
+    var todayDate = yyyy + "-" + mm + "-" + dd;
+    // console.log(todayDate)
     //   // today = "18/11/2022"
     //   // console.log(today);
     //   date = today;
@@ -45,9 +45,9 @@ const actions = {
     // const path = `?s=${filter}`;
     // const res = await httpCommons.get(apiName + path)
     const params = new URLSearchParams();
-    params.append("filter", "created_at||cont||"+todayDate)
-    
-    const res = await httpCommons.get(apiName, {params : params});
+    params.append("filter", "created_at||cont||" + todayDate)
+
+    const res = await httpCommons.get(apiName, { params: params });
     // console.log(res)
     commit("SET_GET_DATA_ATTENDANCE", res.data);
   },
@@ -124,7 +124,7 @@ const actions = {
 
   async actionSwitchShift({ commit, dispatch }, data) {
     try {
-      const res = await httpCommons.patch(apiName+"/updateAttendanceByShift", data);
+      const res = await httpCommons.patch(apiName + "/updateAttendanceByShift", data);
       // console.log(res);
       const result = {
         status: res.statusText,

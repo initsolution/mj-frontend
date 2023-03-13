@@ -243,11 +243,22 @@
                   <span v-else>{{ convertTime(item.time_check_out) }}</span>
                 </template>
                 <template v-slot:[`item.time_start_for_break`]="{ item }">
-                  <!-- start_for_break tidak di hitung-->
-                  <!-- <span v-if="isLate(item.time_start_for_break, item.break_hours !=null ? item.break_hours.split('-')[0] : null, 'start_break')" 
-                    class="text-color">{{ convertTime(item.time_start_for_break) }}</span> -->
-                  <!-- <span v-else>{{ convertTime(item.time_start_for_break) }}</span> -->
-                  {{ convertTime(item.time_start_for_break) }}
+                  <span
+                    v-if="
+                      isLate(
+                        item.time_start_for_break,
+                        item.break_hours != null
+                          ? item.break_hours.split('-')[0]
+                          : null,
+                        'start_break'
+                      )
+                    "
+                    class="text-color"
+                    >{{ convertTime(item.time_start_for_break) }}</span
+                  >
+                  <span v-else>{{
+                    convertTime(item.time_start_for_break)
+                  }}</span>
                 </template>
                 <template v-slot:[`item.time_end_for_break`]="{ item }">
                   <!-- {{ convertTime(item.time_end_for_break) }} -->
@@ -375,6 +386,8 @@ export default {
         },
         { text: "Nama", value: "employee.name", width: 200 },
         { text: "Tanggal Kehadiran", value: "attendance_date", width: 130 },
+        { text: "Jam Kerja", value: "work_hours", width: 150 },
+        { text: "Jam Istirahat", value: "break_hours", width: 150 },
         { text: "Masuk", value: "time_check_in" },
         { text: "Mulai Istirahat", value: "time_start_for_break" },
         { text: "Selesai Istirahat", value: "time_end_for_break" },
@@ -753,7 +766,13 @@ export default {
     },
 
     getColor(total_leave) {
-      if (total_leave > 0) return "#FFa500";
+      var tempData = total_leave.split(",");
+      var sum = tempData[tempData.length - 1];
+      // for (var i = 0; i < tempData.length; i++) {
+      //   sum += parseInt(tempData[i]);
+      // }
+      // console.log(sum)
+      if (sum > 0) return "#FFa500";
       else return "#77DD77";
     },
 
