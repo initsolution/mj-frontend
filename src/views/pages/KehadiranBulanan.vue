@@ -226,6 +226,9 @@
                   >
                   <span v-else>{{ convertTime(item.time_check_in) }}</span>
                 </template>
+                <template v-slot:[`item.time_start_for_break_1`]="{ item }">
+                  {{ concatIstirahat(item) }}
+                </template>
                 <template v-slot:[`item.time_check_out`]="{ item }">
                   <span
                     v-if="
@@ -245,7 +248,7 @@
                 <template v-slot:[`item.time_arrive_home`]="{ item }">
                   {{ convertTime(item.time_arrive_home) }}
                 </template>
-                <template v-slot:[`item.time_start_for_left`]="{ item }">
+                <template v-slot:[`item.time_start_for_left_1`]="{ item }">
                   {{ concatIjin(item) }}
                 </template>
                 <template v-slot:[`item.total_leave`]="{ item }">
@@ -396,8 +399,9 @@ export default {
         { text: "Tanggal Kehadiran", value: "attendance_date", width: 130 },
         { text: "Jam Kerja", value: "work_hours", width: 150 },
         { text: "Masuk", value: "time_check_in" },
+        { text: "Istirahat", value: "time_start_for_break_1", width: 150 },
         { text: "Pulang", value: "time_check_out" },
-        { text: "Ijin", value: "time_start_for_left", width:100 },
+        { text: "Ijin", value: "time_start_for_left_1", width: 150 },
         { text: "Durasi Kerja", value: "work_duration" },
         { text: "Lembur", value: "lembur", width: 150 },
         { text: "Total Telat", value: "total_telat", width: 100 },
@@ -496,9 +500,9 @@ export default {
           work_duration: this.datalist[i].work_duration,
         };
         bulk.push(data);
-        console.log(data);
+        // console.log(data);
       }
-      // this.saveBulkAttendanceBulanan({ bulk: bulk });
+      this.saveBulkAttendanceBulanan({ bulk: bulk });
     },
 
     importAttendance(event) {
@@ -533,7 +537,7 @@ export default {
             //   break;
             // }
 
-            for (var col = 65; col <= 75; col++) {
+            for (var col = 65; col <= 79; col++) {
               var c = String.fromCharCode(col); // get 'A', 'B', 'C' ...
               var key = "" + c + row;
               if (sheet[key] == null) {
@@ -550,15 +554,15 @@ export default {
             var _time_check_in = datarow[3] == "" ? null : datarow[3];
             var _time_start_for_break_1 = datarow[4] == "" ? null : datarow[4];
             var _time_end_for_break_1 = datarow[5] == "" ? null : datarow[5];
-            var _time_start_for_break_2 = datarow[4] == "" ? null : datarow[6];
-            var _time_end_for_break_2 = datarow[5] == "" ? null : datarow[7];
-            var _time_check_out = datarow[6] == "" ? null : datarow[8];
-            var _time_start_for_left_1 = datarow[7] == "" ? null : datarow[9];
-            var _time_end_for_left_1 = datarow[8] == "" ? null : datarow[10];
-            var _time_start_for_left_2 = datarow[7] == "" ? null : datarow[11];
-            var _time_end_for_left_2 = datarow[8] == "" ? null : datarow[12];
-            var _time_start_for_left_3 = datarow[7] == "" ? null : datarow[13];
-            var _time_end_for_left_3 = datarow[8] == "" ? null : datarow[14];
+            var _time_start_for_break_2 = datarow[6] == "" ? null : datarow[6];
+            var _time_end_for_break_2 = datarow[7] == "" ? null : datarow[7];
+            var _time_check_out = datarow[8] == "" ? null : datarow[8];
+            var _time_start_for_left_1 = datarow[9] == "" ? null : datarow[9];
+            var _time_end_for_left_1 = datarow[10] == "" ? null : datarow[10];
+            var _time_start_for_left_2 = datarow[11] == "" ? null : datarow[11];
+            var _time_end_for_left_2 = datarow[12] == "" ? null : datarow[12];
+            var _time_start_for_left_3 = datarow[13] == "" ? null : datarow[13];
+            var _time_end_for_left_3 = datarow[14] == "" ? null : datarow[14];
 
             var data = {
               id: _nik,
@@ -784,11 +788,67 @@ export default {
       return formatDate(date.substring(0, 10), "short-date");
     },
 
+    concatIstirahat(item) {
+      var result = "";
+      if (
+        item.time_start_for_break_1 != null &&
+        item.time_end_for_break_1 != null
+      ) {
+        result +=
+          this.convertTime(item.time_start_for_break_1) +
+          " - " +
+          this.convertTime(item.time_end_for_break_1) +
+          "\n";
+      }
+
+      if (
+        item.time_start_for_break_2 != null &&
+        item.time_end_for_break_2 != null
+      ) {
+        result +=
+          this.convertTime(item.time_start_for_break_2) +
+          " - " +
+          this.convertTime(item.time_end_for_break_2) +
+          "\n";
+      }
+      // console.log(result);
+      return result;
+    },
+
     concatIjin(item) {
       var result = "";
-      result += item.time_start_for_left_1 + " - " + item.time_end_for_left_1+"\n";
-      result += item.time_start_for_left_2 + " - " + item.time_end_for_left_2+"\n";
-      result += item.time_start_for_left_3 + " - " + item.time_end_for_left_3+"\n";
+      if (
+        item.time_start_for_left_1 != null &&
+        item.time_end_for_left_1 != null
+      ) {
+        result +=
+          this.convertTime(item.time_start_for_left_1) +
+          " - " +
+          this.convertTime(item.time_end_for_left_1) +
+          "\n";
+      }
+
+      if (
+        item.time_start_for_left_2 != null &&
+        item.time_end_for_left_2 != null
+      ) {
+        result +=
+          this.convertTime(item.time_start_for_left_2) +
+          " - " +
+          this.convertTime(item.time_end_for_left_2) +
+          "\n";
+      }
+
+      if (
+        item.time_start_for_left_3 != null &&
+        item.time_end_for_left_3 != null
+      ) {
+        result +=
+          this.convertTime(item.time_start_for_left_3) +
+          " - " +
+          this.convertTime(item.time_end_for_left_3) +
+          "\n";
+      }
       return result;
     },
 
@@ -866,7 +926,7 @@ export default {
     },
 
     getColor(total_leave) {
-      console.log(total_leave + "<<");
+      // console.log(total_leave + "<<");
       if (total_leave > 0) return "#FFa500";
       else return "#77DD77";
     },

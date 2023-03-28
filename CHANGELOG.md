@@ -213,3 +213,8 @@
 # 0.0.1 (Update 13/03/2023)
 - Modul Kehadiran Bulanan
     - menampilkan custom data bulanan di v-tabel 
+
+# 0.0.1 (Update 28/03/2023)
+- Modul Kehadiran Bulanan
+    - solving bug di ijin (00:00:00)
+    - concat ijin dan istirahat
