@@ -54,7 +54,7 @@ const actions = {
 
   async actionGetAllAttendenceByFilterBulanan({ commit }, param) {
     const res = await httpCommons.get(apiName, { params: param });
-    // console.log(res);
+    console.log(res);
     commit("SET_GET_DATA_ATTENDANCE", res.data);
   },
 

@@ -210,3 +210,6 @@
     - Notifikasi tidak bisa generate payslip jika kehadiran kosong
 - Modul Shift
     - Remove second(detik) pada detailShift
+# 0.0.1 (Update 13/03/2023)
+- Modul Kehadiran Bulanan
+    - menampilkan custom data bulanan di v-tabel 

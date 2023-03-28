@@ -242,38 +242,11 @@
                   >
                   <span v-else>{{ convertTime(item.time_check_out) }}</span>
                 </template>
-                <template v-slot:[`item.time_start_for_break`]="{ item }">
-                  <!-- start_for_break tidak di hitung-->
-                  <!-- <span v-if="isLate(item.time_start_for_break, item.break_hours !=null ? item.break_hours.split('-')[0] : null, 'start_break')" 
-                    class="text-color">{{ convertTime(item.time_start_for_break) }}</span> -->
-                  <!-- <span v-else>{{ convertTime(item.time_start_for_break) }}</span> -->
-                  {{ convertTime(item.time_start_for_break) }}
-                </template>
-                <template v-slot:[`item.time_end_for_break`]="{ item }">
-                  <!-- {{ convertTime(item.time_end_for_break) }} -->
-                  <span
-                    v-if="
-                      isLate(
-                        item.time_end_for_break,
-                        item.break_hours != null
-                          ? item.break_hours.split('-')[1]
-                          : null,
-                        'end_break'
-                      )
-                    "
-                    class="text-color"
-                    >{{ convertTime(item.time_end_for_break) }}</span
-                  >
-                  <span v-else>{{ convertTime(item.time_end_for_break) }}</span>
-                </template>
                 <template v-slot:[`item.time_arrive_home`]="{ item }">
                   {{ convertTime(item.time_arrive_home) }}
                 </template>
                 <template v-slot:[`item.time_start_for_left`]="{ item }">
-                  {{ convertTime(item.time_start_for_left) }}
-                </template>
-                <template v-slot:[`item.time_end_for_left`]="{ item }">
-                  {{ convertTime(item.time_end_for_left) }}
+                  {{ concatIjin(item) }}
                 </template>
                 <template v-slot:[`item.total_leave`]="{ item }">
                   <div class="text-center">
@@ -281,7 +254,7 @@
                       <template v-slot:activator="{ on, attrs }">
                         <v-chip
                           v-if="item.total_leave != null"
-                          :color="getColor(item.total_leave)"
+                          :color="getColorTotalLeave(item.total_leave)"
                           dark
                           v-bind="attrs"
                           v-on="on"
@@ -314,6 +287,52 @@
                                 >check</v-icon
                               >
                               <span class="font-md">Ijin</span>
+                            </v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                      </v-list>
+                    </v-menu>
+                  </div>
+                </template>
+                <template v-slot:[`item.lembur`]="{ item }">
+                  <!-- <span v-if="item.lembur != null">{{
+                    convertMinToHour(item.lembur)
+                  }}</span> -->
+                  <div class="text-center">
+                    <v-menu open-on-hover top offset-y>
+                      <template v-slot:activator="{ on, attrs }">
+                        <!-- <v-btn color="primary" dark v-bind="attrs" v-on="on">
+                          Dropdown
+                        </v-btn> -->
+                        <v-chip
+                          v-if="item.lembur != null"
+                          :color="getColor(item.lembur)"
+                          dark
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          {{ convertMinToHour(item.lembur) }}
+                        </v-chip>
+                      </template>
+
+                      <v-list v-if="item.lembur > 0" class="py-0">
+                        <v-list-item @click="confirmOvertime(item, 'late')">
+                          <v-list-item-content>
+                            <v-list-item-title>
+                              <v-icon small class="mr-2 green--text"
+                                >check</v-icon
+                              >
+                              <span class="font-md">Terima</span>
+                            </v-list-item-title>
+                          </v-list-item-content>
+                        </v-list-item>
+                        <v-list-item @click="cancelOvertime(item, 'late')">
+                          <v-list-item-content>
+                            <v-list-item-title>
+                              <v-icon small class="mr-2 red--text"
+                                >cancel</v-icon
+                              >
+                              <span class="font-md">Tolak</span>
                             </v-list-item-title>
                           </v-list-item-content>
                         </v-list-item>
@@ -375,13 +394,12 @@ export default {
         },
         { text: "Nama", value: "employee.name", width: 200 },
         { text: "Tanggal Kehadiran", value: "attendance_date", width: 130 },
+        { text: "Jam Kerja", value: "work_hours", width: 150 },
         { text: "Masuk", value: "time_check_in" },
-        { text: "Mulai Istirahat", value: "time_start_for_break" },
-        { text: "Selesai Istirahat", value: "time_end_for_break" },
         { text: "Pulang", value: "time_check_out" },
-        { text: "Mulai Ijin", value: "time_start_for_left" },
-        { text: "Selesai Ijin", value: "time_end_for_left" },
+        { text: "Ijin", value: "time_start_for_left", width:100 },
         { text: "Durasi Kerja", value: "work_duration" },
+        { text: "Lembur", value: "lembur", width: 150 },
         { text: "Total Telat", value: "total_telat", width: 100 },
         { text: "Total Ijin", value: "total_leave" },
         { text: "Status", value: "status_shift" },
@@ -465,15 +483,22 @@ export default {
           week_of_day: this.datalist[i].week_of_day,
           time_check_in: this.datalist[i].time_check_in,
           time_check_out: this.datalist[i].time_check_out,
-          time_start_for_break: this.datalist[i].time_start_for_break,
-          time_end_for_break: this.datalist[i].time_end_for_break,
-          time_start_for_left: this.datalist[i].time_start_for_left,
-          time_end_for_left: this.datalist[i].time_end_for_left,
+          time_start_for_break_1: this.datalist[i].time_start_for_break_1,
+          time_end_for_break_1: this.datalist[i].time_end_for_break_1,
+          time_start_for_break_2: this.datalist[i].time_start_for_break_2,
+          time_end_for_break_2: this.datalist[i].time_end_for_break_2,
+          time_start_for_left_1: this.datalist[i].time_start_for_left_1,
+          time_end_for_left_1: this.datalist[i].time_end_for_left_1,
+          time_start_for_left_2: this.datalist[i].time_start_for_left_2,
+          time_end_for_left_2: this.datalist[i].time_end_for_left_2,
+          time_start_for_left_3: this.datalist[i].time_start_for_left_3,
+          time_end_for_left_3: this.datalist[i].time_end_for_left_3,
           work_duration: this.datalist[i].work_duration,
         };
         bulk.push(data);
+        console.log(data);
       }
-      this.saveBulkAttendanceBulanan({ bulk: bulk });
+      // this.saveBulkAttendanceBulanan({ bulk: bulk });
     },
 
     importAttendance(event) {
@@ -523,22 +548,34 @@ export default {
             var _name = datarow[1] == "" ? null : datarow[1];
             var _attendance_date = datarow[2] == "" ? null : datarow[2];
             var _time_check_in = datarow[3] == "" ? null : datarow[3];
-            var _time_start_for_break = datarow[4] == "" ? null : datarow[4];
-            var _time_end_for_break = datarow[5] == "" ? null : datarow[5];
-            var _time_check_out = datarow[6] == "" ? null : datarow[6];
-            var _time_start_for_left = datarow[7] == "" ? null : datarow[7];
-            var _time_end_for_left = datarow[8] == "" ? null : datarow[8];
+            var _time_start_for_break_1 = datarow[4] == "" ? null : datarow[4];
+            var _time_end_for_break_1 = datarow[5] == "" ? null : datarow[5];
+            var _time_start_for_break_2 = datarow[4] == "" ? null : datarow[6];
+            var _time_end_for_break_2 = datarow[5] == "" ? null : datarow[7];
+            var _time_check_out = datarow[6] == "" ? null : datarow[8];
+            var _time_start_for_left_1 = datarow[7] == "" ? null : datarow[9];
+            var _time_end_for_left_1 = datarow[8] == "" ? null : datarow[10];
+            var _time_start_for_left_2 = datarow[7] == "" ? null : datarow[11];
+            var _time_end_for_left_2 = datarow[8] == "" ? null : datarow[12];
+            var _time_start_for_left_3 = datarow[7] == "" ? null : datarow[13];
+            var _time_end_for_left_3 = datarow[8] == "" ? null : datarow[14];
 
             var data = {
               id: _nik,
               name: _name,
               attendance_date: _attendance_date,
               time_check_in: _time_check_in,
-              time_start_for_break: _time_start_for_break,
-              time_end_for_break: _time_end_for_break,
+              time_start_for_break_1: _time_start_for_break_1,
+              time_end_for_break_1: _time_end_for_break_1,
+              time_start_for_break_2: _time_start_for_break_2,
+              time_end_for_break_2: _time_end_for_break_2,
               time_check_out: _time_check_out,
-              time_start_for_left: _time_start_for_left,
-              time_end_for_left: _time_end_for_left,
+              time_start_for_left_1: _time_start_for_left_1,
+              time_end_for_left_1: _time_end_for_left_1,
+              time_start_for_left_2: _time_start_for_left_2,
+              time_end_for_left_2: _time_end_for_left_2,
+              time_start_for_left_3: _time_start_for_left_3,
+              time_end_for_left_3: _time_end_for_left_3,
               week_of_day: -1,
               // work_duration : calculate_work_duration,
             };
@@ -579,12 +616,18 @@ export default {
         data.name == null &&
         data.attendance_date == null &&
         data.time_check_in == null &&
-        data.time_start_for_break == null &&
-        data.time_end_for_break == null &&
+        data.time_start_for_break_1 == null &&
+        data.time_end_for_break_1 == null &&
+        data.time_start_for_break_2 == null &&
+        data.time_end_for_break_2 == null &&
         data.time_check_out == null &&
         data.time_arrive_home == null &&
-        data.time_start_for_left == null &&
-        data.time_end_for_left == null
+        data.time_start_for_left_1 == null &&
+        data.time_end_for_left_1 == null &&
+        data.time_start_for_left_2 == null &&
+        data.time_end_for_left_2 == null &&
+        data.time_start_for_left_3 == null &&
+        data.time_end_for_left_3 == null
       ) {
         return "end_of_excel";
       }
@@ -629,11 +672,11 @@ export default {
 
       if (data.time_check_in != null) {
         if (_week_of_day != 7) {
-          if (data.time_start_for_break == null) {
+          if (data.time_start_for_break_1 == null) {
             return "Gagal Import, Kolom E pada baris ke " + index + " kosong";
           }
 
-          if (data.time_end_for_break == null) {
+          if (data.time_end_for_break_1 == null) {
             return "Gagal Import, Kolom F pada baris ke " + index + " kosong";
           }
         }
@@ -643,24 +686,66 @@ export default {
         }
 
         if (
-          data.time_start_for_left != null &&
-          data.time_end_for_left == null
+          data.time_start_for_break_2 != null &&
+          data.time_end_for_break_2 == null
+        ) {
+          return "Gagal Import, Kolom H pada baris ke " + index + " kosong";
+        }
+
+        if (
+          data.time_start_for_break_2 != null &&
+          data.time_start_for_break_2 == null
+        ) {
+          return "Gagal Import, Kolom G pada baris ke " + index + " kosong";
+        }
+
+        if (
+          data.time_start_for_left_1 != null &&
+          data.time_end_for_left_1 == null
+        ) {
+          return "Gagal Import, Kolom K pada baris ke " + index + " kosong";
+        }
+
+        if (
+          data.time_start_for_left_1 == null &&
+          data.time_end_for_left_1 != null
         ) {
           return "Gagal Import, Kolom J pada baris ke " + index + " kosong";
         }
 
         if (
-          data.time_start_for_left == null &&
-          data.time_end_for_left != null
+          data.time_start_for_left_2 != null &&
+          data.time_end_for_left_2 == null
         ) {
-          return "Gagal Import, Kolom I pada baris ke " + index + " kosong";
+          return "Gagal Import, Kolom M pada baris ke " + index + " kosong";
+        }
+
+        if (
+          data.time_start_for_left_2 == null &&
+          data.time_end_for_left_2 != null
+        ) {
+          return "Gagal Import, Kolom L pada baris ke " + index + " kosong";
+        }
+
+        if (
+          data.time_start_for_left_3 != null &&
+          data.time_end_for_left_3 == null
+        ) {
+          return "Gagal Import, Kolom O pada baris ke " + index + " kosong";
+        }
+
+        if (
+          data.time_start_for_left_3 == null &&
+          data.time_end_for_left_3 != null
+        ) {
+          return "Gagal Import, Kolom N pada baris ke " + index + " kosong";
         }
       }
 
       if (data.time_check_in == null) {
         if (
-          data.time_start_for_break != null ||
-          data.time_end_for_break != null ||
+          data.time_start_for_break_1 != null ||
+          data.time_end_for_break_1 != null ||
           data.time_check_out
         ) {
           return "Gagal Import, Kolom D pada baris ke " + index + " kosong";
@@ -672,12 +757,39 @@ export default {
       return "sukses";
     },
 
+    convertMinToHour(minute) {
+      var hour = Math.round(minute / 60);
+      var min = minute % 60;
+      return hour + " jam " + min + " menit";
+    },
+
+    confirmOvertime(item, type) {
+      this.type_overtime = type;
+      this.dialogEditAttendancelocal = true;
+      this.dataAttendance = item;
+    },
+
+    cancelOvertime(item, type) {
+      // console.log(item);
+      this.dataAttendance = item;
+      this.type_overtime = type;
+      this.dialogCancelOvertime = true;
+    },
+
     formatDateUtils(val) {
       return formatDate(val, "short-date");
     },
 
     convertDate(date) {
       return formatDate(date.substring(0, 10), "short-date");
+    },
+
+    concatIjin(item) {
+      var result = "";
+      result += item.time_start_for_left_1 + " - " + item.time_end_for_left_1+"\n";
+      result += item.time_start_for_left_2 + " - " + item.time_end_for_left_2+"\n";
+      result += item.time_start_for_left_3 + " - " + item.time_end_for_left_3+"\n";
+      return result;
     },
 
     convertTime(time) {
@@ -754,12 +866,24 @@ export default {
     },
 
     getColor(total_leave) {
+      console.log(total_leave + "<<");
       if (total_leave > 0) return "#FFa500";
       else return "#77DD77";
     },
 
+    getColorTotalLeave(total_leave) {
+      var tempData = total_leave.split(",");
+      var sum = tempData[tempData.length - 1];
+      // for (var i = 0; i < tempData.length; i++) {
+      //   sum += parseInt(tempData[i]);
+      // }
+      // console.log(sum)
+      if (sum > 0) return "#FFa500";
+      else return "#77DD77";
+    },
+
     convertToHour(total_leave) {
-      return total_leave / 60;
+      return Math.round(total_leave / 60);
     },
 
     getTimeColor(time) {
