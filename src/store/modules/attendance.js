@@ -101,7 +101,7 @@ const actions = {
     commit("SET_LOADING_ATTENDANCE", false);
   },
 
-  async updateOvertime({ commit, dispatch }, data) {
+  async updateOvertimeProduksi({ commit, dispatch }, data) {
     try {
       const res = await httpCommons.patch(apiName + `/${data.id}`, data);
       // console.log(res);

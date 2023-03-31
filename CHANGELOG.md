@@ -218,3 +218,8 @@
 - Modul Kehadiran Bulanan
     - solving bug di ijin (00:00:00)
     - concat ijin dan istirahat
+
+# 0.0.1 (Update 31/03/2023)
+- Modul Kehadiran Bulanan
+    - konfirmasi lembur oleh admin
+    - tambah pindah shift

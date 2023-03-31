@@ -46,7 +46,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["updateOvertime"]),
+    ...mapActions(["updateOvertimeProduksi"]),
     update() {
       var data = null;
       if (this.type_overtime == "early") {
@@ -61,7 +61,7 @@ export default {
         };
       }
 
-      this.updateOvertime(data);
+      this.updateOvertimeProduksi(data);
       this.close();
     },
 

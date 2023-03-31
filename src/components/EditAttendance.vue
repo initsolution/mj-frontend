@@ -134,7 +134,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["updateOvertime"]),
+    ...mapActions(["updateOvertimeProduksi", "updateOvertimeBulanan"]),
     update() {
       if (this.hasil == null) {
         this.hasil = this.dataAttendance.overtime;
@@ -147,14 +147,21 @@ export default {
           id: this.dataAttendance.id,
           early_overtime: this.hasil,
         };
+        this.updateOvertimeProduksi(data);
       } else if (this.type_overtime == "late") {
         data = {
           id: this.dataAttendance.id,
           overtime: this.hasil,
         };
+        this.updateOvertimeProduksi(data);
+      } else if(this.type_overtime == "bulanan") {
+        data = {
+          id: this.dataAttendance.id,
+          lembur: this.hasil,
+        };
+        this.updateOvertimeBulanan(data);
       }
-
-      this.updateOvertime(data);
+      
       this.close();
       // this.$emit("update:total_leave", total_leave);
       // this.$emit("update:dialogEditAttendance", false);

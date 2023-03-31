@@ -88,6 +88,7 @@ export default {
       default: false,
     },
     selectAttendance: null,
+    departementId: null,
   },
   data() {
     return {
@@ -113,7 +114,8 @@ export default {
     ...mapActions([
       "updateIjin",
       "actionGetAllShiftByDays",
-      "actionSwitchShift",
+      "actionSwitchShiftCs",
+      "actionSwitchShiftBulanan",
     ]),
     update() {
       if (this.selected_shift == null) {
@@ -127,7 +129,12 @@ export default {
         detail_shift_id: this.selected_shift.detailShift[0].id,
       };
       // console.log(data);
-      this.actionSwitchShift(data);
+      if (this.departementId == 1) {
+      } else if (this.departementId == 2) {
+        this.actionSwitchShiftBulanan(data);
+      } else if (this.departementId == 3) {
+        this.actionSwitchShiftCs(data);
+      }
       this.close();
     },
 
@@ -152,7 +159,7 @@ export default {
           if (this.selectAttendance != null) {
             this.current_shiftName = this.selectAttendance.shift.name;
             const param = new URLSearchParams();
-            param.append("filter","switchable||$eq||1");
+            param.append("filter", "switchable||$eq||1");
             param.append(
               "filter",
               "detailShift.days||$eq||" + this.selectAttendance.week_of_day

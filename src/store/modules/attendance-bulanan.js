@@ -122,7 +122,28 @@ const actions = {
     }
   },
 
-  async actionSwitchShift({ commit, dispatch }, data) {
+  async updateOvertimeBulanan({ commit, dispatch }, data) {
+    try {
+      const res = await httpCommons.patch(apiName + `/${data.id}`, data);
+      // console.log(res);
+      const result = {
+        status: res.statusText,
+        actions: res.status,
+        data: res.data,
+      };
+      // console.log(result);
+      commit("SET_UPDATE_ATTENDANCE", result);
+      // dispatch("actionGetAllAttendence");
+    } catch (error) {
+      const result = {
+        status: "duplicate",
+        actions: 201,
+      };
+      commit("SET_UPDATE_ATTENDANCE", result);
+    }
+  },
+
+  async actionSwitchShiftBulanan({ commit, dispatch }, data) {
     try {
       const res = await httpCommons.patch(apiName + "/updateAttendanceByShift", data);
       // console.log(res);

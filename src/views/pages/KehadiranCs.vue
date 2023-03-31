@@ -7,6 +7,7 @@
     <form-ganti-shift
       :dialogGantiShift.sync="dialogGantiShift"
       :selectAttendance="selectAttendance"
+      :departementId="departementId"
     >
     </form-ganti-shift>
     <tambah-kehadiran

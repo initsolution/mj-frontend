@@ -122,7 +122,7 @@ const actions = {
     }
   },
 
-  async actionSwitchShift({ commit, dispatch }, data) {
+  async actionSwitchShiftCs({ commit, dispatch }, data) {
     try {
       const res = await httpCommons.patch(apiName + "/updateAttendanceByShift", data);
       // console.log(res);

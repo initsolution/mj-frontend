@@ -7,6 +7,7 @@
     <form-ganti-shift
       :dialogGantiShift.sync="dialogGantiShift"
       :selectAttendance="selectAttendance"
+      :departementId="departementId"
     >
     </form-ganti-shift>
     <tambah-kehadiran
@@ -20,6 +21,12 @@
       :departementId="departementId"
     >
     </hapus-kehadiran>
+    <edit-attendance
+      :dialogEditAttendance.sync="dialogEditAttendancelocal"
+      :dataAttendance="dataAttendance"
+      :type_overtime="type_overtime"
+    >
+    </edit-attendance>
 
     <v-row>
       <v-col>
@@ -263,9 +270,8 @@
                           v-on="on"
                         >
                           {{
-                            convertToHour(calculateTotalLeave(item.total_leave))
+                            convertMinToHour(calculateTotalLeave(item.total_leave))
                           }}
-                          jam
                         </v-chip>
                       </template>
 
@@ -319,17 +325,17 @@
                       </template>
 
                       <v-list v-if="item.lembur > 0" class="py-0">
-                        <v-list-item @click="confirmOvertime(item, 'late')">
+                        <v-list-item @click="confirmOvertime(item, 'bulanan')">
                           <v-list-item-content>
                             <v-list-item-title>
                               <v-icon small class="mr-2 green--text"
                                 >check</v-icon
                               >
-                              <span class="font-md">Terima</span>
+                              <span class="font-md">Ganti</span>
                             </v-list-item-title>
                           </v-list-item-content>
                         </v-list-item>
-                        <v-list-item @click="cancelOvertime(item, 'late')">
+                        <v-list-item @click="cancelOvertime(item, 'bulanan')">
                           <v-list-item-content>
                             <v-list-item-title>
                               <v-icon small class="mr-2 red--text"
@@ -345,7 +351,7 @@
                 </template>
                 <template v-slot:[`item.total_telat`]="{ item }">
                   <span v-if="item.total_leave != null"
-                    >{{ calculateTotalTelat(item.total_leave) }} menit</span
+                    >{{ calculateTotalTelat(item.total_leave) }} m</span
                   >
                 </template>
               </v-data-table>
@@ -762,9 +768,10 @@ export default {
     },
 
     convertMinToHour(minute) {
-      var hour = Math.round(minute / 60);
+      var hour = Math.floor(minute / 60);
+      console.log(hour)
       var min = minute % 60;
-      return hour + " jam " + min + " menit";
+      return hour + " j " + min + " m";
     },
 
     confirmOvertime(item, type) {
