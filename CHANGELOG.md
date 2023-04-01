@@ -223,3 +223,7 @@
 - Modul Kehadiran Bulanan
     - konfirmasi lembur oleh admin
     - tambah pindah shift
+
+# 0.0.1 (Update 01/04/2023)
+- Modul Payslip
+    - Support Payslip Bulanan dan Office

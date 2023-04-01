@@ -90,7 +90,7 @@ const actions = {
         }
     },
 
-    async savePayslipOffice({ commit, dispatch }, data) {
+    async savePayslipBulananOffice({ commit, dispatch }, data) {
         try {
             commit('SET_LOADING', true)
             const res = await httpCommons.post(apiNameBulanan, data)

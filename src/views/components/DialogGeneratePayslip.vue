@@ -38,14 +38,16 @@ export default {
     return {};
   },
   methods: {
-    ...mapActions(["savePayslip", "savePayslipCs"]),
+    ...mapActions(["savePayslip", "savePayslipCs", "savePayslipBulananOffice"]),
     generatePayslip() {
       console.log(this.departementId);
       console.log(this.dataPayslip);
       if (this.departementId == 1) {
         this.savePayslip(this.dataPayslip);
       } else if (this.departementId == 2) {
-        // this.savePayslip(data)
+        // this.savePayslipBulananOffice(data)
+        console.log("bulanan - office")
+        console.log(this.dataPayslip)
       } else if (this.departementId == 3) {
         this.savePayslipCs(this.dataPayslip);
       }

@@ -127,7 +127,7 @@
                       </v-date-picker>
                     </v-menu>
                   </div>
-                  <div v-else-if="choosenDepartment.id == 2">
+                  <div v-else-if="choosenDepartment.id == 2 || choosenDepartment.id == 4">
                     <v-menu
                       :close-on-content-click="false"
                       :nudge-right="40"
