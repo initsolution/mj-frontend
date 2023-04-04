@@ -44,8 +44,8 @@ export default {
       console.log(this.dataPayslip);
       if (this.departementId == 1) {
         this.savePayslip(this.dataPayslip);
-      } else if (this.departementId == 2) {
-        // this.savePayslipBulananOffice(data)
+      } else if (this.departementId == 2 || this.departementId == 4) {
+        this.savePayslipBulananOffice(this.dataPayslip)
         console.log("bulanan - office")
         console.log(this.dataPayslip)
       } else if (this.departementId == 3) {

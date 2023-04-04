@@ -396,8 +396,8 @@ export default {
       if (status.loading == false) {
         if (this.choosenDepartment.id == 1) {
           this.$router.push("/viewPayslip").catch(() => {});
-        } else if (this.choosenDepartment.id == 2) {
-          // this.$router.push("/viewPayslip").catch(() => {});
+        } else if (this.choosenDepartment.id == 2 || this.choosenDepartment.id == 4) {
+          this.$router.push("/viewPayslip").catch(() => {});
         } else if (this.choosenDepartment.id == 3) {
           this.$router.push("/viewPayslipCs").catch(() => {});
         }
