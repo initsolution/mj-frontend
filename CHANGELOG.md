@@ -227,3 +227,7 @@
 # 0.0.1 (Update 01/04/2023)
 - Modul Payslip
     - Support Payslip Bulanan dan Office
+
+# 0.0.1 (Update 04/04/2023)
+- Modul Payslip
+    - Enable Payslip Bulanan dan Office    
