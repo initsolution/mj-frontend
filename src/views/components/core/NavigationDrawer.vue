@@ -9,7 +9,7 @@
     width="260"
     dark
   >
-    <v-list>
+    <v-list dense>
       <v-list-item>
         <v-list-item-avatar>
           <v-img src="https://randomuser.me/api/portraits/men/78.jpg"></v-img>
@@ -49,6 +49,7 @@
           v-else
           :prepend-icon="item.icon"
           :value="false"
+          color="#ffffff"
           no-action
         >
           <template v-slot:activator>
@@ -70,7 +71,7 @@
 
     <template v-slot:append>
       <div class="pa-2">
-        <v-btn block> Logout </v-btn>
+        <v-btn color="blue" block> Logout </v-btn>
       </div>
     </template>
   </v-navigation-drawer>

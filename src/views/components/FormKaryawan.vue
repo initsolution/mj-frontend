@@ -350,6 +350,22 @@
                       prefix="Rp"
                       filled
                       v-bind="currency_config"
+                      v-model.trim="tunjangan_jabatan"
+                      class="currency-input pa-0 ma-0 font-md"
+                      label="Tunjangan Jabatan"
+                    ></v-currency-field>
+                    <div
+                      style="color: red; font-size: 12px"
+                      v-if="tunjangan_kehadiran === ''"
+                    >
+                      Tunjangan Jabatan harus diisi
+                    </div>
+                    <v-currency-field
+                      color="grey darken-2"
+                      :decimal-length="0"
+                      prefix="Rp"
+                      filled
+                      v-bind="currency_config"
                       v-model.trim="tunjangan_kehadiran"
                       class="currency-input pa-0 ma-0 font-md"
                       label="Tunjangan Kehadiran"
@@ -505,6 +521,7 @@ export default {
       insentif_extra: 0,
       extra_tambahan_kerja: 0,
       gaji_pokok: 0,
+      tunjangan_jabatan: 0,
       tunjangan_kehadiran: 0,
       owner_rate: 0,
       owner_bonus_khusus: 0,
@@ -669,6 +686,7 @@ export default {
         insentif_extra: this.insentif_extra,
         extra_tambahan_kerja: this.extra_tambahan_kerja,
         gaji_pokok: this.gaji_pokok,
+        tunjangan_jabatan: this.tunjangan_jabatan,
         tunjangan_kehadiran: this.tunjangan_kehadiran,
         owner_rate: 0,
         owner_bonus_khusus: 0,
@@ -761,6 +779,7 @@ export default {
         this.insentif_extra = this.dataEmployee.insentif_extra;
         this.extra_tambahan_kerja = this.dataEmployee.extra_tambahan_kerja;
         this.gaji_pokok = this.dataEmployee.gaji_pokok;
+        this.tunjangan_jabatan = this.dataEmployee.tunjangan_jabatan;
         this.tunjangan_kehadiran = this.dataEmployee.tunjangan_kehadiran;
         this.owner_rate = this.dataEmployee.owner_rate;
         this.owner_bonus_khusus = this.dataEmployee.owner_bonus_khusus;
