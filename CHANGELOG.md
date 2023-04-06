@@ -235,3 +235,8 @@
 # 0.0.1 (Update 05/04/2023)
 - Modul Payslip Bulanan dan Office
     - format Payslip dan PDF
+
+# 0.0.1 (Update 06/04/2023)
+- Modul Payslip Bulanan dan Office
+    - menambahkan pendapatan lain
+    - optimize payslip bulanan    

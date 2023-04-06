@@ -460,7 +460,7 @@
         );
       },
       openDialogBon(item){
-        console.log(item)
+        // console.log(item)
         this.dataPayslip =item
         this.dialogPay = true
       },

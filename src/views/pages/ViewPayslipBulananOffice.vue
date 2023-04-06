@@ -124,14 +124,23 @@
                             </td>
                           </tr>
                           <tr>
-                            <td>{{ checkDriver(item.employee.area.name) }}</td>
+                            <td>Tambahan Lain</td>
                             <td>
-                              {{
-                                openDialogDriver(
-                                  item.employee.area.name,
-                                  item.tambahan_gaji_driver
-                                )
-                              }}
+                              <v-btn
+                              v-if="
+                                  item.tambahan_gaji_lain == 0
+                                "
+                                color="blue darken-1"
+                                small
+                                class="mr-3 elevation-0"
+                                @click="openDialogPendapatanLain(item)"
+                                >{{
+                                  formatPrice(Math.round(item.tambahan_gaji_lain))
+                                }}</v-btn >
+                              <div v-else>
+                                {{ formatPrice(Math.round(item.tambahan_gaji_lain)) }}
+                              </div>  
+                              
                             </td>
                             <td>Pot Bon</td>
                             <td>
@@ -157,24 +166,8 @@
                           <tr>
                             <td></td>
                             <td></td>
-                            <td>Pot Lain</td>
-                            <td>
-                              <v-btn
-                                v-if="item.potongan_lain == 0"
-                                color="blue darken-1"
-                                small
-                                class="mr-3 elevation-0"
-                                @click="openDialogPotongan(item)"
-                                >{{
-                                  formatPrice(Math.round(item.potongan_bon))
-                                }}</v-btn
-                              >
-                              <div v-else>
-                                {{
-                                  formatPrice(Math.round(item.potongan_lain))
-                                }}
-                              </div>
-                            </td>
+                            <td></td>
+                            <td></td>
                           </tr>
                         </tbody>
                       </template>
@@ -309,6 +302,35 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="dialogPendapatanLain" max-width="600">
+      <v-card>
+        <v-card-title>Tambahan Pendapatan</v-card-title>
+        <v-card-text>
+          <v-currency-field
+            color="grey darken-2"
+            :decimal-length="0"
+            prefix="Rp"
+            filled
+            v-bind="currency_config"
+            v-model.trim="pendapatan_lain"
+            class="currency-input pa-0 ma-0 font-md"
+            label="Nominal Tambahan Pendapatan Lain"
+          />
+        </v-card-text>
+        <v-card-actions>
+          <div class="flex-grow-1"></div>
+          <v-btn
+            class="elevation-0 grey darken-2"
+            dark
+            @click="dismisDialogPendapatanLain"
+            >Batal</v-btn
+          >
+          <v-btn class="elevation-0 primary" @click.stop="savePendapatanLain"
+            >Simpan</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
       
@@ -328,7 +350,9 @@
             loan : {},
             dataPayslip : {},
             dialogPotonganLain : false,
+            dialogPendapatanLain : false,
             potongan_lain : 0,
+            pendapatan_lain:0,
             headers: [
               { text: "Employee_ID", value: "employee.id" },
               { text: "Nama", value: "employee.name" },
@@ -378,7 +402,7 @@
           };
         },
         methods: {
-          ...mapActions(['updatePayslipCsWithBon', 'updatePayslipWithPotonganLain']),
+          ...mapActions(['updatePayslipBulananWithBon', 'updatePayslipWithPotonganLain', 'updatePayslipBulananTambahanPendapatanLain']),
           formatPrice(value) {
             return formatPrice(value);
           },
@@ -389,7 +413,7 @@
           const data = {
             idPayslip : this.dataPayslip.id, 
             potongan_lain: this.potongan_lain,
-            jenis_potongan: "cs",
+            jenis_potongan: "bulanan",
           };
           this.updatePayslipWithPotonganLain(data)
           // console.log(data)
@@ -402,6 +426,26 @@
         },
         dismisDialogPotonganLain() {
           this.dialogPotonganLain = false;
+        },
+        
+        openDialogPendapatanLain(item){
+          // console.log(item)
+          this.dataPayslip =item
+          this.dialogPendapatanLain = true
+        },
+        dismisDialogPendapatanLain() {
+          this.dialogPendapatanLain = false;
+        },
+        
+        savePendapatanLain(){
+          const data = {
+            idPayslip : this.dataPayslip.id, 
+            tambahan_gaji_lain: this.pendapatan_lain,
+            jenis_potongan: "bulanan",
+          };
+          this.updatePayslipBulananTambahanPendapatanLain(data)
+          // console.log(data)
+          this.dismisDialogPendapatanLain()
         },
           formatDateBulan(date) {
             date = new Date(date);
@@ -435,27 +479,6 @@
             this.dialogPay = true
           },
 
-          checkDriver(item){
-            if(item.includes("driver")) {
-                return "Tambahan Gaji Driver"
-            }
-            return "";
-          },
-
-          addIdrDriver(item){
-            if(item.includes("driver")) {
-                return "Rp"
-            }
-            return "";
-          },
-
-          getPendapatanDriver(item, pendapatan) {
-            if(item.includes("driver")) {
-                return pendapatan;
-            }
-            return "";
-          },
-
           openDialogDriver(item, nominal){
             if(item.includes("driver")) {
                 return nominal
@@ -474,7 +497,7 @@
               note: this.loan.description,
               type: "bayar",
             };
-            this.updatePayslipCsWithBon(data)
+            this.updatePayslipBulananWithBon(data)
             // console.log(data)
             this.dismisDialog()
             // this.inputLoan(data);
@@ -574,12 +597,12 @@
                   this.formatPrice(Math.round(this.selected[i].potongan_bon)),
                 ],
                 [
-                  this.checkDriver(this.selected[i].employee.area.name),
-                  this.addIdrDriver(this.selected[i].employee.area.name),
-                  this.getPendapatanDriver(this.selected[i].employee.area.name,this.selected[i].tambahan_gaji_driver),
-                  "Potongan Lain-lain",
+                  "Tambahan Lain",
                   "Rp",
-                  this.formatPrice(Math.round(this.selected[i].potongan_lain)),
+                  this.selected[i].tambahan_gaji_lain,
+                  "",
+                  "",
+                  "",
                 ],
                
                

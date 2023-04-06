@@ -126,9 +126,16 @@ const actions = {
         commit('SET_CHECK_PAYSLIP', res)
     },
 
-    async updatePayslipOfficeWithBon({ commit, dispatch }, data) {
+    async updatePayslipBulananWithBon({ commit, dispatch }, data) {
         // commit('SET_LOADING', true)
-        const res = await httpCommons.patch(apiNameCs + '/updatePayslipWithBon', data)
+        const res = await httpCommons.patch(apiNameBulanan + '/updatePayslipWithBon', data)
+        console.log(res)
+        commit('SET_CHECK_PAYSLIP', res)
+    },
+    
+    async updatePayslipBulananTambahanPendapatanLain({ commit, dispatch }, data) {
+        // commit('SET_LOADING', true)
+        const res = await httpCommons.patch(apiNameBulanan + '/updatePayslipTambahanlain', data)
         console.log(res)
         commit('SET_CHECK_PAYSLIP', res)
     },
@@ -141,6 +148,8 @@ const actions = {
             apiname = apiNameProduksi
         }else if(data.jenis_potongan == 'cs'){
             apiname = apiNameCs
+        }else if(data.jenis_potongan == 'bulanan'){
+            apiname = apiNameBulanan
         }
         const res = await httpCommons.patch(apiname + '/updatePayslipWithPotonganLain', data)
         // console.log(res)

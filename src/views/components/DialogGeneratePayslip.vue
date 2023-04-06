@@ -40,14 +40,14 @@ export default {
   methods: {
     ...mapActions(["savePayslip", "savePayslipCs", "savePayslipBulananOffice"]),
     generatePayslip() {
-      console.log(this.departementId);
-      console.log(this.dataPayslip);
+      // console.log(this.departementId);
+      // console.log(this.dataPayslip);
       if (this.departementId == 1) {
         this.savePayslip(this.dataPayslip);
-      } else if (this.departementId == 2 || this.departementId == 4) {
+      } else if (this.departementId == 2 || this.departementId == 4 || this.departementId == 5) {
         this.savePayslipBulananOffice(this.dataPayslip)
-        console.log("bulanan - office")
-        console.log(this.dataPayslip)
+        // console.log("bulanan - office - office semarang")
+        // console.log(this.dataPayslip)
       } else if (this.departementId == 3) {
         this.savePayslipCs(this.dataPayslip);
       }
