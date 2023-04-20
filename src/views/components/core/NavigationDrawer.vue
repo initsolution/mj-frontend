@@ -12,11 +12,11 @@
     <v-list dense>
       <v-list-item>
         <v-list-item-avatar>
-          <v-img src="https://randomuser.me/api/portraits/men/78.jpg"></v-img>
+          <v-img src="https://randomuser.me/api/portraits/men/8.jpg"></v-img>
         </v-list-item-avatar>
 
         <v-list-item-content>
-          <v-list-item-title>e-Payroll</v-list-item-title>
+          <v-list-item-title>Halo, {{ email }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -71,14 +71,16 @@
 
     <template v-slot:append>
       <div class="pa-2">
-        <v-btn color="blue" block> Logout </v-btn>
+        <v-btn @click="logout" color="blue" block> Logout </v-btn>
       </div>
     </template>
   </v-navigation-drawer>
 </template>
   
 <script>
-import { mapState } from 'vuex';
+import { mapActions, mapState } from 'vuex';
+import { parseJwt } from '@/utils/utils.js';
+
 export default {
   name: 'DashboardCoreDrawer',
 
@@ -100,71 +102,175 @@ export default {
     },
   },
 
+  methods: {
+    ...mapActions(['actionLogout']),
+    logout() {
+      this.actionLogout();
+      this.$router.push('/login').catch(() => {});
+    },
+
+    parsingJwt(token) {
+      return parseJwt(token);
+    },
+  },
+
+  created() {
+    const token = localStorage.getItem('token');
+    const parsedToken = this.parsingJwt(token);
+    this.email = parsedToken.user.email;
+    if (parsedToken.user.role == 'owner') {
+      this.items = [
+        {
+          title: 'Home',
+          icon: 'mdi-home',
+          to: '/',
+        },
+        {
+          title: 'Karyawan',
+          icon: 'mdi-account-box',
+          to: '/karyawan',
+        },
+        {
+          title: 'Departemen',
+          icon: 'mdi-account-group',
+          to: '/departemen',
+        },
+        {
+          title: 'Shift',
+          icon: 'mdi-timer',
+          to: '/shift',
+        },
+        {
+          title: 'Kehadiran',
+          icon: 'mdi-calendar-check',
+          to: '/kehadiran',
+          children: [
+            {
+              title: 'Bulanan',
+              icon: 'mdi-calendar-check',
+              to: '/kehadiran_bulanan',
+            },
+            {
+              title: 'Produksi',
+              icon: 'mdi-calendar-check',
+              to: '/kehadiran_mingguan',
+            },
+            {
+              title: 'Cleaning Service',
+              icon: 'mdi-calendar-check',
+              to: '/kehadiran_cs',
+            },
+          ],
+        },
+        {
+          title: 'Absensi',
+          icon: 'mdi-calendar-remove',
+          to: '/absensi',
+        },
+        {
+          title: 'Pinjaman',
+          icon: 'mdi-calendar-clock',
+          to: '/pinjaman',
+        },
+        {
+          title: 'Payslip',
+          icon: 'mdi-file-document',
+          to: '/payslip',
+        },
+        {
+          title: 'Owner',
+          icon: 'mdi-key',
+          to: '/owner',
+          children: [
+            {
+              title: 'Payslip',
+              icon: 'mdi-file-document',
+              to: '/kehadiran_bulanan',
+            },
+            {
+              title: 'Pinjaman',
+              icon: 'mdi-calendar-clock',
+              to: '/kehadiran_mingguan',
+            },
+          ],
+        },
+        {
+          title: 'Pengeluaran',
+          icon: 'mdi-file-document-arrow-right-outline',
+          to: '/pengeluaran',
+        },
+      ];
+    } else {
+      this.items = [
+        {
+          title: 'Home',
+          icon: 'mdi-home',
+          to: '/',
+        },
+        {
+          title: 'Karyawan',
+          icon: 'mdi-account-box',
+          to: '/karyawan',
+        },
+        {
+          title: 'Departemen',
+          icon: 'mdi-account-group',
+          to: '/departemen',
+        },
+        {
+          title: 'Shift',
+          icon: 'mdi-timer',
+          to: '/shift',
+        },
+        {
+          title: 'Kehadiran',
+          icon: 'mdi-calendar-check',
+          to: '/kehadiran',
+          children: [
+            {
+              title: 'Bulanan',
+              icon: 'mdi-calendar-check',
+              to: '/kehadiran_bulanan',
+            },
+            {
+              title: 'Produksi',
+              icon: 'mdi-calendar-check',
+              to: '/kehadiran_mingguan',
+            },
+            {
+              title: 'Cleaning Service',
+              icon: 'mdi-calendar-check',
+              to: '/kehadiran_cs',
+            },
+          ],
+        },
+        {
+          title: 'Absensi',
+          icon: 'mdi-calendar-remove',
+          to: '/absensi',
+        },
+        {
+          title: 'Pinjaman',
+          icon: 'mdi-calendar-clock',
+          to: '/pinjaman',
+        },
+        {
+          title: 'Payslip',
+          icon: 'mdi-file-document',
+          to: '/payslip',
+        },
+        {
+          title: 'Pengeluaran',
+          icon: 'mdi-file-document-arrow-right-outline',
+          to: '/pengeluaran',
+        },
+      ];
+    }
+    console.log(parsedToken);
+  },
   data: () => ({
-    items: [
-      {
-        title: 'Home',
-        icon: 'mdi-home',
-        to: '/',
-      },
-      {
-        title: 'Karyawan',
-        icon: 'mdi-account-box',
-        to: '/karyawan',
-      },
-      {
-        title: 'Departemen',
-        icon: 'mdi-account-group',
-        to: '/departemen',
-      },
-      {
-        title: 'Shift',
-        icon: 'mdi-timer',
-        to: '/shift',
-      },
-      {
-        title: 'Kehadiran',
-        icon: 'mdi-calendar-check',
-        to: '/kehadiran',
-        children: [
-          {
-            title: 'Bulanan',
-            icon: 'mdi-calendar-check',
-            to: '/kehadiran_bulanan',
-          },
-          {
-            title: 'Produksi',
-            icon: 'mdi-calendar-check',
-            to: '/kehadiran_mingguan',
-          },
-          {
-            title: 'Cleaning Service',
-            icon: 'mdi-calendar-check',
-            to: '/kehadiran_cs',
-          },
-        ],
-      },
-      {
-        title: 'Absensi',
-        icon: 'mdi-calendar-remove',
-        to: '/absensi',
-      },
-      {
-        title: 'Pinjaman',
-        icon: 'mdi-calendar-clock',
-        to: '/pinjaman',
-      },
-      {
-        title: 'Payslip',
-        icon: 'mdi-file-document',
-        to: '/payslip',
-      },
-      {
-        title: 'Pengeluaran',
-        icon: 'mdi-file-document-arrow-right-outline',
-        to: '/pengeluaran',
-      },
-    ],
+    items: [],
+    email: "",
   }),
 };
 </script>
