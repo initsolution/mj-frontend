@@ -17,8 +17,8 @@
             <div class="text-center mt-5 mb-2">
               <div class="title black--text">Pilih kategori payslip</div>
               <div>
-                Silahkan pilih departemen, tanggal mulai dan tanggal selesai
-                untuk membuat payslip karyawan
+                Silahkan pilih tanggal mulai dan tanggal selesai untuk membuat
+                payslip karyawan
               </div>
             </div>
           </v-col>
@@ -75,7 +75,16 @@
           <v-row class="text-center">
             <v-col cols="12" sm="10" style="margin: auto">
               <div class="d-flex flex-row align-start">
-                <v-menu offset-y>
+                <v-btn color="primary" dark large class="elevation-0 mr-3">
+                  <span>Bulanan</span>
+                </v-btn>
+                <v-menu
+                  :close-on-content-click="false"
+                  :nudge-right="40"
+                  transition="scale-transition"
+                  offset-y
+                  min-width="290px"
+                >
                   <template v-slot:activator="{ on }">
                     <v-btn
                       color="primary"
@@ -84,106 +93,18 @@
                       large
                       class="elevation-0 mr-3"
                     >
-                      <span>Pilih Departemen</span>
-                      <v-icon>mdi-arrow-down</v-icon>
+                      <span>Pilih Bulan</span>
+                      <v-icon small class="ml-2">mdi-calendar</v-icon>
                     </v-btn>
                   </template>
-                  <v-list>
-                    <v-list-item
-                      v-for="(item, index) in getDataAllDepartement"
-                      :key="index"
-                      @click="selectDepartment(item)"
-                    >
-                      <v-list-item-title>{{ item.name }}</v-list-item-title>
-                    </v-list-item>
-                  </v-list>
+                  <v-date-picker
+                    v-model="select_month"
+                    type="month"
+                    @input="getNewMonth()"
+                  ></v-date-picker>
                 </v-menu>
-                <div v-if="choosenDepartment != null">
-                  <div v-if="choosenDepartment.id == 1">
-                    <v-menu
-                      :close-on-content-click="false"
-                      :nudge-right="40"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-btn
-                          color="primary"
-                          dark
-                          v-on="on"
-                          large
-                          class="elevation-0 mr-3"
-                        >
-                          <span>Pilih Tanggal</span>
-                          <v-icon small class="ml-2">mdi-calendar</v-icon>
-                        </v-btn>
-                      </template>
-                      <v-date-picker
-                        v-model="picker"
-                        @input="getNewDate()"
-                        :allowed-dates="allowedDatesProduksi"
-                      >
-                      </v-date-picker>
-                    </v-menu>
-                  </div>
-                  <div v-else-if="choosenDepartment.id == 2 || choosenDepartment.id == 4">
-                    <v-menu
-                      :close-on-content-click="false"
-                      :nudge-right="40"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-btn
-                          color="primary"
-                          dark
-                          v-on="on"
-                          large
-                          class="elevation-0 mr-3"
-                        >
-                          <span>Pilih Bulan</span>
-                          <v-icon small class="ml-2">mdi-calendar</v-icon>
-                        </v-btn>
-                      </template>
-                      <v-date-picker
-                        v-model="select_month"
-                        type="month"
-                        @input="getNewMonth()"
-                      ></v-date-picker>
-                    </v-menu>
-                  </div>
-                  <div v-if="choosenDepartment.id == 3">
-                    <v-menu
-                      :close-on-content-click="false"
-                      :nudge-right="40"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-btn
-                          color="primary"
-                          dark
-                          v-on="on"
-                          large
-                          class="elevation-0 mr-3"
-                        >
-                          <span>Pilih Tanggal</span>
-                          <v-icon small class="ml-2">mdi-calendar</v-icon>
-                        </v-btn>
-                      </template>
-                      <v-date-picker
-                        v-model="picker"
-                        @input="getNewDate()"
-                        :allowed-dates="allowedDatesCs"
-                      >
-                      </v-date-picker>
-                    </v-menu>
-                  </div>
-                </div>
-                <v-menu
+
+                <!-- <v-menu
                   v-if="start_date != null && end_date != null"
                   ref="menu"
                   :close-on-content-click="false"
@@ -211,7 +132,7 @@
                     :min="start_date"
                     :max="end_date"
                   ></v-date-picker>
-                </v-menu>
+                </v-menu> -->
                 <div class="flex-grow-1"></div>
                 <v-btn
                   large
@@ -315,24 +236,18 @@ export default {
 
     payslip() {
       //generate payslip
-      if (
-        this.choosenDepartment == null ||
-        this.start_date == null ||
-        this.end_date == null
-      ) {
+      if (this.start_date == null || this.end_date == null) {
         this.notif_text =
-          "Anda harus memilih departemen, tanggal mulai dan tanggal selesai!";
+          "Anda harus memilih tanggal mulai dan tanggal selesai!";
         this.snackbar = true;
         return;
       }
       const data = {
-        departemen: this.choosenDepartment.name,
         periode_start: this.start_date,
         periode_end: this.end_date,
-        day_off: this.holidays,
       };
 
-      this.departementId = this.choosenDepartment.id;
+      this.departementId = 10;
       this.dataPayslip = data;
       this.dialogGeneratePayslip = true;
       // if (this.choosenDepartment.id == 1) {
@@ -399,17 +314,12 @@ export default {
     },
 
     isLoadingFinish() {
+      console.log("isloading finish");
       const status = this.geStatusLoading;
       console.log(status);
       if (status.loading == false) {
         this.overlay = false;
-        if (this.choosenDepartment.id == 1) {
-          this.$router.push("/viewPayslip").catch(() => {});
-        } else if (this.choosenDepartment.id == 2 || this.choosenDepartment.id == 4) {
-          this.$router.push("/viewPayslipBulananOffice").catch(() => {});
-        } else if (this.choosenDepartment.id == 3) {
-          this.$router.push("/viewPayslipCs").catch(() => {});
-        }
+        this.$router.push("/viewPayslipOwner").catch(() => {});
       } else {
         this.overlay = true;
       }
@@ -448,8 +358,7 @@ export default {
     getResponseGeneratePayslip() {
       if (this.getStatusPayslip.status == 404) {
         if (this.getStatusPayslip.data == "Not found Attendance") {
-          this.notif_text =
-            "Kehadiran tidak ditemukan";
+          this.notif_text = "Kehadiran tidak ditemukan";
           this.snackbar = true;
         }
       }

@@ -185,7 +185,7 @@ export default {
             {
               title: 'Payslip',
               icon: 'mdi-file-document',
-              to: '/kehadiran_bulanan',
+              to: '/payslip-owner',
             },
             {
               title: 'Pinjaman',

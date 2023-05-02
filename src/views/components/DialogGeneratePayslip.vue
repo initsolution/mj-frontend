@@ -38,7 +38,7 @@ export default {
     return {};
   },
   methods: {
-    ...mapActions(["savePayslip", "savePayslipCs", "savePayslipBulananOffice"]),
+    ...mapActions(["savePayslip", "savePayslipCs", "savePayslipBulananOffice", "savePayslipOwner"]),
     generatePayslip() {
       // console.log(this.departementId);
       // console.log(this.dataPayslip);
@@ -50,6 +50,9 @@ export default {
         // console.log(this.dataPayslip)
       } else if (this.departementId == 3) {
         this.savePayslipCs(this.dataPayslip);
+      } else if (this.departementId == 10) {
+        console.log(this.dataPayslip);
+        this.savePayslipOwner(this.dataPayslip);
       }
       this.close();
     },

@@ -133,6 +133,14 @@ const router = new Router({
           component: () => import('./views/pages/ViewPayslipBulananOffice.vue'),
         },
         {
+          path: 'viewPayslipOwner',
+          name: 'viewPayslipOwner',
+          meta: {
+            auth: true,
+          },
+          component: () => import('./views/pages/ViewPayslipOwner.vue'),
+        },
+        {
           path: 'pengeluaran',
           name: 'Pengeluaran',
           meta: {
@@ -147,6 +155,14 @@ const router = new Router({
             auth: true,
           },
           component: () => import('./views/pages/DetailPengeluaran.vue'),
+        },
+        {
+          path: 'payslip-owner',
+          name: 'Payslip-Owner',
+          meta: {
+            auth: true,
+          },
+          component: () => import('./views/pages/PayslipOwner.vue'),
         },
       ],
     },

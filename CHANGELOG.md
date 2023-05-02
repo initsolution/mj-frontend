@@ -240,3 +240,8 @@
 - Modul Payslip Bulanan dan Office
     - menambahkan pendapatan lain
     - optimize payslip bulanan    
+
+# 0.0.1 (Update 02/05/2023)
+- Modul Payslip dan Payslip Owner
+    - add loading
+    - generate payslip owner

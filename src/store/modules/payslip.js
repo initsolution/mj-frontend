@@ -4,6 +4,7 @@ import httpCommons from '../../http-commons'
 const apiNameProduksi = 'payslip-produksi'
 const apiNameCs = 'payslip-helper'
 const apiNameBulanan = 'payslip-bulanan'
+const apiNameOwner = 'payslip-owner'
 
 const state = {
     data: [],
@@ -94,6 +95,28 @@ const actions = {
         try {
             commit('SET_LOADING', true)
             const res = await httpCommons.post(apiNameBulanan, data)
+            const result = {
+                status: res.statusText,
+                actions: res.status,
+                data: res.data,
+            }
+            console.log(result);
+            commit('SET_CHECK_PAYSLIP', result)
+            commit('SET_LOADING', false)
+            // dispatch('actionGetAllAttendence')
+        } catch (error) {
+            const result = {
+                status: error.response.data.statusCode,
+                data: error.response.data.data,
+            }
+            commit('SET_CHECK_PAYSLIP', result)
+        }
+    },
+
+    async savePayslipOwner({ commit, dispatch }, data) {
+        try {
+            commit('SET_LOADING', true)
+            const res = await httpCommons.post(apiNameOwner, data)
             const result = {
                 status: res.statusText,
                 actions: res.status,

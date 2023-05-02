@@ -8,12 +8,12 @@
         <div>
           <div>
             <v-icon color="purple">{{
-              dataEmployee.id != null ? 'mdi-account-edit' : 'mdi-account-plus'
+              dataEmployee.id != null ? "mdi-account-edit" : "mdi-account-plus"
             }}</v-icon>
-            {{ dataEmployee.id != null ? 'Edit' : 'Tambah' }} Karyawan
+            {{ dataEmployee.id != null ? "Edit" : "Tambah" }} Karyawan
           </div>
           <div class="caption ml-8 grey--text darken-3">
-            Form {{ dataEmployee.id != null ? 'mengubah' : 'menambahkan' }} data
+            Form {{ dataEmployee.id != null ? "mengubah" : "menambahkan" }} data
             karyawan
           </div>
         </div>
@@ -475,7 +475,7 @@
           class="elevation-0"
           color="primary"
           @click="save"
-          >{{ dataEmployee.id != null ? 'Edit' : 'Simpan' }}</v-btn
+          >{{ dataEmployee.id != null ? "Edit" : "Simpan" }}</v-btn
         >
 
         <div class="caption grey--text lighten-2 ml-5">
@@ -486,18 +486,18 @@
   </v-dialog>
 </template>
 <script>
-import employee from '@/store/modules/employee';
-import { formatDate } from '@/utils/utils';
-import { mapActions, mapGetters } from 'vuex';
+import employee from "@/store/modules/employee";
+import { formatDate } from "@/utils/utils";
+import { mapActions, mapGetters } from "vuex";
 import {
   required,
   minLength,
   maxLength,
   email,
-} from 'vuelidate/lib/validators';
+} from "vuelidate/lib/validators";
 
 export default {
-  name: 'FormKaryawan',
+  name: "FormKaryawan",
   data() {
     return {
       menu2: null,
@@ -541,9 +541,9 @@ export default {
       listDetailShift: [],
 
       currency_config: {
-        decimal: ',',
-        thousands: '.',
-        prefix: 'Rp',
+        decimal: ",",
+        thousands: ".",
+        prefix: "Rp",
         precision: 0,
         masked: false,
         allowBlank: false,
@@ -553,20 +553,21 @@ export default {
 
       selected_shift: null,
       headers: [
-        { text: 'Hari', value: 'days' },
-        { text: 'Jam Masuk', value: 'start' },
-        { text: 'Mulai Istirahat', value: 'start_break' },
-        { text: 'Selesai Istirahat', value: 'end_break' },
-        { text: 'Jam Pulang', value: 'end' },
+        { text: "Hari", value: "days" },
+        { text: "Jam Masuk", value: "start" },
+        { text: "Mulai Istirahat", value: "start_break" },
+        { text: "Selesai Istirahat", value: "end_break" },
+        { text: "Durasi Istirahat(menit)", value: "break_duration_m" },
+        { text: "Jam Pulang", value: "end" },
       ],
       label_day: [
-        'Minggu',
-        'Senin',
-        'Selasa',
-        'Rabu',
-        'Kamis',
-        'Jumat',
-        'Sabtu',
+        "Minggu",
+        "Senin",
+        "Selasa",
+        "Rabu",
+        "Kamis",
+        "Jumat",
+        "Sabtu",
       ],
     };
   },
@@ -624,7 +625,7 @@ export default {
     employeeType: {
       type: Array,
       default() {
-        return ['REGULER', 'KHUSUS'];
+        return ["REGULER", "KHUSUS"];
       },
     },
     dialogForm: {
@@ -634,20 +635,20 @@ export default {
   },
 
   created() {
-    console.log('created');
+    console.log("created");
     this.actionGetAllDepartment();
     this.actionGetAllShift();
   },
 
   methods: {
     ...mapActions([
-      'actionSaveEmployee',
-      'actionUpdateEmployee',
-      'actionGetAllDepartment',
-      'actionGetAllAreaByDepartmentId',
-      'actionGetAllPositionByAreaId',
-      'actionGetAllShift',
-      'actionGetAllDetailShiftByShiftId',
+      "actionSaveEmployee",
+      "actionUpdateEmployee",
+      "actionGetAllDepartment",
+      "actionGetAllAreaByDepartmentId",
+      "actionGetAllPositionByAreaId",
+      "actionGetAllShift",
+      "actionGetAllDetailShiftByShiftId",
     ]),
 
     save() {
@@ -705,7 +706,11 @@ export default {
     },
 
     convertTime(date, format) {
-      return date.substring(0, 5);
+      if (date != null) {
+        return date.substring(0, 5);
+      } else {
+        return "-";
+      }
     },
 
     convertToDay(day) {
@@ -718,8 +723,8 @@ export default {
       this.position_id = null;
       this.selectedShift = null;
       this.listDetailShift = [];
-      this.$emit('update:dataEmployee', {});
-      this.$emit('update:dialogForm', false);
+      this.$emit("update:dataEmployee", {});
+      this.$emit("update:dialogForm", false);
       this.$v.$reset();
     },
 
@@ -731,8 +736,8 @@ export default {
       this.position_id = null;
       if (this.department_id != null) {
         const param = new URLSearchParams();
-        param.append('join', 'department');
-        param.append('filter', 'department.id||$eq||' + this.department_id);
+        param.append("join", "department");
+        param.append("filter", "department.id||$eq||" + this.department_id);
         this.actionGetAllAreaByDepartmentId(param);
       }
     },
@@ -741,8 +746,8 @@ export default {
       // console.log(this.area_id);
       if (this.area_id != null) {
         const param = new URLSearchParams();
-        param.append('join', 'area');
-        param.append('filter', 'area.id||$eq||' + this.area_id);
+        param.append("join", "area");
+        param.append("filter", "area.id||$eq||" + this.area_id);
         this.actionGetAllPositionByAreaId(param);
       }
     },
@@ -750,8 +755,8 @@ export default {
     getAllDetailShiftByShiftId() {
       if (this.selectedShift != null) {
         const param = new URLSearchParams();
-        param.append('join', 'shift');
-        param.append('filter', 'shift.id||$eq||' + this.selectedShift.id);
+        param.append("join", "shift");
+        param.append("filter", "shift.id||$eq||" + this.selectedShift.id);
         this.actionGetAllDetailShiftByShiftId(param);
       }
     },
@@ -760,7 +765,7 @@ export default {
   watch: {
     dataEmployee: {
       handler() {
-        console.log('dataEmployee');
+        console.log("dataEmployee");
         console.log(this.dataEmployee);
         this.id = this.dataEmployee.id;
         this.name = this.dataEmployee.name;
@@ -801,7 +806,7 @@ export default {
     },
     getDataAllDepartement: {
       handler() {
-        console.log('department_id');
+        console.log("department_id");
         console.log(this.department_id);
         for (var i = 0; i < this.getDataAllDepartement.length; i++) {
           this.listDepartment.push({
@@ -869,48 +874,48 @@ export default {
 
   computed: {
     ...mapGetters([
-      'getDataAllDepartement',
-      'getDataAllArea',
-      'getDataAllPosition',
-      'getAllDataShift',
-      'getAllDetailShift',
+      "getDataAllDepartement",
+      "getDataAllArea",
+      "getDataAllPosition",
+      "getAllDataShift",
+      "getAllDetailShift",
     ]),
     nameErrors() {
       const errors = [];
       if (!this.$v.name.$dirty) return errors;
-      !this.$v.name.maxLength && errors.push('Panjang Nama Max 50 Karakter');
-      !this.$v.name.required && errors.push('Nama harus diisi.');
+      !this.$v.name.maxLength && errors.push("Panjang Nama Max 50 Karakter");
+      !this.$v.name.required && errors.push("Nama harus diisi.");
       return errors;
     },
     idErrors() {
       const errors = [];
       if (!this.$v.id.$dirty) return errors;
-      !this.$v.id.maxLength && errors.push('NIK Max 20 Karakter');
-      !this.$v.id.required && errors.push('NIK harus diisi.');
+      !this.$v.id.maxLength && errors.push("NIK Max 20 Karakter");
+      !this.$v.id.required && errors.push("NIK harus diisi.");
       return errors;
     },
     bpjsIdErrors() {
       const errors = [];
       if (!this.$v.bpjs_id.$dirty) return errors;
-      !this.$v.bpjs_id.maxLength && errors.push('BPJS ID Max 30 Karakter');
+      !this.$v.bpjs_id.maxLength && errors.push("BPJS ID Max 30 Karakter");
       return errors;
     },
     npwpIdErrors() {
       const errors = [];
       if (!this.$v.npwp_id.$dirty) return errors;
-      !this.$v.npwp_id.maxLength && errors.push('NPWP ID Max 30 Karakter');
+      !this.$v.npwp_id.maxLength && errors.push("NPWP ID Max 30 Karakter");
       return errors;
     },
     addressErrors() {
       const errors = [];
       if (!this.$v.address.$dirty) return errors;
-      !this.$v.address.maxLength && errors.push('Alamat Max 100 Karakter');
+      !this.$v.address.maxLength && errors.push("Alamat Max 100 Karakter");
       return errors;
     },
     phoneNoErrors() {
       const errors = [];
       if (!this.$v.phone_no.$dirty) return errors;
-      !this.$v.phone_no.maxLength && errors.push('No Telepon 20 Karakter');
+      !this.$v.phone_no.maxLength && errors.push("No Telepon 20 Karakter");
       return errors;
     },
     // gajiPokokErrors() {
