@@ -8,12 +8,12 @@
         <div>
           <div>
             <v-icon color="purple">{{
-              dataEmployee.id != null ? "mdi-account-edit" : "mdi-account-plus"
+              dataEmployee.id != null ? 'mdi-account-edit' : 'mdi-account-plus'
             }}</v-icon>
-            {{ dataEmployee.id != null ? "Edit" : "Tambah" }} Karyawan
+            {{ dataEmployee.id != null ? 'Edit' : 'Tambah' }} Karyawan
           </div>
           <div class="caption ml-8 grey--text darken-3">
-            Form {{ dataEmployee.id != null ? "mengubah" : "menambahkan" }} data
+            Form {{ dataEmployee.id != null ? 'mengubah' : 'menambahkan' }} data
             karyawan
           </div>
         </div>
@@ -259,12 +259,46 @@
                   </v-col>
                 </v-row>
                 <v-row>
-                  <v-col class="py-0 mb-5 mt-6" cols="6" sm="6" md="6">
+                  <v-col class="py-0 mb-5 mt-6" cols="12" sm="12" md="12">
+                    <div
+                      class="font-sm grey--text grey lighten-4 px-3 py-1 mb-6 round"
+                    >
+                      Detail Shift
+                    </div>
+                    <v-data-table
+                      :headers="this.headers"
+                      :items="listDetailShift"
+                      class="elevation-1"
+                    >
+                      <template v-slot:[`item.days`]="{ item }"
+                        >{{ convertToDay(item.days - 1) }}
+                      </template>
+                      <template v-slot:[`item.start`]="{ item }">
+                        {{ convertTime(item.start) }}
+                      </template>
+                      <template v-slot:[`item.start_break`]="{ item }">
+                        {{ convertTime(item.start_break) }}
+                      </template>
+                      <template v-slot:[`item.end`]="{ item }">
+                        {{ convertTime(item.end) }}
+                      </template>
+                      <template v-slot:[`item.end_break`]="{ item }">
+                        {{ convertTime(item.end_break) }}
+                      </template>
+                    </v-data-table>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col class="py-0 mt-6" cols="12" sm="12" md="12">
                     <div
                       class="font-sm grey--text grey lighten-4 px-3 py-1 mb-6 round"
                     >
                       Data Komponen Pengajian
                     </div>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col class="py-0 mb-5" cols="6" sm="6" md="6">
                     <!-- <v-currency-field
                       color="grey darken-2"
                       :decimal-length="0"
@@ -327,6 +361,9 @@
                     >
                       Insentif Extra harus diisi
                     </div>
+                  </v-col>
+
+                  <v-col class="py-0 mb-5" cols="6" sm="6" md="6">
                     <v-currency-field
                       color="grey darken-2"
                       :decimal-length="0"
@@ -376,7 +413,19 @@
                     >
                       Tunjangan Kehadiran harus diisi
                     </div>
-
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col class="py-0" cols="12" sm="12" md="12">
+                    <div
+                      class="font-sm grey--text grey lighten-4 px-3 py-1 mb-6 round"
+                    >
+                      Data Komponen Pengajian : Potongan/Iuran
+                    </div>
+                  </v-col>
+                </v-row>
+                <v-row>
+                  <v-col class="py-0" cols="6" sm="6" md="6">
                     <v-currency-field
                       color="grey darken-2"
                       :decimal-length="0"
@@ -426,35 +475,90 @@
                       Iuran BPJS SPSI harus diisi
                     </div>
                   </v-col>
-                  <v-col class="py-0 mb-5 mt-6" cols="6" sm="6" md="6">
-                    <div
-                      class="font-sm grey--text grey lighten-4 px-3 py-1 mb-6 round"
-                    >
-                      Detail Shift
-                    </div>
-                    <v-data-table
-                      :headers="this.headers"
-                      :items="listDetailShift"
-                      class="elevation-1"
-                    >
-                      <template v-slot:[`item.days`]="{ item }"
-                        >{{ convertToDay(item.days - 1) }}
-                      </template>
-                      <template v-slot:[`item.start`]="{ item }">
-                        {{ convertTime(item.start) }}
-                      </template>
-                      <template v-slot:[`item.start_break`]="{ item }">
-                        {{ convertTime(item.start_break) }}
-                      </template>
-                      <template v-slot:[`item.end`]="{ item }">
-                        {{ convertTime(item.end) }}
-                      </template>
-                      <template v-slot:[`item.end_break`]="{ item }">
-                        {{ convertTime(item.end_break) }}
-                      </template>
-                    </v-data-table>
-                  </v-col>
                 </v-row>
+                <div v-if="isOwner">
+                  <v-row>
+                    <v-col class="py-0 mt-6" cols="12" sm="12" md="12">
+                      <div
+                        class="font-sm white--text purple px-3 py-1 mb-6 round"
+                      >
+                        Data Komponen Pengajian Owner
+                      </div>
+                    </v-col>
+                  </v-row>
+                  <v-row>
+                    <v-col class="py-0 mb-5" cols="6" sm="6" md="6">
+                      <v-currency-field
+                        color="grey darken-2"
+                        :decimal-length="0"
+                        prefix="Rp"
+                        filled
+                        v-bind="currency_config"
+                        v-model.trim="owner_rate"
+                        class="currency-input pa-0 ma-0 font-md"
+                        label="Tambahan"
+                      ></v-currency-field>
+                      <div
+                        style="color: red; font-size: 12px"
+                        v-if="owner_rate === ''"
+                      >
+                        Tambahan harus diisi
+                      </div>
+                      <v-currency-field
+                        color="grey darken-2"
+                        :decimal-length="0"
+                        prefix="Rp"
+                        filled
+                        v-bind="currency_config"
+                        v-model.trim="owner_overtime_rate"
+                        class="currency-input pa-0 ma-0 font-md"
+                        label="Lembur"
+                      ></v-currency-field>
+                      <div
+                        style="color: red; font-size: 12px"
+                        v-if="owner_overtime_rate === ''"
+                      >
+                        Lembur harus diisi
+                      </div>
+                    </v-col>
+
+                    <v-col class="py-0 mb-5" cols="6" sm="6" md="6">
+                      <v-currency-field
+                        color="grey darken-2"
+                        :decimal-length="0"
+                        prefix="Rp"
+                        filled
+                        v-bind="currency_config"
+                        v-model.trim="owner_bonus_khusus"
+                        class="currency-input pa-0 ma-0 font-md"
+                        label="Bonus Khusus"
+                      ></v-currency-field>
+                      <div
+                        style="color: red; font-size: 12px"
+                        v-if="owner_bonus_khusus === ''"
+                      >
+                        Bonus Khusus harus diisi
+                      </div>
+
+                      <v-currency-field
+                        color="grey darken-2"
+                        :decimal-length="0"
+                        prefix="Rp"
+                        filled
+                        v-bind="currency_config"
+                        v-model.trim="owner_astek_plus"
+                        class="currency-input pa-0 ma-0 font-md"
+                        label="Potongan Astek Plus"
+                      ></v-currency-field>
+                      <div
+                        style="color: red; font-size: 12px"
+                        v-if="owner_astek_plus === ''"
+                      >
+                        Potongan Astek Plus harus diisi
+                      </div>
+                    </v-col>
+                  </v-row>
+                </div>
               </v-form>
             </v-col>
           </v-row>
@@ -475,7 +579,7 @@
           class="elevation-0"
           color="primary"
           @click="save"
-          >{{ dataEmployee.id != null ? "Edit" : "Simpan" }}</v-btn
+          >{{ dataEmployee.id != null ? 'Edit' : 'Simpan' }}</v-btn
         >
 
         <div class="caption grey--text lighten-2 ml-5">
@@ -486,20 +590,21 @@
   </v-dialog>
 </template>
 <script>
-import employee from "@/store/modules/employee";
-import { formatDate } from "@/utils/utils";
-import { mapActions, mapGetters } from "vuex";
+import employee from '@/store/modules/employee';
+import { formatDate, parseJwt } from '@/utils/utils';
+import { mapActions, mapGetters } from 'vuex';
 import {
   required,
   minLength,
   maxLength,
   email,
-} from "vuelidate/lib/validators";
+} from 'vuelidate/lib/validators';
 
 export default {
-  name: "FormKaryawan",
+  name: 'FormKaryawan',
   data() {
     return {
+      isOwner: false,
       menu2: null,
       menu3: null,
       dateNow: new Date().toISOString().substring(0, 10),
@@ -526,6 +631,7 @@ export default {
       owner_rate: 0,
       owner_bonus_khusus: 0,
       owner_overtime_rate: 0,
+      owner_astek_plus: 0,
       department_id: null,
       area_id: null,
       position_id: null,
@@ -541,9 +647,9 @@ export default {
       listDetailShift: [],
 
       currency_config: {
-        decimal: ",",
-        thousands: ".",
-        prefix: "Rp",
+        decimal: ',',
+        thousands: '.',
+        prefix: 'Rp',
         precision: 0,
         masked: false,
         allowBlank: false,
@@ -553,21 +659,21 @@ export default {
 
       selected_shift: null,
       headers: [
-        { text: "Hari", value: "days" },
-        { text: "Jam Masuk", value: "start" },
-        { text: "Mulai Istirahat", value: "start_break" },
-        { text: "Selesai Istirahat", value: "end_break" },
-        { text: "Durasi Istirahat(menit)", value: "break_duration_m" },
-        { text: "Jam Pulang", value: "end" },
+        { text: 'Hari', value: 'days' },
+        { text: 'Jam Masuk', value: 'start' },
+        { text: 'Mulai Istirahat', value: 'start_break' },
+        { text: 'Selesai Istirahat', value: 'end_break' },
+        { text: 'Durasi Istirahat(menit)', value: 'break_duration_m' },
+        { text: 'Jam Pulang', value: 'end' },
       ],
       label_day: [
-        "Minggu",
-        "Senin",
-        "Selasa",
-        "Rabu",
-        "Kamis",
-        "Jumat",
-        "Sabtu",
+        'Minggu',
+        'Senin',
+        'Selasa',
+        'Rabu',
+        'Kamis',
+        'Jumat',
+        'Sabtu',
       ],
     };
   },
@@ -625,7 +731,7 @@ export default {
     employeeType: {
       type: Array,
       default() {
-        return ["REGULER", "KHUSUS"];
+        return ['REGULER', 'KHUSUS'];
       },
     },
     dialogForm: {
@@ -635,21 +741,34 @@ export default {
   },
 
   created() {
-    console.log("created");
+    const token = localStorage.getItem('token');
+    const parsedToken = this.parsingJwt(token);
+    this.email = parsedToken.user.email;
+    if (parsedToken.user.role == 'owner') {
+      console.log('owner');
+      this.isOwner = true;
+    } else {
+      console.log('admin');
+      this.isOwner = false;
+    }
     this.actionGetAllDepartment();
     this.actionGetAllShift();
   },
 
   methods: {
     ...mapActions([
-      "actionSaveEmployee",
-      "actionUpdateEmployee",
-      "actionGetAllDepartment",
-      "actionGetAllAreaByDepartmentId",
-      "actionGetAllPositionByAreaId",
-      "actionGetAllShift",
-      "actionGetAllDetailShiftByShiftId",
+      'actionSaveEmployee',
+      'actionUpdateEmployee',
+      'actionGetAllDepartment',
+      'actionGetAllAreaByDepartmentId',
+      'actionGetAllPositionByAreaId',
+      'actionGetAllShift',
+      'actionGetAllDetailShiftByShiftId',
     ]),
+
+    parsingJwt(token) {
+      return parseJwt(token);
+    },
 
     save() {
       this.$v.$touch();
@@ -689,9 +808,10 @@ export default {
         gaji_pokok: this.gaji_pokok,
         tunjangan_jabatan: this.tunjangan_jabatan,
         tunjangan_kehadiran: this.tunjangan_kehadiran,
-        owner_rate: 0,
-        owner_bonus_khusus: 0,
-        owner_overtime_rate: 0,
+        owner_rate: this.owner_rate,
+        owner_bonus_khusus: this.owner_bonus_khusus,
+        owner_overtime_rate: this.owner_overtime_rate,
+        owner_astek_plus: this.owner_astek_plus,
         meta: {},
       };
       console.log(newEmployee);
@@ -709,7 +829,7 @@ export default {
       if (date != null) {
         return date.substring(0, 5);
       } else {
-        return "-";
+        return '-';
       }
     },
 
@@ -723,8 +843,8 @@ export default {
       this.position_id = null;
       this.selectedShift = null;
       this.listDetailShift = [];
-      this.$emit("update:dataEmployee", {});
-      this.$emit("update:dialogForm", false);
+      this.$emit('update:dataEmployee', {});
+      this.$emit('update:dialogForm', false);
       this.$v.$reset();
     },
 
@@ -736,8 +856,8 @@ export default {
       this.position_id = null;
       if (this.department_id != null) {
         const param = new URLSearchParams();
-        param.append("join", "department");
-        param.append("filter", "department.id||$eq||" + this.department_id);
+        param.append('join', 'department');
+        param.append('filter', 'department.id||$eq||' + this.department_id);
         this.actionGetAllAreaByDepartmentId(param);
       }
     },
@@ -746,8 +866,8 @@ export default {
       // console.log(this.area_id);
       if (this.area_id != null) {
         const param = new URLSearchParams();
-        param.append("join", "area");
-        param.append("filter", "area.id||$eq||" + this.area_id);
+        param.append('join', 'area');
+        param.append('filter', 'area.id||$eq||' + this.area_id);
         this.actionGetAllPositionByAreaId(param);
       }
     },
@@ -755,8 +875,8 @@ export default {
     getAllDetailShiftByShiftId() {
       if (this.selectedShift != null) {
         const param = new URLSearchParams();
-        param.append("join", "shift");
-        param.append("filter", "shift.id||$eq||" + this.selectedShift.id);
+        param.append('join', 'shift');
+        param.append('filter', 'shift.id||$eq||' + this.selectedShift.id);
         this.actionGetAllDetailShiftByShiftId(param);
       }
     },
@@ -765,7 +885,7 @@ export default {
   watch: {
     dataEmployee: {
       handler() {
-        console.log("dataEmployee");
+        console.log('dataEmployee');
         console.log(this.dataEmployee);
         this.id = this.dataEmployee.id;
         this.name = this.dataEmployee.name;
@@ -789,6 +909,7 @@ export default {
         this.owner_rate = this.dataEmployee.owner_rate;
         this.owner_bonus_khusus = this.dataEmployee.owner_bonus_khusus;
         this.owner_overtime_rate = this.dataEmployee.owner_overtime_rate;
+        this.owner_astek_plus = this.dataEmployee.owner_astek_plus;
         if (this.dataEmployee.department != null) {
           this.department_id = this.dataEmployee.department.id;
           this.getAllAreaByDepartmentId();
@@ -806,7 +927,7 @@ export default {
     },
     getDataAllDepartement: {
       handler() {
-        console.log("department_id");
+        console.log('department_id');
         console.log(this.department_id);
         for (var i = 0; i < this.getDataAllDepartement.length; i++) {
           this.listDepartment.push({
@@ -874,48 +995,48 @@ export default {
 
   computed: {
     ...mapGetters([
-      "getDataAllDepartement",
-      "getDataAllArea",
-      "getDataAllPosition",
-      "getAllDataShift",
-      "getAllDetailShift",
+      'getDataAllDepartement',
+      'getDataAllArea',
+      'getDataAllPosition',
+      'getAllDataShift',
+      'getAllDetailShift',
     ]),
     nameErrors() {
       const errors = [];
       if (!this.$v.name.$dirty) return errors;
-      !this.$v.name.maxLength && errors.push("Panjang Nama Max 50 Karakter");
-      !this.$v.name.required && errors.push("Nama harus diisi.");
+      !this.$v.name.maxLength && errors.push('Panjang Nama Max 50 Karakter');
+      !this.$v.name.required && errors.push('Nama harus diisi.');
       return errors;
     },
     idErrors() {
       const errors = [];
       if (!this.$v.id.$dirty) return errors;
-      !this.$v.id.maxLength && errors.push("NIK Max 20 Karakter");
-      !this.$v.id.required && errors.push("NIK harus diisi.");
+      !this.$v.id.maxLength && errors.push('NIK Max 20 Karakter');
+      !this.$v.id.required && errors.push('NIK harus diisi.');
       return errors;
     },
     bpjsIdErrors() {
       const errors = [];
       if (!this.$v.bpjs_id.$dirty) return errors;
-      !this.$v.bpjs_id.maxLength && errors.push("BPJS ID Max 30 Karakter");
+      !this.$v.bpjs_id.maxLength && errors.push('BPJS ID Max 30 Karakter');
       return errors;
     },
     npwpIdErrors() {
       const errors = [];
       if (!this.$v.npwp_id.$dirty) return errors;
-      !this.$v.npwp_id.maxLength && errors.push("NPWP ID Max 30 Karakter");
+      !this.$v.npwp_id.maxLength && errors.push('NPWP ID Max 30 Karakter');
       return errors;
     },
     addressErrors() {
       const errors = [];
       if (!this.$v.address.$dirty) return errors;
-      !this.$v.address.maxLength && errors.push("Alamat Max 100 Karakter");
+      !this.$v.address.maxLength && errors.push('Alamat Max 100 Karakter');
       return errors;
     },
     phoneNoErrors() {
       const errors = [];
       if (!this.$v.phone_no.$dirty) return errors;
-      !this.$v.phone_no.maxLength && errors.push("No Telepon 20 Karakter");
+      !this.$v.phone_no.maxLength && errors.push('No Telepon 20 Karakter');
       return errors;
     },
     // gajiPokokErrors() {
