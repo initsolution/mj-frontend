@@ -21,17 +21,20 @@
             >
               <div>
                 <v-row>
-                  <v-col cols="5">
+                  <v-col cols="12">
                     <v-simple-table>
                       <template v-slot:default>
                         <tbody>
                           <tr>
-                            <td>Total Hari Kerja</td>
+                            <td style="width: 20%">Total Hari Kerja</td>
                             <td>{{ item.total_hari_kerja }} Hari</td>
                           </tr>
                           <tr>
-                            <td>Total Hari Masuk</td>
-                            <td>{{ Math.floor(item.total_hari_masuk) }} Hari {{ (item.total_hari_masuk % 1) * 8 }} Jam</td>
+                            <td style="width: 20%">Total Hari Masuk</td>
+                            <td>
+                              {{ Math.floor(item.total_hari_masuk) }} Hari
+                              {{ (item.total_hari_masuk % 1) * 8 }} Jam
+                            </td>
                             <!-- <td v-if="item.total_hari_masuk % 1 == 0">
                               {{ Math.floor(item.total_hari_masuk) }} Hari
                             </td>
@@ -42,8 +45,11 @@
                             </td> -->
                           </tr>
                           <tr>
-                            <td>Total Hari Tidak Masuk</td>
-                            <td>{{ Math.floor(item.total_hari_off) }} Hari {{ (item.total_hari_off % 1) * 8 }} Jam</td>
+                            <td style="width: 20%">Total Hari Tidak Masuk</td>
+                            <td>
+                              {{ Math.floor(item.total_hari_off) }} Hari
+                              {{ (item.total_hari_off % 1) * 8 }} Jam
+                            </td>
                             <!-- <td v-if="item.total_hari_off % 1 == 0">
                               {{ Math.floor(item.total_hari_off) }} Hari
                             </td>
@@ -58,14 +64,18 @@
                     </v-simple-table>
                   </v-col>
                 </v-row>
-                <v-row>
-                  <v-col cols="7">
+                <v-row class="mb-5">
+                  <v-col cols="12">
                     <v-simple-table>
                       <template v-slot:default>
                         <thead>
-                          <tr>
-                            <th colspan="2" class="text-left">PENDAPATAN</th>
-                            <th colspan="2" class="text-left">PENGELUARAN</th>
+                          <tr style="background-color: #04aa6d; color: white">
+                            <th colspan="2" class="text-left white--text">
+                              PENDAPATAN
+                            </th>
+                            <th colspan="2" class="text-left white--text">
+                              PENGELUARAN
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
@@ -78,7 +88,7 @@
                             <td>
                               {{
                                 formatPrice(
-                                  Math.round(item.potongan_hari_kerja)
+                                  Math.round(item.potongan_hari_kerja),
                                 )
                               }}
                             </td>
@@ -114,7 +124,7 @@
                             <td>
                               {{
                                 formatPrice(
-                                  Math.round(item.extra_tambahan_kerja)
+                                  Math.round(item.extra_tambahan_kerja),
                                 )
                               }}
                             </td>
@@ -127,20 +137,24 @@
                             <td>Tambahan Lain</td>
                             <td>
                               <v-btn
-                              v-if="
-                                  item.tambahan_gaji_lain == 0
-                                "
+                                v-if="item.tambahan_gaji_lain == 0"
                                 color="blue darken-1"
                                 small
                                 class="mr-3 elevation-0"
                                 @click="openDialogPendapatanLain(item)"
                                 >{{
-                                  formatPrice(Math.round(item.tambahan_gaji_lain))
-                                }}</v-btn >
+                                  formatPrice(
+                                    Math.round(item.tambahan_gaji_lain),
+                                  )
+                                }}</v-btn
+                              >
                               <div v-else>
-                                {{ formatPrice(Math.round(item.tambahan_gaji_lain)) }}
-                              </div>  
-                              
+                                {{
+                                  formatPrice(
+                                    Math.round(item.tambahan_gaji_lain),
+                                  )
+                                }}
+                              </div>
                             </td>
                             <td>Pot Bon</td>
                             <td>
@@ -162,12 +176,6 @@
                                 {{ formatPrice(Math.round(item.potongan_bon)) }}
                               </div>
                             </td>
-                          </tr>
-                          <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
                           </tr>
                         </tbody>
                       </template>

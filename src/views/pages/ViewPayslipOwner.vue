@@ -21,17 +21,20 @@
             >
               <div>
                 <v-row>
-                  <v-col cols="5">
+                  <v-col cols="12">
                     <v-simple-table>
                       <template v-slot:default>
                         <tbody>
                           <tr>
-                            <td>Total Hari Kerja</td>
+                            <td style="width: 20%">Total Hari Kerja</td>
                             <td>{{ item.total_hari_kerja }} Hari</td>
                           </tr>
                           <tr>
-                            <td>Total Hari Masuk</td>
-                            <td>{{ Math.floor(item.total_hari_masuk) }} Hari {{ (item.total_hari_masuk % 1) * 8 }} Jam</td>
+                            <td style="width: 20%">Total Hari Masuk</td>
+                            <td>
+                              {{ Math.floor(item.total_hari_masuk) }} Hari
+                              {{ (item.total_hari_masuk % 1) * 8 }} Jam
+                            </td>
                             <!-- <td v-if="item.total_hari_masuk % 1 == 0">
                               {{ Math.floor(item.total_hari_masuk) }} Hari
                             </td>
@@ -42,8 +45,11 @@
                             </td> -->
                           </tr>
                           <tr>
-                            <td>Total Hari Tidak Masuk</td>
-                            <td>{{ Math.floor(item.total_hari_off) }} Hari {{ (item.total_hari_off % 1) * 8 }} Jam</td>
+                            <td style="width: 20%">Total Hari Tidak Masuk</td>
+                            <td>
+                              {{ Math.floor(item.total_hari_off) }} Hari
+                              {{ (item.total_hari_off % 1) * 8 }} Jam
+                            </td>
                             <!-- <td v-if="item.total_hari_off % 1 == 0">
                               {{ Math.floor(item.total_hari_off) }} Hari
                             </td>
@@ -58,94 +64,54 @@
                     </v-simple-table>
                   </v-col>
                 </v-row>
-                <v-row>
-                  <v-col cols="7">
+                <v-row class="mb-5">
+                  <v-col cols="12">
                     <v-simple-table>
                       <template v-slot:default>
                         <thead>
-                          <tr>
-                            <th colspan="2" class="text-left">PENDAPATAN</th>
-                            <th colspan="2" class="text-left">PENGELUARAN</th>
+                          <tr style="background-color: #04aa6d; color: white">
+                            <th colspan="2" class="text-left white--text">
+                              PENDAPATAN
+                            </th>
+                            <th colspan="2" class="text-left white--text">
+                              PENGELUARAN
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
-                            <td>Gaji Pokok</td>
-                            <td>
+                            <td style="width: 20%">Gaji Pokok</td>
+                            <td style="width: 30%">
                               {{ formatPrice(Math.round(item.gaji_pokok)) }}
                             </td>
-                            <td>Potongan Hari Kerja</td>
-                            <td>
+                            <td style="width: 20%"></td>
+                            <td style="width: 30%"></td>
+                          </tr>
+                          <tr style="background-color: #eaeaea">
+                            <td style="font-weight: bold">Total Buku 1</td>
+                            <td style="font-weight: bold">
+                              {{ formatPrice(Math.round(item.total_buku_1)) }}
+                            </td>
+                            <td style="font-weight: bold">Total Potongan 1</td>
+                            <td style="font-weight: bold">
                               {{
-                                formatPrice(
-                                  Math.round(item.potongan_hari_kerja)
-                                )
+                                formatPrice(Math.round(item.total_potongan_1))
                               }}
                             </td>
                           </tr>
                           <tr>
-                            <td>Tunjangan Jabatan</td>
-                            <td>
-                              {{
-                                formatPrice(Math.round(item.tunjangan_jabatan))
-                              }}
-                            </td>
-                            <td>Pot BPJS TK</td>
-                            <td>
-                              {{
-                                formatPrice(Math.round(item.potongan_bpjs_tk))
-                              }}
-                            </td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
                           </tr>
                           <tr>
-                            <td>Insentif Ekstra</td>
+                            <td>Tambahan</td>
                             <td>
-                              {{ formatPrice(Math.round(item.insentif_extra)) }}
+                              {{ formatPrice(Math.round(item.tambahan)) }}
                             </td>
-                            <td>Pot BPJS KS</td>
+                            <td>Potongan Bon</td>
                             <td>
-                              {{
-                                formatPrice(Math.round(item.potongan_bpjs_ks))
-                              }}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>Extra Tambahan Kerja</td>
-                            <td>
-                              {{
-                                formatPrice(
-                                  Math.round(item.extra_tambahan_kerja)
-                                )
-                              }}
-                            </td>
-                            <td>Pot SPSI</td>
-                            <td>
-                              {{ formatPrice(Math.round(item.potongan_spsi)) }}
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>Tambahan Lain</td>
-                            <td>
-                              <v-btn
-                              v-if="
-                                  item.tambahan_gaji_lain == 0
-                                "
-                                color="blue darken-1"
-                                small
-                                class="mr-3 elevation-0"
-                                @click="openDialogPendapatanLain(item)"
-                                >{{
-                                  formatPrice(Math.round(item.tambahan_gaji_lain))
-                                }}</v-btn >
-                              <div v-else>
-                                {{ formatPrice(Math.round(item.tambahan_gaji_lain)) }}
-                              </div>  
-                              
-                            </td>
-                            <td>Pot Bon</td>
-                            <td>
-                              <!-- {{ formatPrice(Math.round(item.potongan_bon)) }} -->
-
                               <v-btn
                                 v-if="
                                   item.potongan_bon == 0 && item.sisa_bon > 0
@@ -164,10 +130,38 @@
                             </td>
                           </tr>
                           <tr>
+                            <td>Lembur</td>
+                            <td>
+                              {{ formatPrice(Math.round(item.lembur)) }}
+                            </td>
+                            <td>Potongan Astek Plus</td>
+                            <td>
+                              {{
+                                formatPrice(
+                                  Math.round(item.potongan_astek_plus),
+                                )
+                              }}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>Bonus Khusus</td>
+                            <td>
+                              {{ formatPrice(Math.round(item.bonus_khusus)) }}
+                            </td>
                             <td></td>
                             <td></td>
-                            <td></td>
-                            <td></td>
+                          </tr>
+                          <tr style="background-color: #eaeaea">
+                            <td style="font-weight: bold">Total Buku 2</td>
+                            <td style="font-weight: bold">
+                              {{ formatPrice(Math.round(item.total_buku_2)) }}
+                            </td>
+                            <td style="font-weight: bold">Total Potongan 2</td>
+                            <td style="font-weight: bold">
+                              {{
+                                formatPrice(Math.round(item.total_potongan_2))
+                              }}
+                            </td>
                           </tr>
                         </tbody>
                       </template>

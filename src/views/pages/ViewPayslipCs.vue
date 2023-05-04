@@ -21,24 +21,24 @@
             >
               <div>
                 <v-row>
-                  <v-col cols="4">
+                  <v-col cols="12">
                     <v-simple-table>
                       <template v-slot:default>
                         <tbody>
                           <tr>
-                            <td>Lama Kerja</td>
+                            <td style="width: 20%">Lama Kerja</td>
                             <td>{{ item.lama_kerja }} Tahun</td>
                           </tr>
                           <tr>
-                            <td>Total Hari Kerja</td>
+                            <td style="width: 20%">Total Hari Kerja</td>
                             <td>{{ item.total_hari_kerja }} Hari</td>
                           </tr>
                           <tr>
-                            <td>Total Hari Masuk</td>
+                            <td style="width: 20%">Total Hari Masuk</td>
                             <td>{{ item.total_hari_masuk }} Hari</td>
                           </tr>
                           <tr>
-                            <td>Total Hari Tidak Masuk</td>
+                            <td style="width: 20%">Total Hari Tidak Masuk</td>
                             <td>{{ item.total_hari_off }} Hari</td>
                           </tr>
                         </tbody>
@@ -46,14 +46,14 @@
                     </v-simple-table>
                   </v-col>
                 </v-row>
-                <v-row>
-                  <v-col cols="8">
+                <v-row class="mb-5">
+                  <v-col cols="12">
                     <v-simple-table>
                       <template v-slot:default>
                         <thead>
-                          <tr>
-                            <th colspan="2" class="text-left">PENDAPATAN</th>
-                            <th colspan="2" class="text-left">PENGELUARAN</th>
+                          <tr style="background-color: #04aa6d; color: white">
+                            <th colspan="2" class="text-left white--text">PENDAPATAN</th>
+                            <th colspan="2" class="text-left white--text">PENGELUARAN</th>
                           </tr>
                         </thead>
                         <tbody>

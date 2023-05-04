@@ -21,7 +21,7 @@
             >
               <div>
                 <v-row>
-                  <v-col cols="8">
+                  <v-col cols="12">
                     <v-simple-table>
                       <template v-slot:default>
                         <tbody>
@@ -48,14 +48,14 @@
                     </v-simple-table>
                   </v-col>
                 </v-row>
-                <v-row>
-                  <v-col cols="8">
+                <v-row class="mb-5">
+                  <v-col cols="12">
                     <v-simple-table>
                       <template v-slot:default>
                         <thead>
-                          <tr>
-                            <th colspan="2" class="text-left">PENDAPATAN</th>
-                            <th colspan="2" class="text-left">PENGELUARAN</th>
+                          <tr style="background-color: #04aa6d; color: white">
+                            <th colspan="2" class="text-left white--text">PENDAPATAN</th>
+                            <th colspan="2" class="text-left white--text">PENGELUARAN</th>
                           </tr>
                         </thead>
                         <tbody>
