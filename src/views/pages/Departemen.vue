@@ -50,7 +50,7 @@
                     class="elevation-0"
                     dark
                     @click="editDepartemen()"
-                    >Edit
+                    >Ubah
                   </v-btn>
                   <v-snackbar
                     v-model="snackbar"
@@ -231,7 +231,7 @@
                       <v-list-item-content>
                         <v-list-item-title>
                           <v-icon small class="mr-2">mdi-book-edit</v-icon>
-                          <span class="font-md">Edit</span>
+                          <span class="font-md">Ubah</span>
                         </v-list-item-title>
                       </v-list-item-content>
                     </v-list-item>

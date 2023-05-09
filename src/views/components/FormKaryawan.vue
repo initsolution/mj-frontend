@@ -7,10 +7,10 @@
       >
         <div>
           <div>
-            <v-icon color="purple">{{
+            <v-icon>{{
               dataEmployee.id != null ? 'mdi-account-edit' : 'mdi-account-plus'
             }}</v-icon>
-            {{ dataEmployee.id != null ? 'Edit' : 'Tambah' }} Karyawan
+            {{ dataEmployee.id != null ? 'Ubah' : 'Tambah' }} Karyawan
           </div>
           <div class="caption ml-8 grey--text darken-3">
             Form {{ dataEmployee.id != null ? 'mengubah' : 'menambahkan' }} data
@@ -75,7 +75,7 @@
                         <v-text-field
                           color="grey darken-2"
                           v-model.trim="bpjs_id"
-                          label="ID BPJS*"
+                          label="ID BPJS"
                           :error-messages="bpjsIdErrors"
                           :counter="30"
                           @input="$v.bpjs_id.$touch()"
@@ -86,7 +86,7 @@
                         <v-text-field
                           color="grey darken-2"
                           v-model.trim="npwp_id"
-                          label="ID NPWP*"
+                          label="ID NPWP"
                           :error-messages="npwpIdErrors"
                           :counter="30"
                           @input="$v.npwp_id.$touch()"
@@ -579,7 +579,7 @@
           class="elevation-0"
           color="primary"
           @click="save"
-          >{{ dataEmployee.id != null ? 'Edit' : 'Simpan' }}</v-btn
+          >{{ dataEmployee.id != null ? 'Ubah' : 'Simpan' }}</v-btn
         >
 
         <div class="caption grey--text lighten-2 ml-5">

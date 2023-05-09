@@ -42,7 +42,7 @@
                     class="elevation-0"
                     dark
                     @click="editShift()"
-                    >Edit
+                    >Ubah
                   </v-btn>
                   <v-snackbar
                     v-model="snackbar"

@@ -3,11 +3,13 @@
   <v-layout row justify-center>
     <v-dialog v-model="dialogTambahKehadiran" persistent max-width="600px">
       <v-card>
-        <v-card-title>
-          <span class="headline">Tambah Kehadiran</span>
-          <!-- {{ (dataAttendance_ = dataAttendance) }} -->
+        <v-card-title
+          class="subheading px-8 d-flex flex-row grey lighten-5 align-center justify-space-between"
+        >
+          <span class="headline">Tambah Kehadiran</span
+          ><v-icon @click="close">mdi-close</v-icon>
         </v-card-title>
-
+        <v-divider></v-divider>
         <v-card-text>
           <v-container>
             <v-row>
@@ -108,9 +110,23 @@
             </v-row>
           </v-container>
         </v-card-text>
-        <v-card-actions>
-          <v-btn color="red darken-1" @click.native="close">Close</v-btn>
-          <v-btn color="blue darken-1" @click="addOneAttendance">Tambah</v-btn>
+        <v-divider></v-divider>
+        <v-card-actions class="grey lighten-4 px-8 py-4 d-flex flex-row">
+          <v-btn
+            min-width="100"
+            class="elevation-0"
+            color="grey darken-1"
+            dark
+            @click.native="close"
+            >Tutup</v-btn
+          >
+          <v-btn
+            min-width="100"
+            class="elevation-0"
+            color="primary"
+            @click="addOneAttendance"
+            >Tambah</v-btn
+          >
           <v-snackbar
             v-model="snackbar"
             :multi-line="multiLine"
@@ -137,10 +153,10 @@
 </template>
     
 <script>
-import { mapActions, mapGetters } from "vuex";
-import { mask } from "vue-the-mask";
+import { mapActions, mapGetters } from 'vuex';
+import { mask } from 'vue-the-mask';
 export default {
-  name: "TambahKehadiran",
+  name: 'TambahKehadiran',
   props: {
     dialogTambahKehadiran: {
       default: false,
@@ -164,35 +180,35 @@ export default {
       currentDate: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
         .toISOString()
         .substring(0, 10),
-      mask: "##:##",
+      mask: '##:##',
       label_kehadiran: [
         {
-          text: "Masuk",
-          value: "1",
+          text: 'Masuk',
+          value: '1',
         },
         {
-          text: "Tidak Masuk",
-          value: "0",
+          text: 'Tidak Masuk',
+          value: '0',
         },
       ],
       select_kehadiran: null,
-      check_in: "",
-      check_out: "",
-      start_for_break: "",
-      end_for_break: "",
-      start_for_left: "",
-      end_for_left: "",
-      arrive_home: "",
+      check_in: '',
+      check_out: '',
+      start_for_break: '',
+      end_for_break: '',
+      start_for_left: '',
+      end_for_left: '',
+      arrive_home: '',
       multiLine: false,
       snackbar: false,
-      notif_text: "",
+      notif_text: '',
     };
   },
   methods: {
     ...mapActions([
-      "saveBulkAttendance",
-      "saveBulkAttendanceCs",
-      "actionGetAllEmployeeByFilter",
+      'saveBulkAttendance',
+      'saveBulkAttendanceCs',
+      'actionGetAllEmployeeByFilter',
     ]),
     addOneAttendance() {
       var bulk = [];
@@ -201,13 +217,13 @@ export default {
       var data = null;
 
       if (this.employee_data == null) {
-        this.notif_text = "Pilih karyawan terlebih dahulu";
+        this.notif_text = 'Pilih karyawan terlebih dahulu';
         this.snackbar = true;
         return;
       }
 
       if (this.selectDate == null) {
-        this.notif_text = "Pilih tanggal terlebih dahulu";
+        this.notif_text = 'Pilih tanggal terlebih dahulu';
         this.snackbar = true;
         return;
       } else {
@@ -216,7 +232,7 @@ export default {
       }
 
       if (this.select_kehadiran == null) {
-        this.notif_text = "Pilih Kehadiran terlebih dahulu";
+        this.notif_text = 'Pilih Kehadiran terlebih dahulu';
         this.snackbar = true;
         return;
       }
@@ -246,7 +262,7 @@ export default {
           this.end_for_break.length != 5
         ) {
           this.notif_text =
-            "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+            'Format waktu tidak sesuai, harap cek kembali. contoh: 17:00';
           this.snackbar = true;
           return;
         }
@@ -254,7 +270,7 @@ export default {
         if (this.arrive_home != null) {
           if (this.arrive_home.length != 0 && this.arrive_home.length != 5) {
             this.notif_text =
-              "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+              'Format waktu tidak sesuai, harap cek kembali. contoh: 17:00';
             this.snackbar = true;
             return;
           }
@@ -266,7 +282,7 @@ export default {
             this.start_for_left.length != 5
           ) {
             this.notif_text =
-              "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+              'Format waktu tidak sesuai, harap cek kembali. contoh: 17:00';
             this.snackbar = true;
             return;
           } else if (this.end_for_left != null) {
@@ -276,61 +292,61 @@ export default {
             ) {
               //jika start_for_left ada data, maka end_for_left harus diisi
               this.notif_text =
-                "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+                'Format waktu tidak sesuai, harap cek kembali. contoh: 17:00';
               this.snackbar = true;
               return;
             }
           }
         }
 
-        this.arrive_home = this.arrive_home == "" ? null : this.arrive_home;
+        this.arrive_home = this.arrive_home == '' ? null : this.arrive_home;
         this.start_for_left =
-          this.start_for_left == "" ? null : this.start_for_left;
-        this.end_for_left = this.end_for_left == "" ? null : this.end_for_left;
+          this.start_for_left == '' ? null : this.start_for_left;
+        this.end_for_left = this.end_for_left == '' ? null : this.end_for_left;
 
         var attendance_type = this.arrive_home != null ? 1 : 0;
 
         var result_check_in = this.checkTime(
-          this.check_in.split(":")[0],
-          this.check_in.split(":")[1]
+          this.check_in.split(':')[0],
+          this.check_in.split(':')[1],
         );
         var result_check_out = this.checkTime(
-          this.check_out.split(":")[0],
-          this.check_out.split(":")[1]
+          this.check_out.split(':')[0],
+          this.check_out.split(':')[1],
         );
         var result_start_for_break = this.checkTime(
-          this.start_for_break.split(":")[0],
-          this.start_for_break.split(":")[1]
+          this.start_for_break.split(':')[0],
+          this.start_for_break.split(':')[1],
         );
         var result_end_for_break = this.checkTime(
-          this.end_for_break.split(":")[0],
-          this.end_for_break.split(":")[1]
+          this.end_for_break.split(':')[0],
+          this.end_for_break.split(':')[1],
         );
 
         if (
-          result_check_in != "" ||
-          result_check_out != "" ||
-          result_start_for_break != "" ||
-          result_end_for_break != ""
+          result_check_in != '' ||
+          result_check_out != '' ||
+          result_start_for_break != '' ||
+          result_end_for_break != ''
         ) {
           this.notif_text =
-            "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+            'Format waktu tidak sesuai, harap cek kembali. contoh: 17:00';
           this.snackbar = true;
           return;
         }
 
         if (this.start_for_left != null || this.end_for_left != null) {
           var result_start_for_left = this.checkTime(
-            this.start_for_left.split(":")[0],
-            this.start_for_left.split(":")[1]
+            this.start_for_left.split(':')[0],
+            this.start_for_left.split(':')[1],
           );
           var result_end_for_left = this.checkTime(
-            this.end_for_left.split(":")[0],
-            this.end_for_left.split(":")[1]
+            this.end_for_left.split(':')[0],
+            this.end_for_left.split(':')[1],
           );
-          if (result_start_for_left != "" || result_end_for_left != "") {
+          if (result_start_for_left != '' || result_end_for_left != '') {
             this.notif_text =
-              "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+              'Format waktu tidak sesuai, harap cek kembali. contoh: 17:00';
             this.snackbar = true;
             return;
           }
@@ -338,12 +354,12 @@ export default {
 
         if (this.arrive_home != null) {
           var result_arrive_home = this.checkTime(
-            this.arrive_home.split(":")[0],
-            this.arrive_home.split(":")[1]
+            this.arrive_home.split(':')[0],
+            this.arrive_home.split(':')[1],
           );
-          if (result_arrive_home != "") {
+          if (result_arrive_home != '') {
             this.notif_text =
-              "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+              'Format waktu tidak sesuai, harap cek kembali. contoh: 17:00';
             this.snackbar = true;
             return;
           }
@@ -380,28 +396,28 @@ export default {
 
     checkTime(hour, minute) {
       if (hour > 23 || minute > 59) {
-        return "Format Jam Salah";
+        return 'Format Jam Salah';
       }
-      return "";
+      return '';
     },
 
     close() {
-      this.total_leave = "";
-      this.$emit("update:dialogTambahKehadiran", false);
+      this.total_leave = '';
+      this.$emit('update:dialogTambahKehadiran', false);
       this.employee_data = null;
       this.selectDate = null;
-      this.check_in = "";
-      this.check_out = "";
-      this.start_for_break = "";
-      this.end_for_break = "";
-      this.start_for_left = "";
-      this.end_for_left = "";
-      this.arrive_home = "";
+      this.check_in = '';
+      this.check_out = '';
+      this.start_for_break = '';
+      this.end_for_break = '';
+      this.start_for_left = '';
+      this.end_for_left = '';
+      this.arrive_home = '';
       this.select_kehadiran = null;
     },
   },
   computed: {
-    ...mapGetters(["getDataEmployees"]),
+    ...mapGetters(['getDataEmployees']),
     getEmployee() {
       return this.getDataEmployees.sort((a, b) => {
         let fa = a.name.toLowerCase();
@@ -434,9 +450,9 @@ export default {
         // console.log(this.dialogTambahKehadiran);
         if (this.dialogTambahKehadiran == true) {
           const params = new URLSearchParams();
-          params.append("filter", "department.id||$eq||" + this.departementId);
-          params.append("filter", "active||$eq||1");
-          params.append("join", "department");
+          params.append('filter', 'department.id||$eq||' + this.departementId);
+          params.append('filter', 'active||$eq||1');
+          params.append('join', 'department');
           this.actionGetAllEmployeeByFilter(params);
         }
       },

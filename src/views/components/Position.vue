@@ -9,20 +9,14 @@
     <v-dialog v-model="dialogPosition" persistent max-width="800px">
       <v-card>
         <v-card-title
-          class="
-            subheading
-            px-6
-            d-flex
-            flex-row
-            align-center
-            justify-space-between
-          "
+          class="subheading px-8 d-flex grey lighten-5 flex-row align-center justify-space-between"
         >
           <div>Data Jabatan</div>
           <v-icon @click="close()">mdi-close</v-icon>
         </v-card-title>
+        <v-divider></v-divider>
         <v-card-text>
-          <v-row align="center" justify="space-between">
+          <v-row align="center mt-4" justify="space-between">
             <v-col cols="4" class="py-0">
               <v-btn
                 class="elevation-0 my-3"
@@ -58,7 +52,7 @@
                       color="blue"
                       dark
                       class="mr-2 elevation-0"
-                      >Edit</v-btn
+                      >Ubah</v-btn
                     >
                   </td>
                 </tr>
@@ -72,10 +66,10 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
-import TambahEditPosition from "@/views/components/TambahEditPosition.vue";
+import { mapActions, mapGetters } from 'vuex';
+import TambahEditPosition from '@/views/components/TambahEditPosition.vue';
 export default {
-  name: "Position",
+  name: 'Position',
   components: {
     TambahEditPosition,
   },
@@ -93,20 +87,20 @@ export default {
       getDataPosition: {},
       multiLine: false,
       snackbar: false,
-      notif_text: "",
+      notif_text: '',
     };
   },
 
   created() {},
 
   methods: {
-    ...mapActions(["actionGetAllAreaById"]),
+    ...mapActions(['actionGetAllAreaById']),
 
     getAllAreaById() {
       const param = new URLSearchParams();
-      param.append("join", "position");
+      param.append('join', 'position');
       this.areaId = this.getDetailDataArea.id;
-      if(this.areaId == null ) {
+      if (this.areaId == null) {
         return;
       }
       const data = {
@@ -117,13 +111,13 @@ export default {
     },
 
     updatePosition(item) {
-      this.type = "update";
+      this.type = 'update';
       this.getDataPosition = item;
       this.dialogTambahEditPosition = true;
     },
 
     addPosition() {
-      this.type = "add";
+      this.type = 'add';
       this.getDataPosition = {};
       this.dialogTambahEditPosition = true;
     },
@@ -133,15 +127,15 @@ export default {
     },
 
     close() {
-      this.$emit("update:dialogPosition", false);
+      this.$emit('update:dialogPosition', false);
     },
   },
 
   computed: {
     ...mapGetters([
-      "getDataAllArea",
-      "getDataAllPosition",
-      "getStatusPosition",
+      'getDataAllArea',
+      'getDataAllPosition',
+      'getStatusPosition',
     ]),
   },
 
@@ -155,8 +149,8 @@ export default {
     getStatusPosition: {
       handler() {
         if (
-          this.getStatusPosition.status == "Created" ||
-          this.getStatusPosition.status == "OK"
+          this.getStatusPosition.status == 'Created' ||
+          this.getStatusPosition.status == 'OK'
         ) {
           this.getAllAreaById();
         }
