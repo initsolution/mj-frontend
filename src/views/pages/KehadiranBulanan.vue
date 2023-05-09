@@ -41,7 +41,7 @@
             <div class="flex-grow-1"></div>
             <v-col class="text-right py-0"> </v-col>
           </v-row>
-          <div style="margin-bottom: 30px"></div>
+          <v-divider class="my-3"></v-divider>
           <v-row>
             <v-col md="8">
               <v-file-input

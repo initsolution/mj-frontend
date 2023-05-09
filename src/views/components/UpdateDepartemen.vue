@@ -2,10 +2,21 @@
   <v-layout row justify-center>
     <v-dialog v-model="dialogUpdateDepartemen" persistent max-width="600px">
       <v-card>
-        <v-card-title>
-          <span class="headline">Ubah Departemen </span>
+        <v-card-title
+          class="subheading px-8 d-flex flex-row grey lighten-5 align-center justify-space-between"
+        >
+          <div>
+            <div>
+              <v-icon>mdi-pencil</v-icon>
+              Ubah Departemen
+            </div>
+            <div class="caption ml-8 grey--text darken-3">
+              Form mengubah data Departemen
+            </div>
+          </div>
+          <v-icon @click="close">mdi-close</v-icon>
         </v-card-title>
-
+        <v-divider></v-divider>
         <v-card-text>
           <v-container>
             <v-row>
@@ -26,14 +37,19 @@
                   class="currency-input pa-0 ma-0 font-md"
                   label="UMR"
                 />
-                
               </v-col>
             </v-row>
           </v-container>
         </v-card-text>
-        <v-card-actions>
-          <v-btn color="red darken-1" @click.native="close">Tutup</v-btn>
-          <v-btn color="blue darken-1" @click="update">Ubah</v-btn>
+        <v-divider></v-divider>
+        <v-card-actions class="grey lighten-4 px-8 py-4 d-flex flex-row">
+          <v-btn
+            min-width="100"
+            class="elevation-0"
+            color="primary"
+            @click="update"
+            >Ubah</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -41,9 +57,9 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions } from 'vuex';
 export default {
-  name: "UpdateDepartemen",
+  name: 'UpdateDepartemen',
   props: {
     dialogUpdateDepartemen: {
       default: false,
@@ -53,9 +69,9 @@ export default {
   data() {
     return {
       currency_config: {
-        decimal: ",",
-        thousands: ".",
-        prefix: "Rp",
+        decimal: ',',
+        thousands: '.',
+        prefix: 'Rp',
         precision: 0,
         masked: false,
         allowBlank: false,
@@ -65,7 +81,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["actionUpdateDepartement"]),
+    ...mapActions(['actionUpdateDepartement']),
     update() {
       const data = {
         id: this.getDataDepartemen.id,
@@ -77,7 +93,7 @@ export default {
     },
 
     close() {
-      this.$emit("update:dialogUpdateDepartemen", false);
+      this.$emit('update:dialogUpdateDepartemen', false);
     },
   },
 };

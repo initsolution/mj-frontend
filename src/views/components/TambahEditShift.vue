@@ -3,15 +3,28 @@
   <v-layout row justify-center>
     <v-dialog v-model="dialogTambahEditShift" persistent max-width="1000px">
       <v-card>
-        <v-card-title>
-          <span v-if="type == 'tambah'" class="headline">Tambah Shift</span>
-          <span v-else class="headline">Edit Shift</span>
+        <v-card-title
+          class="subheading px-8 d-flex flex-row grey lighten-5 align-center justify-space-between"
+        >
+          <div>
+            <div>
+              <v-icon>{{
+                type == 'tambah' ? 'mdi-calendar-plus' : 'mdi-calendar-edit'
+              }}</v-icon>
+              {{ type == 'tambah' ? 'Tambah' : 'Ubah' }} Shift
+            </div>
+            <div class="caption ml-8 grey--text darken-3">
+              Form {{ type == 'tambah' ? 'menambahkan' : 'mengubah' }} data
+              shift
+            </div>
+          </div>
+          <v-icon @click="close">mdi-close</v-icon>
         </v-card-title>
-
+        <v-divider></v-divider>
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col class="py-0" cols="12" sm="5" md="5">
+              <v-col cols="8" sm="8" md="8">
                 <v-text-field
                   color="grey darken-2"
                   label="Nama Shift"
@@ -19,7 +32,7 @@
                   required
                 ></v-text-field>
               </v-col>
-              <v-col class="py-0" cols="12" sm="5" md="5">
+              <v-col cols="4" sm="4" md="4">
                 <v-row>
                   <div class="font-sm">Dapat Ditukar</div>
                 </v-row>
@@ -188,17 +201,33 @@
             </div>
           </v-container>
         </v-card-text>
-        <v-card-actions>
-          <v-btn color="red darken-1" @click.native="close">Close</v-btn>
-
+        <v-divider></v-divider>
+        <v-card-actions class="grey lighten-4 px-8 py-4 d-flex flex-row">
+          <v-btn
+            min-width="100"
+            class="elevation-0"
+            color="grey darken-1"
+            dark
+            @click.native="close"
+            >Tutup</v-btn
+          >
           <v-btn
             v-if="type == 'tambah'"
-            color="blue darken-1"
+            min-width="100"
+            class="elevation-0"
+            color="primary"
             @click="add_edit_Shift"
+            dark
             >Tambah</v-btn
           >
-          <v-btn v-else color="blue darken-1" @click="add_edit_Shift"
-            >Edit</v-btn
+          <v-btn
+            v-else
+            min-width="100"
+            class="elevation-0"
+            color="primary"
+            @click="add_edit_Shift"
+            dark
+            >Ubah</v-btn
           >
           <v-snackbar
             v-model="snackbar"
@@ -226,10 +255,10 @@
 </template>
       
   <script>
-import { mapActions, mapGetters } from "vuex";
-import { mask } from "vue-the-mask";
+import { mapActions, mapGetters } from 'vuex';
+import { mask } from 'vue-the-mask';
 export default {
-  name: "TambahEditShift",
+  name: 'TambahEditShift',
   props: {
     dialogTambahEditShift: {
       default: false,
@@ -249,53 +278,53 @@ export default {
 
   data() {
     return {
-      schedules: ["Sesuai Jadwal", "Bebas (1 Jam)"],
+      schedules: ['Sesuai Jadwal', 'Bebas (1 Jam)'],
       label_day: [
-        "Minggu",
-        "Senin",
-        "Selasa",
-        "Rabu",
-        "Kamis",
-        "Jumat",
-        "Sabtu",
+        'Minggu',
+        'Senin',
+        'Selasa',
+        'Rabu',
+        'Kamis',
+        'Jumat',
+        'Sabtu',
       ],
       shift_id: null,
       shift_name: null,
       switchable: false,
       selected_schedule: null,
       list_detailshift: [],
-      mask: "##:##",
-      mask_break: "##.##",
-      check_in: "",
-      check_out: "",
-      start_for_break: "",
-      end_for_break: "",
-      start_for_left: "",
-      end_for_left: "",
-      arrive_home: "",
+      mask: '##:##',
+      mask_break: '##.##',
+      check_in: '',
+      check_out: '',
+      start_for_break: '',
+      end_for_break: '',
+      start_for_left: '',
+      end_for_left: '',
+      arrive_home: '',
       multiLine: false,
       snackbar: false,
-      notif_text: "",
+      notif_text: '',
     };
   },
   methods: {
     ...mapActions([
-      "actionSaveShift",
-      "actionUpdateShift",
-      "actionUpdateDetailShift",
+      'actionSaveShift',
+      'actionUpdateShift',
+      'actionUpdateDetailShift',
     ]),
     add_edit_Shift() {
       // console.log("selected_schedule : " + this.selected_schedule);
       var is_flexible = -1;
 
       if (this.shift_name == null) {
-        this.notif_text = "Nama Shift kosong!";
+        this.notif_text = 'Nama Shift kosong!';
         this.snackbar = true;
         return;
       }
 
       if (this.selected_schedule == null) {
-        this.notif_text = "Tipe jadwal kosong!";
+        this.notif_text = 'Tipe jadwal kosong!';
         this.snackbar = true;
         return;
       }
@@ -323,7 +352,7 @@ export default {
             this.list_detailshift[i].end == null
           ) {
             this.notif_text =
-              "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+              'Format waktu tidak sesuai, harap cek kembali. contoh: 17:00';
             this.snackbar = true;
             return;
           } else {
@@ -334,43 +363,43 @@ export default {
               this.list_detailshift[i].end.length != 5
             ) {
               this.notif_text =
-                "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+                'Format waktu tidak sesuai, harap cek kembali. contoh: 17:00';
               this.snackbar = true;
               return;
             } else {
               if (
                 this.checkTime(
-                  this.list_detailshift[i].start.split(":")[0],
-                  this.list_detailshift[i].start.split(":")[1]
-                ) != "" ||
+                  this.list_detailshift[i].start.split(':')[0],
+                  this.list_detailshift[i].start.split(':')[1],
+                ) != '' ||
                 this.checkTime(
-                  this.list_detailshift[i].start_break.split(":")[0],
-                  this.list_detailshift[i].start_break.split(":")[1]
-                ) != "" ||
+                  this.list_detailshift[i].start_break.split(':')[0],
+                  this.list_detailshift[i].start_break.split(':')[1],
+                ) != '' ||
                 this.checkTime(
-                  this.list_detailshift[i].end_break.split(":")[0],
-                  this.list_detailshift[i].end_break.split(":")[1]
-                ) != "" ||
+                  this.list_detailshift[i].end_break.split(':')[0],
+                  this.list_detailshift[i].end_break.split(':')[1],
+                ) != '' ||
                 this.checkTime(
-                  this.list_detailshift[i].end.split(":")[0],
-                  this.list_detailshift[i].end.split(":")[1]
-                ) != ""
+                  this.list_detailshift[i].end.split(':')[0],
+                  this.list_detailshift[i].end.split(':')[1],
+                ) != ''
               ) {
                 this.notif_text =
-                  "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+                  'Format waktu tidak sesuai, harap cek kembali. contoh: 17:00';
                 this.snackbar = true;
                 return;
               }
             }
           }
           this.list_detailshift[i].work_hours =
-            this.list_detailshift[i].start + "-" + this.list_detailshift[i].end;
+            this.list_detailshift[i].start + '-' + this.list_detailshift[i].end;
           this.list_detailshift[i].break_hours =
             this.list_detailshift[i].start_break +
-            "-" +
+            '-' +
             this.list_detailshift[i].end_break;
-          var mulaiIstirahat = this.list_detailshift[i].start_break.split(":");
-          var selesaiIstirahat = this.list_detailshift[i].end_break.split(":");
+          var mulaiIstirahat = this.list_detailshift[i].start_break.split(':');
+          var selesaiIstirahat = this.list_detailshift[i].end_break.split(':');
 
           var hasil =
             60 * (selesaiIstirahat[0] - mulaiIstirahat[0]) +
@@ -388,7 +417,7 @@ export default {
             this.list_detailshift[i].end == null
           ) {
             this.notif_text =
-              "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+              'Format waktu tidak sesuai, harap cek kembali. contoh: 17:00';
             this.snackbar = true;
             return;
           } else {
@@ -398,35 +427,36 @@ export default {
               this.list_detailshift[i].end.length != 5
             ) {
               this.notif_text =
-                "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+                'Format waktu tidak sesuai, harap cek kembali. contoh: 17:00';
               this.snackbar = true;
               return;
             } else {
               if (
                 this.checkTime(
-                  this.list_detailshift[i].start.split(":")[0],
-                  this.list_detailshift[i].start.split(":")[1]
-                ) != "" ||
+                  this.list_detailshift[i].start.split(':')[0],
+                  this.list_detailshift[i].start.split(':')[1],
+                ) != '' ||
                 this.checkTime(
-                  this.list_detailshift[i].break_duration_m.split(".")[0],
-                  this.list_detailshift[i].break_duration_m.split(".")[1]
-                ) != "" ||
+                  this.list_detailshift[i].break_duration_m.split('.')[0],
+                  this.list_detailshift[i].break_duration_m.split('.')[1],
+                ) != '' ||
                 this.checkTime(
-                  this.list_detailshift[i].end.split(":")[0],
-                  this.list_detailshift[i].end.split(":")[1]
-                ) != ""
+                  this.list_detailshift[i].end.split(':')[0],
+                  this.list_detailshift[i].end.split(':')[1],
+                ) != ''
               ) {
                 this.notif_text =
-                  "Format waktu tidak sesuai, harap cek kembali. contoh: 17:00";
+                  'Format waktu tidak sesuai, harap cek kembali. contoh: 17:00';
                 this.snackbar = true;
                 return;
               }
             }
           }
           this.list_detailshift[i].work_hours =
-            this.list_detailshift[i].start + "-" + this.list_detailshift[i].end;
-          this.list_detailshift[i].break_hours = "-";
-          var mulaiIstirahat = this.list_detailshift[i].break_duration_m.split(".");
+            this.list_detailshift[i].start + '-' + this.list_detailshift[i].end;
+          this.list_detailshift[i].break_hours = '-';
+          var mulaiIstirahat =
+            this.list_detailshift[i].break_duration_m.split('.');
 
           var hasil =
             parseInt(60 * mulaiIstirahat[0]) + parseInt(mulaiIstirahat[1]);
@@ -436,7 +466,7 @@ export default {
         }
       }
 
-      if (this.type == "tambah") {
+      if (this.type == 'tambah') {
         // console.log("tambah");
         const dataShift = {
           name: this.shift_name,
@@ -445,7 +475,7 @@ export default {
         };
         // console.log(dataShift);
         this.actionSaveShift(dataShift);
-      } else if (this.type == "edit") {
+      } else if (this.type == 'edit') {
         // console.log("edit");
         const dataShift = {
           id: this.shift_id,
@@ -467,9 +497,9 @@ export default {
     convertTime(minute) {
       var hour = parseInt(minute / 60);
       var min = minute % 60;
-      var result = "";
+      var result = '';
       if (hour < 10) {
-        result = "0" + hour.toString() + ".";
+        result = '0' + hour.toString() + '.';
       } else {
         result = hour.toString();
       }
@@ -477,7 +507,7 @@ export default {
 
       // var tmp = "";
       if (min < 10) {
-        result += "0" + min.toString();
+        result += '0' + min.toString();
       } else {
         result += min.toString();
       }
@@ -486,29 +516,29 @@ export default {
 
     checkTime(hour, minute) {
       if (hour > 23 || minute > 59) {
-        return "Format Jam Salah";
+        return 'Format Jam Salah';
       }
-      return "";
+      return '';
     },
 
     close() {
-      this.$emit("update:dialogTambahEditShift", false);
-      this.$emit("update:getDataShift", null);
+      this.$emit('update:dialogTambahEditShift', false);
+      this.$emit('update:getDataShift', null);
       this.shift_id = null;
       this.shift_name = null;
       this.switchable = false;
       this.selected_schedule = null;
       this.list_detailshift = [];
-      this.check_in = "";
-      this.check_out = "";
-      this.start_for_break = "";
-      this.end_for_break = "";
-      this.start_for_left = "";
-      this.end_for_left = "";
-      this.arrive_home = "";
+      this.check_in = '';
+      this.check_out = '';
+      this.start_for_break = '';
+      this.end_for_break = '';
+      this.start_for_left = '';
+      this.end_for_left = '';
+      this.arrive_home = '';
       this.multiLine = false;
       this.snackbar = false;
-      this.notif_text = "";
+      this.notif_text = '';
     },
   },
 
@@ -521,7 +551,7 @@ export default {
         // console.log("fs : " + this.type);
         // console.log(this.getDataShift);
         //tambah shift
-        if (this.type == "tambah") {
+        if (this.type == 'tambah') {
           for (var i = 0; i < this.label_day.length; i++) {
             const shift = {
               active: false, //0 & 1
@@ -538,7 +568,7 @@ export default {
             };
             this.list_detailshift.push(shift);
           }
-        } else if (this.type == "edit") {
+        } else if (this.type == 'edit') {
           this.shift_id = this.getDataShift.id;
           this.shift_name = this.getDataShift.name;
           this.switchable = this.getDataShift.switchable;
@@ -547,7 +577,7 @@ export default {
             var _detail = this.list_detailshift[i];
             if (_detail.is_flexible == 1) {
               _detail.break_duration_m = this.convertTime(
-                _detail.break_duration_m
+                _detail.break_duration_m,
               );
             }
           }

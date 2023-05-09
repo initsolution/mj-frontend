@@ -5,48 +5,7 @@
       :getAllDataLoan="getAllDataLoan"
       :employee="employee"
     />
-    <v-dialog v-model="dialogLoan" max-width="600">
-      <v-card>
-        <v-card-title>
-          <div>Buat Pinjaman</div>
-        </v-card-title>
-        <v-card-text>
-          <v-autocomplete
-            v-model.trim="loan.employee"
-            :items="getEmployee"
-            color="white"
-            item-text="name"
-            label="Nama"
-            return-object
-          ></v-autocomplete>
-          <v-currency-field
-            color="grey darken-2"
-            :decimal-length="0"
-            prefix="Rp"
-            filled
-            v-bind="currency_config"
-            v-model.trim="loan.nominal"
-            class="currency-input pa-0 ma-0 font-md"
-            label="Nominal Pinjaman"
-          />
-
-          <v-text-field
-            color="grey darken-2"
-            v-model.trim="loan.description"
-            label="Deskripsi"
-          ></v-text-field>
-        </v-card-text>
-        <v-card-actions>
-          <div class="flex-grow-1"></div>
-          <v-btn class="elevation-0 grey darken-2" dark @click="dismisDialog"
-            >Batal</v-btn
-          >
-          <v-btn class="elevation-0 primary" @click.stop="saveLoan"
-            >Simpan</v-btn
-          >
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <tambah-pinjaman :dialogLoan.sync="dialogLoan"> </tambah-pinjaman>
     <v-row>
       <v-col>
         <div flat>
@@ -55,17 +14,21 @@
               <div class="title d-flex flex-row">
                 <v-icon color="grey" class="mr-2">mdi-calendar-check</v-icon>
                 <div>Data Pinjaman</div>
-                <div>
-                  <v-btn color="primary elevation-0" @click="openBuatPinjaman"
-                    >Tambah Pinjaman</v-btn
-                  >
-                </div>
               </div>
             </v-col>
             <div class="flex-grow-1"></div>
             <v-col class="text-right py-0"> </v-col>
           </v-row>
           <v-divider class="my-3"></v-divider>
+          <v-row align="center" justify="space-between">
+            <v-col>
+              <div>
+                <v-btn color="primary elevation-0" @click="openBuatPinjaman"
+                  >Tambah Pinjaman</v-btn
+                >
+              </div>
+            </v-col>
+          </v-row>
           <v-row>
             <v-col cols="4" class="py-0">
               <div class="d-flex flex-row align-center mb-1">
@@ -102,55 +65,70 @@
             </v-col>
           </v-row>
 
-          <v-card class="mb-5">
-            <v-card-text>
-              <div class="black--text mb-3 body-1">
-                Rincian Pinjaman Per Departemen
+          <v-row>
+            <v-col md="12">
+              <div>
+                <v-card class="mb-5">
+                  <v-card-text>
+                    <v-row>
+                      <v-col>
+                        <div class="black--text mb-3 body-1">
+                          Rincian Pinjaman Per Departemen
+                        </div>
+                      </v-col>
+                    </v-row>
+                    <v-divider></v-divider>
+                    <v-row align="start" class="mt-2">
+                      <v-col
+                        class="py-0"
+                        cols="3"
+                        v-for="(item, index) in totalLoanByDepartment"
+                        :key="index"
+                      >
+                        <div>{{ item.department_name }}</div>
+                        <div class="black--text mt-3" style="font-size: 24px">
+                          {{
+                            item.total_loan ? formatPrice(item.total_loan) : '-'
+                          }}
+                        </div>
+                      </v-col>
+                    </v-row>
+                  </v-card-text>
+                </v-card>
+                <v-data-table :headers="headers" :items="getAllData">
+                  <template v-slot:[`item.sisa_pinjaman`]="{ item }">
+                    {{ checkLoan(item.loan) }}
+                  </template>
+                  <template v-slot:[`item.action`]="{ item }">
+                    <v-btn
+                      color="blue"
+                      class="elevation-0"
+                      dark
+                      small
+                      @click="openDetail(item)"
+                      >Detail</v-btn
+                    >
+                  </template>
+                </v-data-table>
               </div>
-              <v-divider></v-divider>
-              <v-row align="start" class="mt-2">
-                <v-col
-                  class="py-0"
-                  cols="3"
-                  v-for="(item, index) in totalLoanByDepartment"
-                  :key="index"
-                >
-                  <div>{{ item.department_name }}</div>
-                  <div class="black--text mt-3" style="font-size: 24px">
-                    {{ item.total_loan ? formatPrice(item.total_loan) : "-" }}
-                  </div>
-                </v-col>
-              </v-row>
-            </v-card-text>
-          </v-card>
-          <v-data-table :headers="headers" :items="getAllData">
-            <template v-slot:[`item.sisa_pinjaman`]="{ item }">
-              {{ checkLoan(item.loan) }}
-            </template>
-            <template v-slot:[`item.action`]="{ item }">
-              <v-btn
-                color="blue"
-                class="elevation-0"
-                dark
-                small
-                @click="openDetail(item)"
-                >Detail</v-btn
-              >
-            </template>
-          </v-data-table>
+            </v-col>
+          </v-row>
         </div>
       </v-col>
     </v-row>
   </v-container>
 </template>
 <script>
-import { mapActions, mapGetters } from "vuex";
-import { formatPrice } from "@/utils/utils";
-import DetailPinjaman from "@/views/components/DetailPinjaman.vue";
+import { mapActions, mapGetters } from 'vuex';
+import { formatPrice } from '@/utils/utils';
+import DetailPinjaman from '@/views/components/DetailPinjaman.vue';
+import TambahPinjaman from '@/views/components/TambahPinjaman.vue';
+
 export default {
-  name: "Pinjaman",
+  name: 'Pinjaman',
   components: {
     DetailPinjaman,
+    TambahPinjaman,
   },
   data() {
     return {
@@ -159,17 +137,17 @@ export default {
       loan: {},
       getAllDataLoan: [],
       headers: [
-        { text: "Employee_ID", value: "id" },
-        { text: "Nama", value: "name" },
-        { text: "Departemen", value: "department.name" },
-        { text: "Sisa Pinjaman", value: "sisa_pinjaman" },
-        { text: "Pilihan", value: "action" },
+        { text: 'Employee_ID', value: 'id' },
+        { text: 'Nama', value: 'name' },
+        { text: 'Departemen', value: 'department.name' },
+        { text: 'Sisa Pinjaman', value: 'sisa_pinjaman' },
+        { text: 'Pilihan', value: 'action' },
       ],
       employee: {},
       currency_config: {
-        decimal: ",",
-        thousands: ".",
-        prefix: "Rp",
+        decimal: ',',
+        thousands: '.',
+        prefix: 'Rp',
         precision: 0,
         masked: false,
         allowBlank: false,
@@ -187,16 +165,16 @@ export default {
   },
   methods: {
     ...mapActions([
-      "actionGetAllEmployeeByFilter",
-      "inputLoan",
-      "getTotalLoanPerDepartment",
-      "actionGetAllDepartment",
+      'actionGetAllEmployeeByFilter',
+      'inputLoan',
+      'getTotalLoanPerDepartment',
+      'actionGetAllDepartment',
     ]),
-    filterEmployee(){
+    filterEmployee() {
       const params = new URLSearchParams();
-      params.append("join", "loan");
-      params.append("join", "department");
-      params.append("sort", "loan.created_at,DESC");
+      params.append('join', 'loan');
+      params.append('join', 'department');
+      params.append('sort', 'loan.created_at,DESC');
       if (this.keyword != null && this.keyword.length > 0) {
         params.append('filter', 'name||$cont||' + this.keyword);
       }
@@ -205,13 +183,13 @@ export default {
     getAllAreaByDepartmentId() {
       if (this.filterDepartmentId != null) {
         const params = new URLSearchParams();
-        params.append("join", "loan");
-        params.append("join", "department");
-        params.append("sort", "loan.created_at,DESC");
+        params.append('join', 'loan');
+        params.append('join', 'department');
+        params.append('sort', 'loan.created_at,DESC');
         if (this.filterDepartmentId != 0)
           params.append(
-            "filter",
-            "department.id||$eq||" + this.filterDepartmentId
+            'filter',
+            'department.id||$eq||' + this.filterDepartmentId,
           );
 
         this.actionGetAllEmployeeByFilter(params);
@@ -219,9 +197,9 @@ export default {
     },
     getDataLoan() {
       const params = new URLSearchParams();
-      params.append("join", "loan");
-      params.append("join", "department");
-      params.append("sort", "loan.created_at,DESC");
+      params.append('join', 'loan');
+      params.append('join', 'department');
+      params.append('sort', 'loan.created_at,DESC');
       // this.actionGetAllEmployee(params);
       this.actionGetAllEmployeeByFilter(params);
       this.getTotalLoanPerDepartment();
@@ -231,9 +209,9 @@ export default {
     },
     checkLoan(loan) {
       if (loan.length != 0) {
-        return "Rp. " + this.formatPrice(loan[0].total_loan_current);
+        return 'Rp. ' + this.formatPrice(loan[0].total_loan_current);
       } else {
-        return "-";
+        return '-';
       }
     },
     openDetail(emp) {
@@ -244,12 +222,9 @@ export default {
     openBuatPinjaman() {
       this.dialogLoan = true;
     },
-    dismisDialog() {
-      this.dialogLoan = false;
-    },
     saveLoan() {
       const data = {
-        type: "pinjam",
+        type: 'pinjam',
         employee: { id: this.loan.employee.id },
         nominal: this.loan.nominal,
         note: this.loan.description,
@@ -260,9 +235,8 @@ export default {
     watchStatusLoan() {
       const status = this.getStatusLoan;
       if (status.status == 201) {
-        if (status.statusText == "Created") {
+        if (status.statusText == 'Created') {
           this.getDataLoan();
-          this.dismisDialog();
         }
       }
     },
@@ -271,6 +245,13 @@ export default {
     getStatusLoan: {
       handler() {
         this.watchStatusLoan();
+      },
+    },
+    dialogLoan: {
+      handler() {
+        if (!this.dialogLoan) {
+          this.getDataLoan();
+        }
       },
     },
     getDataAllDepartement: {
@@ -282,7 +263,7 @@ export default {
           });
         }
         this.listDepartment.push({
-          name: "Semua",
+          name: 'Semua',
           id: 0,
         });
       },
@@ -290,10 +271,10 @@ export default {
   },
   computed: {
     ...mapGetters([
-      "getDataEmployees",
-      "getStatusLoan",
-      "getDataLoanByDept",
-      "getDataAllDepartement",
+      'getDataEmployees',
+      'getStatusLoan',
+      'getDataLoanByDept',
+      'getDataAllDepartement',
     ]),
     getAllData() {
       return this.getDataEmployees.filter(function (val) {
