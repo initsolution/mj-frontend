@@ -90,6 +90,23 @@
                     </v-menu>
                   </div>
                 </v-col>
+                <v-col cols="4" class="py-0">
+                  <div class="d-flex flex-row align-center mb-1">
+                    <div class="font-md mb-1">Pencarian Nama Karyawan</div>
+                  </div>
+                  <v-text-field
+                    single-line
+                    v-model="keyword"
+                    class="white elevation-0"
+                    dense
+                    hide-details
+                    outlined
+                    prepend-inner-icon="mdi-select-search"
+                    color="grey darken-2"
+                    @keyup.enter="filterEmployee"
+                    label="Tekan enter untuk mencari"
+                  />
+                </v-col>
               </v-row>
               <div style="margin: 20px"></div>
               <v-data-table :headers="headers" :items.sync="getAllData">
@@ -121,7 +138,7 @@ export default {
           { text: "Tanggal", value: "attendance_date" },
           
         ],
-        
+        keyword: null,  
     }
   },
   created() {
@@ -154,6 +171,17 @@ export default {
       params.append("filter", "time_check_in||isnull")
       params.append("filter", "time_check_out||isnull")
       params.append("sort", "employee.name,ASC")
+      this.actionGetAllAttendenceByFilter(params)
+    },
+    
+    filterEmployee(){
+      const params = new URLSearchParams();
+      params.append("filter", "time_check_in||isnull")
+      params.append("filter", "time_check_out||isnull")
+      params.append("sort", "employee.name,ASC")
+      if (this.keyword != null && this.keyword.length > 0) {
+        params.append('filter', 'employee.name||$cont||' + this.keyword);
+      }
       this.actionGetAllAttendenceByFilter(params)
     },
     

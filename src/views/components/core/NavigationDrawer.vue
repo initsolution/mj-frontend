@@ -190,7 +190,7 @@ export default {
             {
               title: 'Pinjaman',
               icon: 'mdi-calendar-clock',
-              to: '/kehadiran_mingguan',
+              to: '/pinjaman-owner',
             },
           ],
         },

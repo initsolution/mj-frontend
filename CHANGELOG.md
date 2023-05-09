@@ -245,3 +245,10 @@
 - Modul Payslip dan Payslip Owner
     - add loading
     - generate payslip owner
+
+# 0.0.1 (Update 09/05/2023)
+- Modul Absensi
+    - add search
+- Modul Owner
+    - Pinjaman
+        - Tambah Pinjaman

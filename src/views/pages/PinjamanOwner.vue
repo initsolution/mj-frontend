@@ -54,7 +54,7 @@
             <v-col class="py-0">
               <div class="title d-flex flex-row">
                 <v-icon color="grey" class="mr-2">mdi-calendar-check</v-icon>
-                <div>Data Pinjaman</div>
+                <div>Data Pinjaman Dari Owner</div>
                 <div>
                   <v-btn color="primary elevation-0" @click="openBuatPinjaman"
                     >Tambah Pinjaman</v-btn
@@ -67,22 +67,7 @@
           </v-row>
           <v-divider class="my-3"></v-divider>
           <v-row>
-            <v-col cols="4" class="py-0">
-              <div class="d-flex flex-row align-center mb-1">
-                <div class="font-md mb-1">Filter Departemen</div>
-                <div class="flex-grow-1"></div>
-              </div>
-              <div>
-                <v-select
-                  v-model.trim="filterDepartmentId"
-                  :items="listDepartment"
-                  v-on:change="getAllAreaByDepartmentId"
-                  item-text="name"
-                  item-value="id"
-                  label="Departemen"
-                ></v-select>
-              </div>
-            </v-col>
+            
             <v-col cols="4" class="py-0">
               <div class="d-flex flex-row align-center mb-1">
                 <div class="font-md mb-1">Pencarian Nama Karyawan</div>
@@ -100,10 +85,7 @@
                 label="Tekan enter untuk mencari"
               />
             </v-col>
-           
           </v-row>
-          
-          <v-divider class="my-3"></v-divider>
           <v-card class="mb-5">
             <v-card-text>
               <div class="black--text mb-3 body-1">
@@ -125,6 +107,7 @@
               </v-row>
             </v-card-text>
           </v-card>
+          
           <v-data-table :headers="headers" :items="getAllData">
             <template v-slot:[`item.sisa_pinjaman`]="{ item }">
               {{ checkLoan(item.loan) }}
@@ -179,7 +162,7 @@ export default {
         max: Number.MAX_SAFE_INTEGER,
       },
       filterDepartmentId: null,
-      listDepartment: [],
+      
       keyword: null,
     };
   },
@@ -192,44 +175,30 @@ export default {
       "actionGetAllEmployeeByFilter",
       "inputLoan",
       "getTotalLoanPerDepartment",
-      "actionGetAllDepartment",
     ]),
     filterEmployee(){
       const params = new URLSearchParams();
       params.append("join", "loan");
       params.append("join", "department");
       params.append("sort", "loan.created_at,DESC");
-      params.append("filter", "loan.khusus||$eq||0");
+      params.append("filter", "loan.khusus||$eq||1");
       if (this.keyword != null && this.keyword.length > 0) {
         params.append('filter', 'name||$cont||' + this.keyword);
       }
       this.actionGetAllEmployeeByFilter(params);
+      
     },
-    getAllAreaByDepartmentId() {
-      if (this.filterDepartmentId != null) {
-        const params = new URLSearchParams();
-        params.append("join", "loan");
-        params.append("join", "department");
-        params.append("sort", "loan.created_at,DESC");
-        params.append("filter", "loan.khusus||$eq||0");
-        if (this.filterDepartmentId != 0)
-          params.append(
-            "filter",
-            "department.id||$eq||" + this.filterDepartmentId
-          );
-
-        this.actionGetAllEmployeeByFilter(params);
-      }
-    },
+    
     getDataLoan() {
       const params = new URLSearchParams();
       params.append("join", "loan");
       params.append("join", "department");
       params.append("sort", "loan.created_at,DESC");
-      params.append("filter", "loan.khusus||$eq||0");
+      params.append("filter", "type||$eq||KHUSUS");
       // this.actionGetAllEmployee(params);
       this.actionGetAllEmployeeByFilter(params);
       this.getTotalLoanPerDepartment();
+      
     },
     formatPrice(value) {
       return formatPrice(value);
@@ -258,6 +227,7 @@ export default {
         employee: { id: this.loan.employee.id },
         nominal: this.loan.nominal,
         note: this.loan.description,
+        khusus : 1
       };
       this.inputLoan(data);
     },
@@ -278,27 +248,14 @@ export default {
         this.watchStatusLoan();
       },
     },
-    getDataAllDepartement: {
-      handler() {
-        for (var i = 0; i < this.getDataAllDepartement.length; i++) {
-          this.listDepartment.push({
-            name: this.getDataAllDepartement[i].name,
-            id: this.getDataAllDepartement[i].id,
-          });
-        }
-        this.listDepartment.push({
-          name: "Semua",
-          id: 0,
-        });
-      },
-    },
+    
   },
   computed: {
     ...mapGetters([
       "getDataEmployees",
       "getStatusLoan",
       "getDataLoanByDept",
-      "getDataAllDepartement",
+      
     ]),
     getAllData() {
       return this.getDataEmployees.filter(function (val) {
