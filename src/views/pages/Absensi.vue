@@ -13,7 +13,7 @@
             <div class="flex-grow-1"></div>
             <v-col class="text-right py-0"> </v-col>
           </v-row>
-          <v-divider class="my-3"></v-divider>
+          <v-divider class="my-6"></v-divider>
           <v-card>
             <v-card-title></v-card-title>
             <v-card-text>

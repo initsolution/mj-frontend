@@ -3,13 +3,15 @@
   <v-layout row justify-center>
     <v-dialog v-model="dialogGantiShift" persistent max-width="600px">
       <v-card>
-        <v-card-title>
+        <v-card-title
+          class="subheading px-8 d-flex flex-row grey lighten-5 align-center justify-space-between"
+        >
           <span v-if="this.selectAttendance != null" class="headline"
             >Form Ganti Jadwal
             {{ label_days[this.selectAttendance.week_of_day - 1] }}</span
           >
         </v-card-title>
-
+        <v-divider></v-divider>
         <v-card-text>
           <v-container>
             <v-row>
@@ -51,9 +53,23 @@
             </v-row>
           </v-container>
         </v-card-text>
-        <v-card-actions>
-          <v-btn color="red darken-1" @click.native="close">Batal</v-btn>
-          <v-btn color="blue darken-1" @click="update">Ya</v-btn>
+        <v-divider></v-divider>
+        <v-card-actions class="grey lighten-4 px-8 py-4 d-flex flex-row">
+          <v-btn
+            min-width="100"
+            class="elevation-0"
+            color="grey darken-1"
+            @click.native="close"
+            dark
+            >Tidak</v-btn
+          >
+          <v-btn
+            min-width="100"
+            class="elevation-0"
+            color="primary"
+            @click="update"
+            >Ya</v-btn
+          >
           <v-snackbar
             v-model="snackbar"
             :multi-line="multiLine"
@@ -80,9 +96,9 @@
 </template>
       
       <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from 'vuex';
 export default {
-  name: "FormGantiShift",
+  name: 'FormGantiShift',
   props: {
     dialogGantiShift: {
       default: false,
@@ -93,13 +109,13 @@ export default {
   data() {
     return {
       label_days: [
-        "Minggu",
-        "Senin",
-        "Selasa",
-        "Rabu",
-        "Kamis",
-        "Jumat",
-        "Sabtu",
+        'Minggu',
+        'Senin',
+        'Selasa',
+        'Rabu',
+        'Kamis',
+        'Jumat',
+        'Sabtu',
       ],
       selected_shift: null,
       current_shiftName: null,
@@ -107,20 +123,20 @@ export default {
       new_detailShift: null,
       multiLine: false,
       snackbar: false,
-      notif_text: "",
+      notif_text: '',
     };
   },
   methods: {
     ...mapActions([
-      "updateIjin",
-      "actionGetAllShiftByDays",
-      "actionSwitchShiftCs",
-      "actionSwitchShiftBulanan",
+      'updateIjin',
+      'actionGetAllShiftByDays',
+      'actionSwitchShiftCs',
+      'actionSwitchShiftBulanan',
     ]),
     update() {
       if (this.selected_shift == null) {
         this.snackbar = true;
-        this.notif_text = "Pilih Data Shift!";
+        this.notif_text = 'Pilih Data Shift!';
         return;
       }
       const data = {
@@ -139,7 +155,7 @@ export default {
     },
 
     close() {
-      this.$emit("update:dialogGantiShift", false);
+      this.$emit('update:dialogGantiShift', false);
       this.selected_shift = null;
       this.current_shiftName = null;
       this.current_detailShift = null;
@@ -148,7 +164,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(["getAllDataShift"]),
+    ...mapGetters(['getAllDataShift']),
   },
 
   watch: {
@@ -159,12 +175,12 @@ export default {
           if (this.selectAttendance != null) {
             this.current_shiftName = this.selectAttendance.shift.name;
             const param = new URLSearchParams();
-            param.append("filter", "switchable||$eq||1");
+            param.append('filter', 'switchable||$eq||1');
             param.append(
-              "filter",
-              "detailShift.days||$eq||" + this.selectAttendance.week_of_day
+              'filter',
+              'detailShift.days||$eq||' + this.selectAttendance.week_of_day,
             );
-            param.append("join", "detailShift");
+            param.append('join', 'detailShift');
             this.actionGetAllShiftByDays(param);
           }
         }

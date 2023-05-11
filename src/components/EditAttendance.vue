@@ -3,11 +3,13 @@
   <v-layout row justify-center>
     <v-dialog v-model="dialogEditAttendance" persistent max-width="600px">
       <v-card>
-        <v-card-title>
-          <span class="headline">Edit</span>
-          <!-- {{ (dataAttendance_ = dataAttendance) }} -->
+        <v-card-title
+          class="subheading px-8 d-flex flex-row grey lighten-5 align-center justify-space-between"
+        >
+          <span class="headline">Ubah Lembur</span>
+          <v-icon @click="close">mdi-close</v-icon>
         </v-card-title>
-
+        <v-divider></v-divider>
         <v-card-text>
           <v-container>
             <v-row>
@@ -25,9 +27,15 @@
             </v-row>
           </v-container>
         </v-card-text>
-        <v-card-actions>
-          <v-btn color="red darken-1" @click.native="close">Tutup</v-btn>
-          <v-btn color="blue darken-1" @click="update">Edit</v-btn>
+        <v-divider></v-divider>
+        <v-card-actions class="grey lighten-4 px-8 py-4 d-flex flex-row">
+          <v-btn
+            min-width="100"
+            class="elevation-0"
+            color="primary"
+            @click.stop="update"
+            >Simpan</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -35,9 +43,9 @@
 </template>
   
   <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapActions, mapGetters } from 'vuex';
 export default {
-  name: "EditAttendance",
+  name: 'EditAttendance',
   props: {
     dialogEditAttendance: {
       default: false,
@@ -50,91 +58,91 @@ export default {
       total_leave: 0,
       label_overtime: [
         {
-          text: "30 Menit",
-          value: "30",
+          text: '30 Menit',
+          value: '30',
         },
         {
-          text: "1 Jam",
-          value: "60",
+          text: '1 Jam',
+          value: '60',
         },
         {
-          text: "1 Jam 30 Menit",
-          value: "90",
+          text: '1 Jam 30 Menit',
+          value: '90',
         },
         {
-          text: "2 Jam",
-          value: "120",
+          text: '2 Jam',
+          value: '120',
         },
         {
-          text: "2 Jam 30 Menit",
-          value: "150",
+          text: '2 Jam 30 Menit',
+          value: '150',
         },
         {
-          text: "3 Jam",
-          value: "180",
+          text: '3 Jam',
+          value: '180',
         },
         {
-          text: "3 Jam 30 Menit",
-          value: "210",
+          text: '3 Jam 30 Menit',
+          value: '210',
         },
         {
-          text: "4 Jam",
-          value: "240",
+          text: '4 Jam',
+          value: '240',
         },
         {
-          text: "4 Jam 30 Menit",
-          value: "270",
+          text: '4 Jam 30 Menit',
+          value: '270',
         },
         {
-          text: "5 Jam",
-          value: "300",
+          text: '5 Jam',
+          value: '300',
         },
         {
-          text: "5 Jam 30 Menit",
-          value: "330",
+          text: '5 Jam 30 Menit',
+          value: '330',
         },
         {
-          text: "6 Jam",
-          value: "360",
+          text: '6 Jam',
+          value: '360',
         },
         {
-          text: "6 Jam 30 Menit",
-          value: "390",
+          text: '6 Jam 30 Menit',
+          value: '390',
         },
         {
-          text: "7 Jam",
-          value: "420",
+          text: '7 Jam',
+          value: '420',
         },
         {
-          text: "7 Jam 30 Menit",
-          value: "450",
+          text: '7 Jam 30 Menit',
+          value: '450',
         },
         {
-          text: "8 Jam",
-          value: "480",
+          text: '8 Jam',
+          value: '480',
         },
         {
-          text: "8 Jam 30 Menit",
-          value: "510",
+          text: '8 Jam 30 Menit',
+          value: '510',
         },
         {
-          text: "9 Jam",
-          value: "540",
+          text: '9 Jam',
+          value: '540',
         },
         {
-          text: "9 Jam 30 Menit",
-          value: "570",
+          text: '9 Jam 30 Menit',
+          value: '570',
         },
         {
-          text: "10 Jam",
-          value: "600",
+          text: '10 Jam',
+          value: '600',
         },
       ],
       hasil: null,
     };
   },
   methods: {
-    ...mapActions(["updateOvertimeProduksi", "updateOvertimeBulanan"]),
+    ...mapActions(['updateOvertimeProduksi', 'updateOvertimeBulanan']),
     update() {
       if (this.hasil == null) {
         this.hasil = this.dataAttendance.overtime;
@@ -142,26 +150,26 @@ export default {
       // console.log("hasil : " + this.hasil);
       // console.log("type_overtime : " + this.type_overtime);
       var data = null;
-      if (this.type_overtime == "early") {
+      if (this.type_overtime == 'early') {
         data = {
           id: this.dataAttendance.id,
           early_overtime: this.hasil,
         };
         this.updateOvertimeProduksi(data);
-      } else if (this.type_overtime == "late") {
+      } else if (this.type_overtime == 'late') {
         data = {
           id: this.dataAttendance.id,
           overtime: this.hasil,
         };
         this.updateOvertimeProduksi(data);
-      } else if(this.type_overtime == "bulanan") {
+      } else if (this.type_overtime == 'bulanan') {
         data = {
           id: this.dataAttendance.id,
           lembur: this.hasil,
         };
         this.updateOvertimeBulanan(data);
       }
-      
+
       this.close();
       // this.$emit("update:total_leave", total_leave);
       // this.$emit("update:dialogEditAttendance", false);
@@ -170,8 +178,8 @@ export default {
 
     convertToMinutes() {},
     close() {
-      this.total_leave = "";
-      this.$emit("update:dialogEditAttendance", false);
+      this.total_leave = '';
+      this.$emit('update:dialogEditAttendance', false);
       // this.dataAttendance = null;
       // this.type_overtime = null;
     },
@@ -181,12 +189,14 @@ export default {
     select: {
       get: function () {
         if (this.dataAttendance == null) {
-          return "";
+          return '';
         }
-        var result = "";
+        var result = '';
         for (var i = 0; i < this.label_overtime.length; i++) {
-          if (this.dataAttendance.overtime == this.label_overtime[i].value ||
-              this.dataAttendance.early_overtime == this.label_overtime[i].value) {
+          if (
+            this.dataAttendance.overtime == this.label_overtime[i].value ||
+            this.dataAttendance.early_overtime == this.label_overtime[i].value
+          ) {
             result = this.label_overtime[i].text;
           }
         }

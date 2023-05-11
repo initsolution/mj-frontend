@@ -8,6 +8,7 @@
           <div>Buat Pinjaman</div>
           <v-icon @click="dismisDialog">mdi-close</v-icon>
         </v-card-title>
+        <v-divider></v-divider>
         <v-card-text>
           <v-autocomplete
             v-model.trim="loan.employee"
@@ -34,12 +35,13 @@
             label="Deskripsi"
           ></v-text-field>
         </v-card-text>
-        <v-card-actions>
-          <div class="flex-grow-1"></div>
-          <v-btn class="elevation-0 grey darken-2" dark @click="dismisDialog"
-            >Batal</v-btn
-          >
-          <v-btn class="elevation-0 primary" @click.stop="saveLoan"
+        <v-card-actions class="grey lighten-4 px-8 py-4 d-flex flex-row">
+          <!-- <div class="flex-grow-1"></div> -->
+          <v-btn
+            min-width="100"
+            class="elevation-0"
+            color="primary"
+            @click.stop="saveLoan"
             >Simpan</v-btn
           >
         </v-card-actions>

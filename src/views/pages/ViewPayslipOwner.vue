@@ -87,7 +87,7 @@
                             <td style="width: 20%"></td>
                             <td style="width: 30%"></td>
                           </tr>
-                          <tr style="background-color: #eaeaea">
+                          <tr>
                             <td style="font-weight: bold">Total Buku 1</td>
                             <td style="font-weight: bold">
                               {{ formatPrice(Math.round(item.total_buku_1)) }}
@@ -106,7 +106,7 @@
                             <td></td>
                           </tr>
                           <tr>
-                            <td>Tambahan</td>
+                            <td>Lembur & Ins Tugas</td>
                             <td>
                               {{ formatPrice(Math.round(item.tambahan)) }}
                             </td>
@@ -130,7 +130,7 @@
                             </td>
                           </tr>
                           <tr>
-                            <td>Lembur</td>
+                            <td>Tambahan Gaji</td>
                             <td>
                               {{ formatPrice(Math.round(item.lembur)) }}
                             </td>
@@ -144,14 +144,14 @@
                             </td>
                           </tr>
                           <tr>
-                            <td>Bonus Khusus</td>
+                            <td>Bonus KH, Lembur, T. Lain</td>
                             <td>
                               {{ formatPrice(Math.round(item.bonus_khusus)) }}
                             </td>
                             <td></td>
                             <td></td>
                           </tr>
-                          <tr style="background-color: #eaeaea">
+                          <tr>
                             <td style="font-weight: bold">Total Buku 2</td>
                             <td style="font-weight: bold">
                               {{ formatPrice(Math.round(item.total_buku_2)) }}
@@ -160,6 +160,46 @@
                             <td style="font-weight: bold">
                               {{
                                 formatPrice(Math.round(item.total_potongan_2))
+                              }}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                          </tr>
+                          <tr style="background-color: #c8eade">
+                            <td style="font-weight: bold" colspan="2">
+                              Total Bersih Buku 1
+                            </td>
+                            <td style="font-weight: bold" colspan="2">
+                              {{
+                                formatPrice(
+                                  Math.round(item.total_bersih_buku_1),
+                                )
+                              }}
+                            </td>
+                          </tr>
+                          <tr style="background-color: #c8eade">
+                            <td style="font-weight: bold" colspan="2">
+                              Total Bersih Buku 2
+                            </td>
+                            <td style="font-weight: bold" colspan="2">
+                              {{
+                                formatPrice(
+                                  Math.round(item.total_bersih_buku_2),
+                                )
+                              }}
+                            </td>
+                          </tr>
+                          <tr style="background-color: #c8eade">
+                            <td style="font-weight: bold" colspan="2">
+                              Pendapatan Gaji Nett
+                            </td>
+                            <td style="font-weight: bold" colspan="2">
+                              {{
+                                formatPrice(Math.round(item.pendapatan_gaji))
                               }}
                             </td>
                           </tr>

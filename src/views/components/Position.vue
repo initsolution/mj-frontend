@@ -16,7 +16,7 @@
         </v-card-title>
         <v-divider></v-divider>
         <v-card-text>
-          <v-row align="center mt-4" justify="space-between">
+          <v-row align="center" justify="space-between">
             <v-col cols="4" class="py-0">
               <v-btn
                 class="elevation-0 my-3"

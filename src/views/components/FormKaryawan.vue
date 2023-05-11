@@ -969,6 +969,12 @@ export default {
         this.listArea = [];
         if (this.getDataAllArea.length > 0) {
           for (var i = 0; i < this.getDataAllArea.length; i++) {
+            console.log(
+              'Bagian:' +
+                this.getDataAllArea[i].id +
+                ' ' +
+                this.getDataAllArea[i].name,
+            );
             this.listArea.push({
               name: this.getDataAllArea[i].name,
               id: this.getDataAllArea[i].id,
@@ -983,6 +989,12 @@ export default {
         this.listPosition = [];
         if (this.getDataAllPosition.length > 0) {
           for (var i = 0; i < this.getDataAllPosition.length; i++) {
+            console.log(
+              'Jabatan:' +
+                this.getDataAllPosition[i].id +
+                ' ' +
+                this.getDataAllPosition[i].name,
+            );
             this.listPosition.push({
               name: this.getDataAllPosition[i].name,
               id: this.getDataAllPosition[i].id,
