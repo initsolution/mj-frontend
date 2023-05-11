@@ -39,19 +39,19 @@
               <v-btn
                 color="primary elevation-0"
                 @click="onUpload"
-                class="mt-3 mr-2 icon-box"
+                class="my-3 mr-2 icon-box"
               >
                 <v-icon>mdi-file-upload-outline</v-icon> Upload
               </v-btn>
 
-              <v-btn color="success elevation-0" class="mt-3 mr-2 icon-box">
+              <v-btn color="success elevation-0" class="my-3 mr-2 icon-box">
                 <v-icon>mdi-file-download-outline</v-icon> Download
               </v-btn>
 
               <v-btn
                 @click="addFunction"
                 color="error elevation-0"
-                class="mt-3 icon-box"
+                class="my-3 icon-box"
               >
                 <v-icon color="white">mdi-plus</v-icon> Tambah
               </v-btn>

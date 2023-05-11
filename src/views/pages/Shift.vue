@@ -20,7 +20,7 @@
             <v-col class="text-right py-0"> </v-col>
           </v-row>
         </div>
-        <v-divider class="my-3"></v-divider>
+        <v-divider class="my-6"></v-divider>
         <v-card class="mx-auto" tile>
           <v-card-text>
             <v-row>
@@ -42,7 +42,8 @@
                     class="elevation-0"
                     dark
                     @click="editShift()"
-                    >Ubah
+                  >
+                    <v-icon color="white">mdi-pencil</v-icon> Ubah
                   </v-btn>
                   <v-snackbar
                     v-model="snackbar"
@@ -66,11 +67,12 @@
 
                   <div class="white--text mx-2"></div>
                   <v-btn
-                    color="blue"
-                    class="elevation-0"
+                    color="error elevation-0"
+                    class="my-3 icon-box"
                     dark
                     @click="addShift()"
-                    >Tambah
+                  >
+                    <v-icon color="white">mdi-plus</v-icon> Tambah
                   </v-btn>
                   <v-snackbar
                     v-model="snackbar"
@@ -148,8 +150,7 @@
                   </template>
                 </v-data-table>
               </div>
-              <div v-else
-              >
+              <div v-else>
                 <v-data-table
                   :headers="headers_istirahat_tetap"
                   :sort-by.sync="sortBy"
@@ -181,10 +182,10 @@
   </v-container>
 </template>
 <script>
-import { mapActions, mapGetters } from "vuex";
-import TambahEditShift from "@/views/components/TambahEditShift.vue";
+import { mapActions, mapGetters } from 'vuex';
+import TambahEditShift from '@/views/components/TambahEditShift.vue';
 export default {
-  name: "Shift",
+  name: 'Shift',
   components: {
     TambahEditShift,
   },
@@ -194,27 +195,27 @@ export default {
       type: null,
       dialogTambahEditShift: false,
       headers_istirahat_tetap: [
-        { text: "Hari", value: "days" },
-        { text: "Jam Masuk", value: "start" },
-        { text: "Mulai Istirahat", value: "start_break" },
-        { text: "Selesai Istirahat", value: "end_break" },
-        { text: "Jam Pulang", value: "end" },
+        { text: 'Hari', value: 'days' },
+        { text: 'Jam Masuk', value: 'start' },
+        { text: 'Mulai Istirahat', value: 'start_break' },
+        { text: 'Selesai Istirahat', value: 'end_break' },
+        { text: 'Jam Pulang', value: 'end' },
       ],
       headers_istirahat_bebas: [
-        { text: "Hari", value: "days" },
-        { text: "Jam Masuk", value: "start" },
-        { text: "Durasi Istirahat", value: "break_duration_m" },
-        { text: "Jam Pulang", value: "end" },
+        { text: 'Hari', value: 'days' },
+        { text: 'Jam Masuk', value: 'start' },
+        { text: 'Durasi Istirahat', value: 'break_duration_m' },
+        { text: 'Jam Pulang', value: 'end' },
       ],
-      sortBy: "days",
+      sortBy: 'days',
       label_day: [
-        "Minggu",
-        "Senin",
-        "Selasa",
-        "Rabu",
-        "Kamis",
-        "Jumat",
-        "Sabtu",
+        'Minggu',
+        'Senin',
+        'Selasa',
+        'Rabu',
+        'Kamis',
+        'Jumat',
+        'Sabtu',
       ],
       label_shift: [],
       selected_item: null,
@@ -223,7 +224,7 @@ export default {
       multiLine: false,
       snackbar: false,
       detailShift: [],
-      notif_text: "",
+      notif_text: '',
     };
   },
 
@@ -232,35 +233,35 @@ export default {
   },
 
   methods: {
-    ...mapActions(["actionGetAllShift"]),
+    ...mapActions(['actionGetAllShift']),
 
     convertToDay(day) {
       return this.label_day[day];
     },
-    
-    convertTime(time){
-      return time.substring(0,5);
+
+    convertTime(time) {
+      return time.substring(0, 5);
     },
 
     editShift() {
       if (this.selected_shift == null) {
-        this.notif_text = "Pilih Shift dahulu!";
+        this.notif_text = 'Pilih Shift dahulu!';
         this.snackbar = true;
         return;
       }
       this.getDataShift = this.selected_shift;
-      this.type = "edit";
+      this.type = 'edit';
       this.dialogTambahEditShift = true;
     },
 
     addShift() {
       this.getDataShift = {};
-      this.type = "tambah";
+      this.type = 'tambah';
       this.dialogTambahEditShift = true;
     },
   },
   computed: {
-    ...mapGetters(["getAllDataShift"]),
+    ...mapGetters(['getAllDataShift']),
   },
 
   watch: {
