@@ -3,36 +3,27 @@
     <v-dialog v-model="dialogDetailPinjaman" persistent max-width="600px">
       <v-card>
         <v-card-title
-          class="d-flex flex-row align-center justify-space-between"
+          class="subheading px-8 d-flex flex-row grey lighten-5 align-center justify-space-between"
         >
           <span>Detail Informasi Pinjaman</span>
-          <v-btn
-            fab
-            x-small
-            class="elevation-0 grey darken-2"
-            dark
-            @click="close"
-          >
-            <v-icon small>mdi-close</v-icon>
-          </v-btn>
+          <v-icon @click="close">mdi-close</v-icon>
         </v-card-title>
+        <v-divider></v-divider>
         <v-card-text>
-          <v-divider></v-divider>
           <div class="d-flex flex-row align-center justify-space-between">
             <div class="black--text my-3">
               Sisa Pinjaman :
               {{
                 getAllDataLoan.length > 0
                   ? formatPrice(getAllDataLoan[0].total_loan_current)
-                  : "Rp0"
+                  : 'Rp0'
               }}
               <v-btn
                 v-if="
                   getAllDataLoan.length > 0 &&
                   getAllDataLoan[0].total_loan_current > 0
                 "
-                color="green"
-                class="ml-3 elevation-0"
+                class="ml-3 elevation-0 primary"
                 dark
                 small
                 @click="showPay"
@@ -72,12 +63,16 @@
     </v-dialog>
     <v-dialog v-model="dialogPay" max-width="600">
       <v-card>
-        <v-card-title>
+        <v-card-title
+          class="subheading px-8 d-flex flex-row grey lighten-5 align-center justify-space-between"
+        >
           <div>
             Bayar Pinjaman
             <strong>({{ employee.name }})</strong>
           </div>
+          <v-icon @click="dismisDialog">mdi-close</v-icon>
         </v-card-title>
+        <v-divider></v-divider>
         <v-card-text>
           <v-currency-field
             color="grey darken-2"
@@ -94,12 +89,12 @@
             label="Deskripsi"
           ></v-text-field>
         </v-card-text>
-        <v-card-actions>
-          <div class="flex-grow-1"></div>
-          <v-btn class="elevation-0 grey darken-2" dark @click="dismisDialog"
-            >Batal</v-btn
-          >
-          <v-btn class="elevation-0 primary" @click.stop="saveLoan"
+        <v-card-actions class="grey lighten-4 px-8 py-4 d-flex flex-row">
+          <v-btn
+            min-width="100"
+            class="elevation-0"
+            color="primary"
+            @click.stop="saveLoan"
             >Simpan</v-btn
           >
         </v-card-actions>
@@ -109,10 +104,10 @@
 </template>
 
 <script>
-import { formatPrice, formatDate } from "@/utils/utils";
-import { mapActions, mapGetters } from "vuex";
+import { formatPrice, formatDate } from '@/utils/utils';
+import { mapActions, mapGetters } from 'vuex';
 export default {
-  name: "DetailPinjaman",
+  name: 'DetailPinjaman',
   props: {
     dialogDetailPinjaman: {
       default: false,
@@ -128,15 +123,15 @@ export default {
         nominal: 0,
       },
       headers: [
-        { text: "Keterangan", value: "note" },
-        { text: "Tanggal Transaksi", value: "tgl_transaksi" },
-        { text: "Jenis", value: "jenis" },
-        { text: "Nominal", value: "nominal" },
+        { text: 'Keterangan', value: 'note' },
+        { text: 'Tanggal Transaksi', value: 'tgl_transaksi' },
+        { text: 'Jenis', value: 'jenis' },
+        { text: 'Nominal', value: 'nominal' },
       ],
       currency_config: {
-        decimal: ",",
-        thousands: ".",
-        prefix: "Rp",
+        decimal: ',',
+        thousands: '.',
+        prefix: 'Rp',
         precision: 0,
         masked: false,
         allowBlank: false,
@@ -146,15 +141,15 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["inputLoan", "actionGetAllEmployeeByFilter"]),
+    ...mapActions(['inputLoan', 'actionGetAllEmployeeByFilter']),
     formatPrice(value) {
       return formatPrice(value);
     },
     formatDateTime(tanggal) {
-      return formatDate(tanggal, "short-dateTime");
+      return formatDate(tanggal, 'short-dateTime');
     },
     close() {
-      this.$emit("update:dialogDetailPinjaman", false);
+      this.$emit('update:dialogDetailPinjaman', false);
     },
     showPay() {
       console.log(this.employee);
@@ -168,18 +163,18 @@ export default {
         employee: { id: this.employee.id },
         nominal: this.loan.nominal,
         note: this.loan.description,
-        type: "bayar",
+        type: 'bayar',
       };
       this.inputLoan(data);
     },
     watchStatusLoan() {
       const status = this.getStatusLoan;
       if (status.status == 201) {
-        if (status.statusText == "Created") {
+        if (status.statusText == 'Created') {
           const params = new URLSearchParams();
-          params.append("join", "loan");
-          params.append("join", "department");
-          params.append("sort", "loan.created_at,DESC");
+          params.append('join', 'loan');
+          params.append('join', 'department');
+          params.append('sort', 'loan.created_at,DESC');
           this.actionGetAllEmployeeByFilter(params);
           this.dismisDialog();
           this.close();
@@ -196,7 +191,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["getStatusLoan"]),
+    ...mapGetters(['getStatusLoan']),
   },
 };
 </script>

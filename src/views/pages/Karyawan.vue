@@ -23,29 +23,29 @@
             <div class="flex-grow-1"></div>
             <v-col class="text-right py-0"> </v-col>
           </v-row>
-          <v-divider class="my-3"></v-divider>
+          <v-divider class="my-6"></v-divider>
           <v-row>
-            <v-col cols="8">
+            <v-col cols="6">
               <v-file-input
                 accept=".xlsx"
                 label="File input"
+                outlined
                 v-model="selectXlsx"
-                density="compact"
                 show-size
               ></v-file-input>
             </v-col>
 
-            <v-col cols="4">
+            <v-col cols="6">
               <v-btn
                 color="primary elevation-0"
                 @click="onUpload"
                 class="mt-3 mr-2 icon-box"
               >
-                <v-icon>mdi-file-upload-outline</v-icon>
+                <v-icon>mdi-file-upload-outline</v-icon> Upload
               </v-btn>
 
               <v-btn color="success elevation-0" class="mt-3 mr-2 icon-box">
-                <v-icon>mdi-file-download-outline</v-icon>
+                <v-icon>mdi-file-download-outline</v-icon> Download
               </v-btn>
 
               <v-btn

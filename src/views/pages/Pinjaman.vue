@@ -30,7 +30,20 @@
             </v-col>
           </v-row>
           <v-row>
-            <v-col cols="4" class="py-0">
+            <v-col cols="12"
+              ><v-btn
+                :outlined="!filter"
+                class="elevation-0"
+                :color="filter ? 'primary' : 'grey darken-1'"
+                @click="showFilter"
+              >
+                <v-icon>mdi-filter</v-icon>
+                <span>Filter</span>
+              </v-btn></v-col
+            >
+          </v-row>
+          <v-row v-if="filter">
+            <v-col cols="6" class="py-0">
               <div class="d-flex flex-row align-center mb-1">
                 <div class="font-md mb-1">Filter Departemen</div>
                 <div class="flex-grow-1"></div>
@@ -46,7 +59,7 @@
                 ></v-select>
               </div>
             </v-col>
-            <v-col cols="4" class="py-0">
+            <v-col cols="6" class="py-0">
               <div class="d-flex flex-row align-center mb-1">
                 <div class="font-md mb-1">Pencarian Nama Karyawan</div>
               </div>
@@ -63,7 +76,6 @@
                 label="Tekan enter untuk mencari"
               />
             </v-col>
-           
           </v-row>
 
           <v-row>
@@ -133,6 +145,7 @@ export default {
   },
   data() {
     return {
+      filter: false,
       dialogDetailPinjaman: false,
       dialogLoan: false,
       loan: {},
@@ -171,12 +184,16 @@ export default {
       'getTotalLoanPerDepartment',
       'actionGetAllDepartment',
     ]),
+    showFilter() {
+      this.filter = !this.filter;
+    },
+
     filterEmployee() {
       const params = new URLSearchParams();
-      params.append("join", "loan");
-      params.append("join", "department");
-      params.append("sort", "loan.created_at,DESC");
-      params.append("filter", "loan.khusus||$eq||0");
+      params.append('join', 'loan');
+      params.append('join', 'department');
+      params.append('sort', 'loan.created_at,DESC');
+      params.append('filter', 'loan.khusus||$eq||0');
       if (this.keyword != null && this.keyword.length > 0) {
         params.append('filter', 'name||$cont||' + this.keyword);
       }
@@ -185,10 +202,10 @@ export default {
     getAllAreaByDepartmentId() {
       if (this.filterDepartmentId != null) {
         const params = new URLSearchParams();
-        params.append("join", "loan");
-        params.append("join", "department");
-        params.append("sort", "loan.created_at,DESC");
-        params.append("filter", "loan.khusus||$eq||0");
+        params.append('join', 'loan');
+        params.append('join', 'department');
+        params.append('sort', 'loan.created_at,DESC');
+        params.append('filter', 'loan.khusus||$eq||0');
         if (this.filterDepartmentId != 0)
           params.append(
             'filter',
@@ -200,10 +217,10 @@ export default {
     },
     getDataLoan() {
       const params = new URLSearchParams();
-      params.append("join", "loan");
-      params.append("join", "department");
-      params.append("sort", "loan.created_at,DESC");
-      params.append("filter", "loan.khusus||$eq||0");
+      params.append('join', 'loan');
+      params.append('join', 'department');
+      params.append('sort', 'loan.created_at,DESC');
+      params.append('filter', 'loan.khusus||$eq||0');
       // this.actionGetAllEmployee(params);
       this.actionGetAllEmployeeByFilter(params);
       this.getTotalLoanPerDepartment();
