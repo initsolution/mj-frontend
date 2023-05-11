@@ -124,6 +124,7 @@ import { mapActions, mapGetters } from 'vuex';
 import { formatPrice } from '@/utils/utils';
 import DetailPinjaman from '@/views/components/DetailPinjaman.vue';
 import TambahPinjaman from '@/views/components/TambahPinjaman.vue';
+import { parseJwt } from '@/utils/utils.js';
 
 export default {
   name: 'Pinjaman',
@@ -158,9 +159,18 @@ export default {
       filterDepartmentId: null,
       listDepartment: [],
       keyword: null,
+      token : null,
+      parsedToken : null,
     };
   },
   created() {
+    this.token = localStorage.getItem('token');
+    this.parsedToken = this.parsingJwt(this.token);
+    if (this.parsedToken.user.role != 'owner') {
+      const params = new URLSearchParams();
+      params.append('filter', 'name||$ne||Office')
+      this.actionGetAllDepartment(params);
+    }
     this.getDataLoan();
     this.actionGetAllDepartment();
   },
@@ -177,6 +187,9 @@ export default {
       params.append("join", "department");
       params.append("sort", "loan.created_at,DESC");
       params.append("filter", "loan.khusus||$eq||0");
+      if (this.parsedToken.user.role != 'owner') {
+        params.append("filter", "department.name||$ne||Office");
+      }
       if (this.keyword != null && this.keyword.length > 0) {
         params.append('filter', 'name||$cont||' + this.keyword);
       }
@@ -205,6 +218,9 @@ export default {
       params.append("sort", "loan.created_at,DESC");
       params.append("filter", "loan.khusus||$eq||0");
       // this.actionGetAllEmployee(params);
+      if (this.parsedToken.user.role != 'owner') {
+        params.append("filter", "department.name||$ne||Office");
+      }
       this.actionGetAllEmployeeByFilter(params);
       this.getTotalLoanPerDepartment();
     },
@@ -243,6 +259,10 @@ export default {
           this.getDataLoan();
         }
       }
+    },
+    
+    parsingJwt(token) {
+      return parseJwt(token);
     },
   },
   watch: {
