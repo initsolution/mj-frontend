@@ -52,8 +52,12 @@
                       <template v-slot:default>
                         <thead>
                           <tr style="background-color: #04aa6d; color: white">
-                            <th colspan="2" class="text-left white--text">PENDAPATAN</th>
-                            <th colspan="2" class="text-left white--text">PENGELUARAN</th>
+                            <th colspan="2" class="text-left white--text">
+                              PENDAPATAN
+                            </th>
+                            <th colspan="2" class="text-left white--text">
+                              PENGELUARAN
+                            </th>
                           </tr>
                         </thead>
                         <tbody>
@@ -66,7 +70,7 @@
                             <td>
                               {{
                                 formatPrice(
-                                  Math.round(item.potongan_terlambat_ijin)
+                                  Math.round(item.potongan_terlambat_ijin),
                                 )
                               }}
                             </td>
@@ -115,7 +119,9 @@
                               <!-- {{ formatPrice(Math.round(item.potongan_bon)) }} -->
 
                               <v-btn
-                              v-if="item.potongan_bon == 0 && item.sisa_bon > 0"
+                                v-if="
+                                  item.potongan_bon == 0 && item.sisa_bon > 0
+                                "
                                 color="blue darken-1"
                                 small
                                 class="mr-3 elevation-0"
@@ -135,7 +141,7 @@
                             <td>Pot Lain</td>
                             <td>
                               <v-btn
-                                v-if="item.potongan_lain == 0 "
+                                v-if="item.potongan_lain == 0"
                                 color="blue darken-1"
                                 small
                                 class="mr-3 elevation-0"
@@ -145,9 +151,10 @@
                                 }}</v-btn
                               >
                               <div v-else>
-                                {{ formatPrice(Math.round(item.potongan_lain)) }}
+                                {{
+                                  formatPrice(Math.round(item.potongan_lain))
+                                }}
                               </div>
-                              
                             </td>
                           </tr>
                         </tbody>
@@ -218,7 +225,14 @@
         </v-data-table>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="green darken-1" @click="print">Print</v-btn>
+        <v-btn
+          color="green elevation-0"
+          class="my-3 icon-box"
+          @click="print"
+          dark
+        >
+          <v-icon color="white" class="mr-2">mdi-printer</v-icon> Print
+        </v-btn>
       </v-card-actions>
     </v-card>
     <v-dialog v-model="dialogPay" max-width="600">

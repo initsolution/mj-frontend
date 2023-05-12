@@ -37,14 +37,17 @@
                           <tr>
                             <td style="width: 20%">Total Hari Masuk</td>
                             <td>
-                              {{ Math.floor(item.total_hari_masuk) }} Hari
-                              {{ (item.total_hari_masuk % 1) * 8 }} Jam
-                              <v-icon
+                              <v-btn
+                                color="blue darken-1"
                                 small
-                                class="ml-2"
+                                class="mr-3 elevation-0"
                                 @click="ubahHariMasuk(item)"
-                                >mdi-pencil</v-icon
+                                dark
                               >
+                                {{ Math.floor(item.total_hari_masuk) }} Hari
+                                {{ (item.total_hari_masuk % 1) * 8 }}
+                                Jam
+                              </v-btn>
                             </td>
                             <!-- <td v-if="item.total_hari_masuk % 1 == 0">
                               {{ Math.floor(item.total_hari_masuk) }} Hari
@@ -149,7 +152,7 @@
                             <td>
                               {{
                                 formatPrice(
-                                  Math.round(item.potongan_astek_plus)
+                                  Math.round(item.potongan_astek_plus),
                                 )
                               }}
                             </td>
@@ -187,7 +190,7 @@
                             <td style="font-weight: bold" colspan="2">
                               {{
                                 formatPrice(
-                                  Math.round(item.total_bersih_buku_1)
+                                  Math.round(item.total_bersih_buku_1),
                                 )
                               }}
                             </td>
@@ -199,7 +202,7 @@
                             <td style="font-weight: bold" colspan="2">
                               {{
                                 formatPrice(
-                                  Math.round(item.total_bersih_buku_2)
+                                  Math.round(item.total_bersih_buku_2),
                                 )
                               }}
                             </td>
@@ -282,7 +285,14 @@
         </v-data-table>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="green darken-1" @click="print">Print</v-btn>
+        <v-btn
+          color="green elevation-0"
+          class="my-3 icon-box"
+          @click="print"
+          dark
+        >
+          <v-icon color="white" class="mr-2">mdi-printer</v-icon> Print
+        </v-btn>
       </v-card-actions>
     </v-card>
     <v-dialog v-model="dialogPay" max-width="600">

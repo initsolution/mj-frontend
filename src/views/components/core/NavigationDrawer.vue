@@ -47,12 +47,12 @@
         <v-list-group
           v-else
           :prepend-icon="item.icon"
-          :value="false"
+          :value="item.title"
           color="#ffffff"
           no-action
         >
           <template v-slot:activator>
-            <v-list-item-title v-text="item.title"></v-list-item-title>
+            <v-list-item-title>{{ item.title }}</v-list-item-title>
           </template>
 
           <v-list-item
@@ -61,7 +61,7 @@
             :to="child.to"
           >
             <v-list-item-content>
-              <v-list-item-title v-text="child.title"></v-list-item-title>
+              <v-list-item-title>{{ child.title }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-group>

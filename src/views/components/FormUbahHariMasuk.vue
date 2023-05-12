@@ -5,19 +5,18 @@
         <v-card-title
           class="subheading px-8 d-flex flex-row grey lighten-5 align-center justify-space-between"
         >
-          <span headline>Ubah Hari Masuk</span>
+          <span headline>Ubah Total Hari Masuk</span>
           <v-icon @click="close">mdi-close</v-icon>
         </v-card-title>
         <v-divider></v-divider>
         <v-card-text>
           <v-container>
             <v-row>
-              <v-col cols="12">
+              <v-col cols="6">
                 <v-text-field v-model="nHari" label="Hari" required />
               </v-col>
-            </v-row>
-            <v-row>
-              <v-col cols="12">
+
+              <v-col cols="6">
                 <v-text-field label="Jam" v-model.trim="nJam" required />
               </v-col>
             </v-row>
@@ -40,9 +39,9 @@
 </template>
       
       <script>
-import { mapActions } from "vuex";
+import { mapActions } from 'vuex';
 export default {
-  name: "TambahEditPosition",
+  name: 'TambahEditPosition',
   props: {
     dialogUbahHariMasuk: {
       default: false,
@@ -56,7 +55,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["ubahHariMasukOwner"]),
+    ...mapActions(['ubahHariMasukOwner']),
     ubahHariMasuk() {
       const totalHariMasuk = this.nHari + this.nJam / 8;
       const data = {
@@ -69,7 +68,7 @@ export default {
     },
 
     close() {
-      this.$emit("update:dialogUbahHariMasuk", false);
+      this.$emit('update:dialogUbahHariMasuk', false);
       //   this.$emit("update:getDataPosition", {});
       //   this.$emit("update:type", null);
     },

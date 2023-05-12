@@ -245,7 +245,14 @@
         </v-data-table>
       </v-card-text>
       <v-card-actions>
-        <v-btn color="green darken-1" @click="print">Print</v-btn>
+        <v-btn
+          color="green elevation-0"
+          class="my-3 icon-box"
+          @click="print"
+          dark
+        >
+          <v-icon color="white" class="mr-2">mdi-printer</v-icon> Print
+        </v-btn>
       </v-card-actions>
     </v-card>
     <v-dialog v-model="dialogPay" max-width="600">
