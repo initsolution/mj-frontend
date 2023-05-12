@@ -45,7 +45,6 @@
         </v-list-item>
 
         <v-list-group
-          :group="'kehadiran'"
           v-else
           :prepend-icon="item.icon"
           :value="false"
@@ -270,7 +269,7 @@ export default {
   },
   data: () => ({
     items: [],
-    email: "",
+    email: '',
   }),
 };
 </script>

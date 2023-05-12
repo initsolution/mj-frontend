@@ -5,48 +5,7 @@
       :getAllDataLoan="getAllDataLoan"
       :employee="employee"
     />
-    <v-dialog v-model="dialogLoan" max-width="600">
-      <v-card>
-        <v-card-title>
-          <div>Buat Pinjaman</div>
-        </v-card-title>
-        <v-card-text>
-          <v-autocomplete
-            v-model.trim="loan.employee"
-            :items="getEmployee"
-            color="white"
-            item-text="name"
-            label="Nama"
-            return-object
-          ></v-autocomplete>
-          <v-currency-field
-            color="grey darken-2"
-            :decimal-length="0"
-            prefix="Rp"
-            filled
-            v-bind="currency_config"
-            v-model.trim="loan.nominal"
-            class="currency-input pa-0 ma-0 font-md"
-            label="Nominal Pinjaman"
-          />
 
-          <v-text-field
-            color="grey darken-2"
-            v-model.trim="loan.description"
-            label="Deskripsi"
-          ></v-text-field>
-        </v-card-text>
-        <v-card-actions>
-          <div class="flex-grow-1"></div>
-          <v-btn class="elevation-0 grey darken-2" dark @click="dismisDialog"
-            >Batal</v-btn
-          >
-          <v-btn class="elevation-0 primary" @click.stop="saveLoan"
-            >Simpan</v-btn
-          >
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
     <v-row>
       <v-col>
         <div flat>
@@ -55,19 +14,84 @@
               <div class="title d-flex flex-row">
                 <v-icon color="grey" class="mr-2">mdi-calendar-check</v-icon>
                 <div>Data Pinjaman Dari Owner</div>
-                <div>
-                  <v-btn color="primary elevation-0" @click="openBuatPinjaman"
-                    >Tambah Pinjaman</v-btn
-                  >
-                </div>
+                <div></div>
               </div>
             </v-col>
             <div class="flex-grow-1"></div>
             <v-col class="text-right py-0"> </v-col>
           </v-row>
-          <v-divider class="my-3"></v-divider>
+          <v-divider class="my-6"></v-divider>
+          <v-row align="center" justify="space-between">
+            <v-col>
+              <v-btn color="primary elevation-0" @click="openBuatPinjaman">
+                Tambah Pinjaman
+              </v-btn>
+              <v-dialog v-model="dialogLoan" max-width="600">
+                <v-card>
+                  <v-card-title
+                    class="subheading px-8 d-flex flex-row grey lighten-5 align-center justify-space-between"
+                  >
+                    <div>Tambah Pinjaman</div>
+                    <v-icon @click="dismisDialog">mdi-close</v-icon>
+                  </v-card-title>
+                  <v-divider></v-divider>
+                  <v-card-text>
+                    <v-autocomplete
+                      v-model.trim="loan.employee"
+                      :items="getEmployee"
+                      color="white"
+                      item-text="name"
+                      label="Nama"
+                      return-object
+                    ></v-autocomplete>
+                    <v-currency-field
+                      color="grey darken-2"
+                      :decimal-length="0"
+                      prefix="Rp"
+                      filled
+                      v-bind="currency_config"
+                      v-model.trim="loan.nominal"
+                      class="currency-input pa-0 ma-0 font-md"
+                      label="Nominal Pinjaman"
+                    />
+
+                    <v-text-field
+                      color="grey darken-2"
+                      v-model.trim="loan.description"
+                      label="Deskripsi"
+                    ></v-text-field>
+                  </v-card-text>
+                  <v-card-actions
+                    class="grey lighten-4 px-8 py-4 d-flex flex-row"
+                  >
+                    <!-- <div class="flex-grow-1"></div> -->
+
+                    <v-btn
+                      min-width="100"
+                      class="elevation-0"
+                      color="primary"
+                      @click.stop="saveLoan"
+                      >Simpan</v-btn
+                    >
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
+            </v-col>
+          </v-row>
           <v-row>
-            
+            <v-col cols="12"
+              ><v-btn
+                :outlined="!filter"
+                class="elevation-0"
+                :color="filter ? 'primary' : 'grey darken-1'"
+                @click="showFilter"
+              >
+                <v-icon>mdi-filter</v-icon>
+                <span>Filter</span>
+              </v-btn></v-col
+            >
+          </v-row>
+          <v-row v-if="filter">
             <v-col cols="4" class="py-0">
               <div class="d-flex flex-row align-center mb-1">
                 <div class="font-md mb-1">Pencarian Nama Karyawan</div>
@@ -101,13 +125,13 @@
                 >
                   <div>{{ item.department_name }}</div>
                   <div class="black--text mt-3" style="font-size: 24px">
-                    {{ item.total_loan ? formatPrice(item.total_loan) : "-" }}
+                    {{ item.total_loan ? formatPrice(item.total_loan) : '-' }}
                   </div>
                 </v-col>
               </v-row>
             </v-card-text>
           </v-card>
-          
+
           <v-data-table :headers="headers" :items="getAllData">
             <template v-slot:[`item.sisa_pinjaman`]="{ item }">
               {{ checkLoan(item.loan) }}
@@ -129,32 +153,33 @@
   </v-container>
 </template>
 <script>
-import { mapActions, mapGetters } from "vuex";
-import { formatPrice } from "@/utils/utils";
-import DetailPinjaman from "@/views/components/DetailPinjaman.vue";
+import { mapActions, mapGetters } from 'vuex';
+import { formatPrice } from '@/utils/utils';
+import DetailPinjaman from '@/views/components/DetailPinjaman.vue';
 export default {
-  name: "Pinjaman",
+  name: 'Pinjaman',
   components: {
     DetailPinjaman,
   },
   data() {
     return {
+      filter: false,
       dialogDetailPinjaman: false,
       dialogLoan: false,
       loan: {},
       getAllDataLoan: [],
       headers: [
-        { text: "Employee_ID", value: "id" },
-        { text: "Nama", value: "name" },
-        { text: "Departemen", value: "department.name" },
-        { text: "Sisa Pinjaman", value: "sisa_pinjaman" },
-        { text: "Pilihan", value: "action" },
+        { text: 'Employee_ID', value: 'id' },
+        { text: 'Nama', value: 'name' },
+        { text: 'Departemen', value: 'department.name' },
+        { text: 'Sisa Pinjaman', value: 'sisa_pinjaman' },
+        { text: 'Pilihan', value: 'action' },
       ],
       employee: {},
       currency_config: {
-        decimal: ",",
-        thousands: ".",
-        prefix: "Rp",
+        decimal: ',',
+        thousands: '.',
+        prefix: 'Rp',
         precision: 0,
         masked: false,
         allowBlank: false,
@@ -162,7 +187,7 @@ export default {
         max: Number.MAX_SAFE_INTEGER,
       },
       filterDepartmentId: null,
-      
+
       keyword: null,
     };
   },
@@ -172,42 +197,43 @@ export default {
   },
   methods: {
     ...mapActions([
-      "actionGetAllEmployeeByFilter",
-      "inputLoan",
-      "getTotalLoanPerDepartment",
+      'actionGetAllEmployeeByFilter',
+      'inputLoan',
+      'getTotalLoanPerDepartment',
     ]),
-    filterEmployee(){
+    showFilter() {
+      this.filter = !this.filter;
+    },
+    filterEmployee() {
       const params = new URLSearchParams();
-      params.append("join", "loan");
-      params.append("join", "department");
-      params.append("sort", "loan.created_at,DESC");
-      params.append("filter", "loan.khusus||$eq||1");
+      params.append('join', 'loan');
+      params.append('join', 'department');
+      params.append('sort', 'loan.created_at,DESC');
+      params.append('filter', 'loan.khusus||$eq||1');
       if (this.keyword != null && this.keyword.length > 0) {
         params.append('filter', 'name||$cont||' + this.keyword);
       }
       this.actionGetAllEmployeeByFilter(params);
-      
     },
-    
+
     getDataLoan() {
       const params = new URLSearchParams();
-      params.append("join", "loan");
-      params.append("join", "department");
-      params.append("sort", "loan.created_at,DESC");
-      params.append("filter", "type||$eq||KHUSUS");
+      params.append('join', 'loan');
+      params.append('join', 'department');
+      params.append('sort', 'loan.created_at,DESC');
+      params.append('filter', 'type||$eq||KHUSUS');
       // this.actionGetAllEmployee(params);
       this.actionGetAllEmployeeByFilter(params);
       this.getTotalLoanPerDepartment();
-      
     },
     formatPrice(value) {
       return formatPrice(value);
     },
     checkLoan(loan) {
       if (loan.length != 0) {
-        return "Rp. " + this.formatPrice(loan[0].total_loan_current);
+        return 'Rp. ' + this.formatPrice(loan[0].total_loan_current);
       } else {
-        return "-";
+        return '-';
       }
     },
     openDetail(emp) {
@@ -223,11 +249,11 @@ export default {
     },
     saveLoan() {
       const data = {
-        type: "pinjam",
+        type: 'pinjam',
         employee: { id: this.loan.employee.id },
         nominal: this.loan.nominal,
         note: this.loan.description,
-        khusus : 1
+        khusus: 1,
       };
       this.inputLoan(data);
     },
@@ -235,7 +261,7 @@ export default {
     watchStatusLoan() {
       const status = this.getStatusLoan;
       if (status.status == 201) {
-        if (status.statusText == "Created") {
+        if (status.statusText == 'Created') {
           this.getDataLoan();
           this.dismisDialog();
         }
@@ -248,15 +274,9 @@ export default {
         this.watchStatusLoan();
       },
     },
-    
   },
   computed: {
-    ...mapGetters([
-      "getDataEmployees",
-      "getStatusLoan",
-      "getDataLoanByDept",
-      
-    ]),
+    ...mapGetters(['getDataEmployees', 'getStatusLoan', 'getDataLoanByDept']),
     getAllData() {
       return this.getDataEmployees.filter(function (val) {
         return val.loan.length > 0;

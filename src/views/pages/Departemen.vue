@@ -50,7 +50,8 @@
                     class="elevation-0"
                     dark
                     @click="editDepartemen()"
-                    >Ubah
+                  >
+                  <v-icon color="white">mdi-pencil</v-icon> Ubah
                   </v-btn>
                   <v-snackbar
                     v-model="snackbar"
@@ -153,12 +154,13 @@
           <v-col cols="4" class="py-0">
             <v-btn
               style="margin-left: 20px"
-              class="elevation-0 my-3"
+              color="error elevation-0"
+              class="my-3 icon-box"
               @click="addArea()"
-              color="blue"
               dark
-              >Tambah Bagian</v-btn
             >
+              <v-icon color="white">mdi-plus</v-icon> Tambah Bagian
+            </v-btn>
           </v-col>
         </v-row>
         <template v-if="selected_departemen != null">
@@ -251,13 +253,13 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
-import { formatPrice } from "@/utils/utils";
-import UpdateDepartemen from "@/views/components/UpdateDepartemen.vue";
-import TambahEditArea from "@/views/components/TambahEditArea.vue";
-import Position from "@/views/components/Position.vue";
+import { mapActions, mapGetters } from 'vuex';
+import { formatPrice } from '@/utils/utils';
+import UpdateDepartemen from '@/views/components/UpdateDepartemen.vue';
+import TambahEditArea from '@/views/components/TambahEditArea.vue';
+import Position from '@/views/components/Position.vue';
 export default {
-  name: "Departemen",
+  name: 'Departemen',
   components: {
     UpdateDepartemen,
     TambahEditArea,
@@ -271,16 +273,16 @@ export default {
       type: null,
       getDataDepartemen: {},
       headers: [
-        { text: "Nama Departemen", value: "name", width: "40%" },
-        { text: "UMR", value: "umr", width: "40%" },
-        { text: "Pilihan", value: "action", width: "20%" },
+        { text: 'Nama Departemen', value: 'name', width: '40%' },
+        { text: 'UMR', value: 'umr', width: '40%' },
+        { text: 'Pilihan', value: 'action', width: '20%' },
       ],
       label_departemen: [],
       selected_departemen: null,
       getDetailDataArea: {},
       multiLine: false,
       snackbar: false,
-      notif_text: "",
+      notif_text: '',
       departemenId: null,
     };
   },
@@ -290,15 +292,15 @@ export default {
   },
 
   methods: {
-    ...mapActions(["actionGetAllDepartment"]),
+    ...mapActions(['actionGetAllDepartment']),
     formatPrice(value) {
       return formatPrice(value);
     },
 
     getDataDepartement() {
       const param = new URLSearchParams();
-      param.append("join", "area");
-      param.append("join", "area.position");
+      param.append('join', 'area');
+      param.append('join', 'area.position');
       this.actionGetAllDepartment(param);
     },
 
@@ -321,7 +323,7 @@ export default {
     editDepartemen() {
       if (this.selected_departemen == null) {
         this.snackbar = true;
-        this.notif_text = "Pilih Data Departemen!";
+        this.notif_text = 'Pilih Data Departemen!';
         return;
       }
       this.getDataDepartemen = this.selected_departemen;
@@ -330,24 +332,24 @@ export default {
 
     addArea() {
       if (this.selected_departemen == null) {
-        this.notif_text = "Pilih Departemen!";
+        this.notif_text = 'Pilih Departemen!';
         this.snackbar = true;
         return;
       }
       this.departemenId = this.selected_departemen.id;
-      this.type = "add";
+      this.type = 'add';
       this.dialogArea = true;
       this.getDetailDataArea = {};
     },
 
     editArea(item) {
       if (this.selected_departemen == null) {
-        this.notif_text = "Pilih Departemen!";
+        this.notif_text = 'Pilih Departemen!';
         this.snackbar = true;
         return;
       }
       this.departemenId = this.selected_departemen.id;
-      this.type = "update";
+      this.type = 'update';
       this.dialogArea = true;
       this.getDetailDataArea = item;
     },
@@ -365,9 +367,9 @@ export default {
 
   computed: {
     ...mapGetters([
-      "getDataAllDepartement",
-      "getStatusDepartement",
-      "getStatusArea",
+      'getDataAllDepartement',
+      'getStatusDepartement',
+      'getStatusArea',
     ]),
     select: {
       get: function () {
@@ -410,8 +412,8 @@ export default {
     getStatusArea: {
       handler() {
         if (
-          this.getStatusArea.status == "Created" ||
-          this.getStatusArea.status == "OK"
+          this.getStatusArea.status == 'Created' ||
+          this.getStatusArea.status == 'OK'
         ) {
           this.getDataDepartement();
         }
@@ -420,7 +422,7 @@ export default {
 
     getStatusDepartement: {
       handler() {
-        if (this.getStatusDepartement.status == "OK") {
+        if (this.getStatusDepartement.status == 'OK') {
           this.getDataDepartement();
         }
       },

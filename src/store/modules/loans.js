@@ -16,7 +16,13 @@ const actions = {
     },
     
     async getTotalLoanPerDepartment({commit}){
-        const res = await httpCommons.get(apiName+'/totaLoanByDepartment')
+        var token = localStorage.getItem('token');
+        console.log('loan dept')
+        console.log(token)
+        var header = {
+            'Authorization' : 'Bearer '+token
+        }
+        const res = await httpCommons.get(apiName+'/totaLoanByDepartment', {headers : header})
         commit('SET_DATA_LOAN_BY_DEPT', res.data)
     }
 }
