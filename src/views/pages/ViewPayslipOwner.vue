@@ -1,5 +1,10 @@
 <template>
   <v-container class="pa-8" fluid>
+    <FormUbahHariMasuk
+      :dialogUbahHariMasuk.sync="dialogUbahHariMasuk"
+      :dataPayslip="dataPayslip"
+    >
+    </FormUbahHariMasuk>
     <v-card>
       <v-card-title>Payslip Owner</v-card-title>
       <v-card-text>
@@ -34,6 +39,12 @@
                             <td>
                               {{ Math.floor(item.total_hari_masuk) }} Hari
                               {{ (item.total_hari_masuk % 1) * 8 }} Jam
+                              <v-icon
+                                small
+                                class="ml-2"
+                                @click="ubahHariMasuk(item)"
+                                >mdi-pencil</v-icon
+                              >
                             </td>
                             <!-- <td v-if="item.total_hari_masuk % 1 == 0">
                               {{ Math.floor(item.total_hari_masuk) }} Hari
@@ -138,7 +149,7 @@
                             <td>
                               {{
                                 formatPrice(
-                                  Math.round(item.potongan_astek_plus),
+                                  Math.round(item.potongan_astek_plus)
                                 )
                               }}
                             </td>
@@ -176,7 +187,7 @@
                             <td style="font-weight: bold" colspan="2">
                               {{
                                 formatPrice(
-                                  Math.round(item.total_bersih_buku_1),
+                                  Math.round(item.total_bersih_buku_1)
                                 )
                               }}
                             </td>
@@ -188,7 +199,7 @@
                             <td style="font-weight: bold" colspan="2">
                               {{
                                 formatPrice(
-                                  Math.round(item.total_bersih_buku_2),
+                                  Math.round(item.total_bersih_buku_2)
                                 )
                               }}
                             </td>
@@ -365,6 +376,13 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-overlay :value="overlay">
+      <v-progress-circular
+        indeterminate
+        color="blue"
+        dark
+      ></v-progress-circular>
+    </v-overlay>
   </v-container>
 </template>
       
@@ -374,13 +392,20 @@
       import { jsPDF } from "jspdf";
       import autoTable from "jspdf-autotable";
       import angkaTerbilang from "@develoka/angka-terbilang-js";
+      import FormUbahHariMasuk from "@/views/components/FormUbahHariMasuk.vue";
       export default {
-        name: "ViewPayslipCs",
+        name: "ViewPayslipOwner",
+        components :{
+          FormUbahHariMasuk,
+        },
         data() {
           return {
             expanded: [],
             selected: [],
-            dialogPay : false,
+            dialogPay : false,  
+            dialogUbahHariMasuk: false,
+            dataPayslip : null,
+            overlay: false,
             loan : {},
             dataPayslip : {},
             dialogPotonganLain : false,
@@ -511,6 +536,23 @@
             console.log(item)
             this.dataPayslip =item
             this.dialogPay = true
+          },
+
+          ubahHariMasuk(item){
+            this.dataPayslip = item;
+            this.dialogUbahHariMasuk = true;
+          },
+
+          isLoadingFinish() {
+            // console.log("isloading finish");
+            const status = this.geStatusLoading;
+            console.log(status);
+            if (status.loading == false) {
+              this.overlay = false;
+              // this.$router.push("/viewPayslipOwner").catch(() => {});
+            } else {
+              this.overlay = true;
+            }
           },
 
           openDialogDriver(item, nominal){
@@ -849,7 +891,7 @@
           },
         },
         computed: {
-          ...mapGetters(["getStatusPayslip"]),
+          ...mapGetters(["getStatusPayslip", "geStatusLoading"]),
           getAllData() {
             return this.getStatusPayslip.data.sort((a, b) =>{
               let fa = a.employee.name.toLowerCase();
@@ -864,6 +906,14 @@
             });
           },
         },
+
+        watch : {
+          geStatusLoading: {
+            handler() {
+              this.isLoadingFinish();
+            },
+          },
+        }
       };
       </script>
       

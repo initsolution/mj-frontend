@@ -13,7 +13,7 @@ const state = {
     isLoading: {},
     dataPengeluaranDepartemen: [],
     dataDetailPengeluaran: [],
-    statusDetailPengeluaran : {},
+    statusDetailPengeluaran: {},
 }
 
 const actions = {
@@ -135,6 +135,28 @@ const actions = {
         }
     },
 
+    async ubahHariMasukOwner({ commit, dispatch }, data) {
+        try {
+            commit('SET_LOADING', true)
+            const res = await httpCommons.patch(apiNameOwner + "/updatePayslipTotalHariMasuk", data)
+            const result = {
+                status: res.statusText,
+                actions: res.status,
+                data: res.data,
+            }
+            console.log(result);
+            commit('SET_CHECK_PAYSLIP', result)
+            commit('SET_LOADING', false)
+            // dispatch('actionGetAllAttendence')
+        } catch (error) {
+            const result = {
+                status: error.response.data.statusCode,
+                data: error.response.data.data,
+            }
+            commit('SET_CHECK_PAYSLIP', result)
+        }
+    },
+
     async updatePayslipWithBon({ commit, dispatch }, data) {
         // commit('SET_LOADING', true)
         const res = await httpCommons.patch(apiNameProduksi + '/updatePayslipWithBon', data)
@@ -155,23 +177,23 @@ const actions = {
         console.log(res)
         commit('SET_CHECK_PAYSLIP', res)
     },
-    
+
     async updatePayslipBulananTambahanPendapatanLain({ commit, dispatch }, data) {
         // commit('SET_LOADING', true)
         const res = await httpCommons.patch(apiNameBulanan + '/updatePayslipTambahanlain', data)
         console.log(res)
         commit('SET_CHECK_PAYSLIP', res)
     },
-    
-    
+
+
     async updatePayslipWithPotonganLain({ commit, dispatch }, data) {
         // commit('SET_LOADING', true)
         let apiname = ''
-        if(data.jenis_potongan == 'produksi'){
+        if (data.jenis_potongan == 'produksi') {
             apiname = apiNameProduksi
-        }else if(data.jenis_potongan == 'cs'){
+        } else if (data.jenis_potongan == 'cs') {
             apiname = apiNameCs
-        }else if(data.jenis_potongan == 'bulanan'){
+        } else if (data.jenis_potongan == 'bulanan') {
             apiname = apiNameBulanan
         }
         const res = await httpCommons.patch(apiname + '/updatePayslipWithPotonganLain', data)
@@ -182,11 +204,11 @@ const actions = {
     async pengeluaranDepartemen({ commit }, param) {
         let link
         if (param.departmentId == 1) {
-            link =  apiNameProduksi
-        } else if(param.departmentId == 3){
-            link =  apiNameCs
+            link = apiNameProduksi
+        } else if (param.departmentId == 3) {
+            link = apiNameCs
         }
-        
+
         const res = await httpCommons.get(link + '/getTotalPengeluaran/' + param.bulantahun);
         commit('SET_DATA_TOTAL_PENGELUARAN_DEPARTEMEN', res.data)
     },
@@ -194,15 +216,16 @@ const actions = {
     async pengeluaranDetail({ commit }, param) {
         let link
         if (param.departmentId == 1) {
-            link =  apiNameProduksi
-        } else if(param.departmentId == 3){
-            link =  apiNameCs
+            link = apiNameProduksi
+        } else if (param.departmentId == 3) {
+            link = apiNameCs
         }
         const res = await httpCommons.get(link + '/getDetailPengeluaran/' + param.periodeAwal + '/' + param.periodeAkhir);
         // console.log(res)
         commit('STATUS_DETAIL_PENGELUARAN', {
             status: res.status,
-            statusText: res.statusText}
+            statusText: res.statusText
+        }
         )
         commit('SET_DATA_DETAIL_PENGELUARAN', res.data)
     }
@@ -229,7 +252,7 @@ const mutations = {
     SET_DATA_DETAIL_PENGELUARAN(state, data) {
         state.dataDetailPengeluaran = data
     },
-    STATUS_DETAIL_PENGELUARAN(state, data){
+    STATUS_DETAIL_PENGELUARAN(state, data) {
         state.statusDetailPengeluaran = data
     }
 }

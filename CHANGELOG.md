@@ -252,3 +252,7 @@
 - Modul Owner
     - Pinjaman
         - Tambah Pinjaman
+
+# 0.0.1 (Update 09/05/2023)
+- Modul ViewPayslipOwner
+    - add fungsi untuk ubah hari masuk karyawan untuk sisi owner
