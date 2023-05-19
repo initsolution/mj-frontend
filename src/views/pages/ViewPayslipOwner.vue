@@ -158,7 +158,7 @@
                             </td>
                           </tr>
                           <tr>
-                            <td>Bonus KH, Lembur, T. Lain</td>
+                            <td>Bonus KH, Lembur, T.Lain</td>
                             <td>
                               {{ formatPrice(Math.round(item.bonus_khusus)) }}
                             </td>
@@ -654,61 +654,81 @@
                   "Gaji Pokok",
                   "Rp",
                   this.formatPrice(Math.round(this.selected[i].gaji_pokok)),
-                  "Potongan Hari Kerja",
-                  "Rp",
-                  this.formatPrice(Math.round(this.selected[i].potongan_hari_kerja)),
+                  "",
+                  "",
+                  "",
                 ],
                 [
-                  "Tunjangan Jabatan",
+                  "Total Buku 1",
                   "Rp",
-                  this.formatPrice(Math.round(this.selected[i].tunjangan_jabatan)),
-                  "Potongan BPJS Tenaga Kerja",
+                  this.formatPrice(Math.round(this.selected[i].total_buku_1)),
+                  "Total Potongan 1",
                   "Rp",
-                  this.formatPrice(Math.round(this.selected[i].potongan_bpjs_tk)),
+                  this.formatPrice(Math.round(this.selected[i].total_potongan_1)),
                 ],
-                ["Insentif Ekstra",
-                  "Rp",
-                  this.formatPrice(Math.round(this.selected[i].insentif_extra)),
-                  "Potongan BPJS Kesehatan",
-                  "Rp",
-                  this.formatPrice(Math.round(this.selected[i].potongan_bpjs_ks)),
-                ],
-                
+                ["","","","","",""],
                 [
-                "Extra Tambahan Kerja",
+                  "Lembur & Ins Tugas",
                   "Rp",
-                  this.formatPrice(Math.round(this.selected[i].extra_tambahan_kerja)),
+                  this.formatPrice(Math.round(this.selected[i].tambahan)),
                   "Potongan Bon",
                   "Rp",
                   this.formatPrice(Math.round(this.selected[i].potongan_bon)),
                 ],
+                
                 [
-                  "Tambahan Lain",
+                  "Tambahan Gaji",
                   "Rp",
-                  this.selected[i].tambahan_gaji_lain,
+                  this.formatPrice(Math.round(this.selected[i].lembur)),
+                  "Potongan Astek Plus",
+                  "Rp",
+                  this.formatPrice(Math.round(this.selected[i].potongan_astek_plus)),
+                ],
+                [
+                  "Bonus KH, Lembur, T.Lain",
+                  "Rp",
+                  this.formatPrice(Math.round(this.selected[i].bonus_khusus)),
                   "",
                   "",
                   "",
                 ],
-               
-               
                 [
-                  "Total Pendapatan",
+                  "Total Buku 2",
                   "Rp",
-                  this.formatPrice(Math.round(this.selected[i].total_pendapatan)),
-                  "Total Potongan",
+                  this.formatPrice(Math.round(this.selected[i].total_buku_2)),
+                  "Total Potongan 2",
                   "Rp",
-                  this.formatPrice(Math.round(this.selected[i].total_potongan)),
+                  this.formatPrice(Math.round(this.selected[i].total_potongan_2)),
                 ],
               ];
       
               var tb_footer = [
                 [
-                  "PENDAPATAN GAJI = Rp " +
-                    formatPrice(Math.round(this.selected[i].pendapatan_gaji)),
+                  "TOTAL BERSIH BUKU 1",
+                  "Rp",
+                  formatPrice(Math.round(this.selected[i].total_bersih_buku_1)),
+                  "",
                 ],
-                [angkaTerbilang(Math.round(this.selected[i].pendapatan_gaji)).toUpperCase()],
-                ["SISA PINJAMAN = Rp " + this.formatPrice(Math.round(this.selected[i].sisa_bon))],
+                [
+                  "TOTAL BERSIH BUKU 2",
+                  "Rp",
+                  formatPrice(Math.round(this.selected[i].total_bersih_buku_2)),
+                  "",],
+                [
+                  "SISA BON",
+                  "Rp",
+                  this.formatPrice(Math.round(this.selected[i].sisa_bon)),
+                  "",
+                ],
+                [
+                  "PENDAPATAN GAJI NETT",
+                  "Rp",
+                  formatPrice(Math.round(this.selected[i].pendapatan_gaji)),
+                  "",
+                ],                
+                [
+                  angkaTerbilang(Math.round(this.selected[i].pendapatan_gaji)).toUpperCase(),
+                ],                
               ];
       
               doc.autoTable({
@@ -844,13 +864,29 @@
       
               doc.autoTable({
                 body: tb_footer,
-                startY: 105,
+                startY: 95,
                 theme: "plain",
                 styles: {
                   textColor: "#000000",
                   fontStyle: "bold",
                   fontSize: 8,
-                  halign: "center",
+                  cellPadding:1,
+                },
+                columnStyles: {
+                  0: {
+                    cellWidth: 52,
+                  },
+                  1: {
+                    cellWidth: 12,
+                  },
+                  2: {
+                    cellWidth: 30,
+                    halign: "right",
+                  },
+                  3: {
+                    cellWidth: "auto",
+                    halign: "right",
+                  },
                 },
                 willDrawCell: function (data) {
                   if (data.row.section === "body") {
@@ -865,7 +901,7 @@
                       );
                     }
       
-                    if (data.row.index == 2) {
+                    if (data.row.index == 4) {
                       // draw bottom border
                       doc.setLineWidth(0.5);
                       doc.line(

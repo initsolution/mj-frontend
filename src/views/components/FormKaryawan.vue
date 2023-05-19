@@ -10,7 +10,7 @@
             <v-icon>{{
               dataEmployee.id != null ? 'mdi-account-edit' : 'mdi-account-plus'
             }}</v-icon>
-            {{ dataEmployee.id != null ? 'Ubah' : 'Tambah' }} Karyawan
+            {{ dataEmployee.id != null ? 'Ubah' : 'Tambah' }} Karyawan {{ id }}
           </div>
           <div class="caption ml-8 grey--text darken-3">
             Form {{ dataEmployee.id != null ? 'mengubah' : 'menambahkan' }} data
@@ -63,6 +63,7 @@
                           label="NIK*"
                           :error-messages="idErrors"
                           :counter="100"
+                          disabled
                           @input="$v.id.$touch()"
                           @blur="$v.id.$touch()"
                           required

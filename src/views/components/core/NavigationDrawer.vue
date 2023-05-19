@@ -199,7 +199,7 @@ export default {
           to: '/pengeluaran',
         },
       ];
-    } else {
+    } else if (parsedToken.user.role == 'admin') {
       this.items = [
         {
           title: 'Home',
@@ -262,6 +262,56 @@ export default {
           title: 'Pengeluaran',
           icon: 'mdi-file-document-arrow-right-outline',
           to: '/pengeluaran',
+        },
+      ];
+    } else if (parsedToken.user.role == 'operator') {
+      this.items = [
+        {
+          title: 'Home',
+          icon: 'mdi-home',
+          to: '/',
+        },
+        {
+          title: 'Karyawan',
+          icon: 'mdi-account-box',
+          to: '/karyawan',
+        },
+        {
+          title: 'Departemen',
+          icon: 'mdi-account-group',
+          to: '/departemen',
+        },
+        {
+          title: 'Shift',
+          icon: 'mdi-timer',
+          to: '/shift',
+        },
+        {
+          title: 'Kehadiran',
+          icon: 'mdi-calendar-check',
+          to: '/kehadiran',
+          children: [
+            {
+              title: 'Bulanan',
+              icon: 'mdi-calendar-check',
+              to: '/kehadiran_bulanan',
+            },
+            {
+              title: 'Produksi',
+              icon: 'mdi-calendar-check',
+              to: '/kehadiran_mingguan',
+            },
+            {
+              title: 'Cleaning Service',
+              icon: 'mdi-calendar-check',
+              to: '/kehadiran_cs',
+            },
+          ],
+        },
+        {
+          title: 'Absensi',
+          icon: 'mdi-calendar-remove',
+          to: '/absensi',
         },
       ];
     }

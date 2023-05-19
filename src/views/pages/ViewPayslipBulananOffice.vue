@@ -33,7 +33,9 @@
                             <td style="width: 20%">Total Hari Masuk</td>
                             <td>
                               {{ Math.floor(item.total_hari_masuk) }} Hari
-                              {{ (item.total_hari_masuk % 1) * 8 }} Jam
+                              {{ (item.total_hari_masuk % 1) * 8 }} Jam ({{
+                                item.total_hari_masuk
+                              }})
                             </td>
                             <!-- <td v-if="item.total_hari_masuk % 1 == 0">
                               {{ Math.floor(item.total_hari_masuk) }} Hari
@@ -48,7 +50,9 @@
                             <td style="width: 20%">Total Hari Tidak Masuk</td>
                             <td>
                               {{ Math.floor(item.total_hari_off) }} Hari
-                              {{ (item.total_hari_off % 1) * 8 }} Jam
+                              {{ (item.total_hari_off % 1) * 8 }} Jam ({{
+                                item.total_hari_off
+                              }})
                             </td>
                             <!-- <td v-if="item.total_hari_off % 1 == 0">
                               {{ Math.floor(item.total_hari_off) }} Hari
