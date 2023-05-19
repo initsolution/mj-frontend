@@ -260,3 +260,7 @@
 # 0.0.1 (Update 09/05/2023)
 - Modul ViewPayslipOwner
     - add fungsi untuk ubah hari masuk karyawan untuk sisi owner
+
+# 0.0.1 (Update 19/05/2023)
+- Modul Kehadiran Bulanan, Office, Produksi
+    - fix issue tambah absensi manual dan hapus absensi
