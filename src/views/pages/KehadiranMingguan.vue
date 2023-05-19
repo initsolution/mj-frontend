@@ -797,7 +797,7 @@ export default {
     },
 
     getColor(total_leave) {
-      if (total_leave > 0) return '#EB212E';
+      if (total_leave > 0) return '#FFa500';
       else return '#77DD77';
     },
 
