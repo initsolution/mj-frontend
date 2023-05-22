@@ -159,7 +159,7 @@ export default {
     this.actionGetAllDepartment();
   },
   methods: {
-    ...mapActions(["actionGetAllDepartment", "pengeluaranDepartemen", 'pengeluaranDetail']),
+    ...mapActions(["actionGetAllDepartment",  'pengeluaranDepartemenBulanan', 'pengeluaranDetailBulanan']),
     formatPrice(value) {
       return formatPrice(value);
     },
@@ -175,7 +175,7 @@ export default {
         periodeAwal : periode_awal,
         periodeAkhir :periode_akhir
       }
-      this.pengeluaranDetail(param)
+      this.pengeluaranDetailBulanan(param)
       // console.log(param)
     },
     getPengeluaranMonth() {
@@ -183,7 +183,7 @@ export default {
       if (this.filterDepartmentId != null) {
         
        
-        this.pengeluaranDepartemen({
+        this.pengeluaranDepartemenBulanan({
           bulantahun : this.getMonth,
           departmentId : this.filterDepartmentId.id
         })

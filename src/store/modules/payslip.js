@@ -177,6 +177,13 @@ const actions = {
         console.log(res)
         commit('SET_CHECK_PAYSLIP', res)
     },
+    
+    async updatePayslipOwnerWithBon({ commit, dispatch }, data) {
+        // commit('SET_LOADING', true)
+        const res = await httpCommons.patch(apiNameOwner + '/updatePayslipWithBon', data)
+        console.log(res)
+        commit('SET_CHECK_PAYSLIP', res)
+    },
 
     async updatePayslipBulananTambahanPendapatanLain({ commit, dispatch }, data) {
         // commit('SET_LOADING', true)
@@ -212,15 +219,27 @@ const actions = {
         const res = await httpCommons.get(link + '/getTotalPengeluaran/' + param.bulantahun);
         commit('SET_DATA_TOTAL_PENGELUARAN_DEPARTEMEN', res.data)
     },
+    
+    async pengeluaranDepartemenBulanan({ commit }, param) {
+        // let link
+        // if (param.departmentId == 1) {
+        //     link = apiNameProduksi
+        // } else if (param.departmentId == 3) {
+        //     link = apiNameCs
+        // }
 
-    async pengeluaranDetail({ commit }, param) {
-        let link
-        if (param.departmentId == 1) {
-            link = apiNameProduksi
-        } else if (param.departmentId == 3) {
-            link = apiNameCs
-        }
-        const res = await httpCommons.get(link + '/getDetailPengeluaran/' + param.periodeAwal + '/' + param.periodeAkhir);
+        const res = await httpCommons.get(apiNameBulanan + '/getTotalPengeluaranBulanan/' + param.bulantahun+'/'+param.departmentId);
+        commit('SET_DATA_TOTAL_PENGELUARAN_DEPARTEMEN', res.data)
+    },
+
+    async pengeluaranDetailBulanan({ commit }, param) {
+        // let link
+        // if (param.departmentId == 1) {
+        //     link = apiNameProduksi
+        // } else if (param.departmentId == 3) {
+        //     link = apiNameCs
+        // }
+        const res = await httpCommons.get(apiNameBulanan + '/getDetailPengeluaranBulanan/' + param.periodeAwal + '/' + param.periodeAkhir+'/'+param.departmentId);
         // console.log(res)
         commit('STATUS_DETAIL_PENGELUARAN', {
             status: res.status,
