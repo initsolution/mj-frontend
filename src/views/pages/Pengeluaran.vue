@@ -63,39 +63,40 @@
             <v-col cols="4" class="py-0">
               <div class="d-flex flex-row align-center mb-1">
                 <div class="font-md mb-1">Departemen {{ nameDepartment }}</div>
-                
               </div>
               <div class="d-flex flex-row align-center mb-1">
-                <div class="font-md mb-1">Rp. {{ formatPrice(pengeluaranDepartment) }}</div>
+                <div class="font-md mb-1">
+                  Rp. {{ formatPrice(pengeluaranDepartment) }}
+                </div>
               </div>
             </v-col>
           </v-row>
           <v-row>
             <v-col md="12">
-            <v-data-table
-              :headers="headers"
-              :items="getPengeluaranDepartemen"
-            >
-              <template v-slot:[`item.pendapatan_gaji`]="{ item }">
-                {{ formatPrice(item.pendapatan_gaji) }}
-              </template>
-              <template v-slot:[`item.periode_start`]="{ item }">
-                {{ formatDateUtils(item.periode_start) }}
-              </template>
-              <template v-slot:[`item.periode_end`]="{ item }">
-                {{ formatDateUtils(item.periode_end) }}
-              </template>
-              <template v-slot:[`item.action`]="{ item }">
-                <v-btn
-                  color="blue"
-                  class="elevation-0"
-                  dark
-                  small
-                  @click="openDetail(item)"
-                  >Detail</v-btn
-                >
-              </template>
-            </v-data-table>
+              <v-data-table
+                :headers="headers"
+                :items="getPengeluaranDepartemen"
+              >
+                <template v-slot:[`item.pendapatan_gaji`]="{ item }">
+                  {{ formatPrice(item.pendapatan_gaji) }}
+                </template>
+                <template v-slot:[`item.periode_start`]="{ item }">
+                  {{ formatDateUtils(item.periode_start) }}
+                </template>
+                <template v-slot:[`item.periode_end`]="{ item }">
+                  {{ formatDateUtils(item.periode_end) }}
+                </template>
+                <template v-slot:[`item.action`]="{ item }">
+                  <v-btn
+                    color="blue"
+                    class="elevation-0"
+                    dark
+                    small
+                    @click="openDetail(item)"
+                    >Detail</v-btn
+                  >
+                </template>
+              </v-data-table>
             </v-col>
           </v-row>
         </div>
@@ -113,7 +114,7 @@ export default {
       startDate: null,
       filterDepartmentId: null,
       listDepartment: [],
-      nameDepartment : '',
+      nameDepartment: "",
       pengeluaranDepartment: 0,
       headers: [
         { text: "Periode Awal", value: "periode_start" },
@@ -127,7 +128,6 @@ export default {
     startDate: {
       handler() {
         this.getPengeluaranMonth();
-        
       },
     },
     getDataAllDepartement: {
@@ -138,77 +138,90 @@ export default {
             id: this.getDataAllDepartement[i].id,
           });
         }
-        
       },
     },
-    getStatusDetailPengeluaran :{
-      handler(){
-        this.getDetailPengeluaran()
-      }
+    getStatusDetailPengeluaran: {
+      handler() {
+        this.getDetailPengeluaran();
+      },
     },
-    getPengeluaranDepartemen : {
-      handler(){
-        console.log(this.getdataPengeluaranDepartemen)
-        this.nameDepartment = this.getdataPengeluaranDepartemen[0].department_name
-        this.pengeluaranDepartment = this.getTotalPengeluaranDepartemen(this.getdataPengeluaranDepartemen)
-      }
-    }
-    
+    getPengeluaranDepartemen: {
+      handler() {
+        console.log(this.getdataPengeluaranDepartemen);
+        this.nameDepartment =
+          this.getdataPengeluaranDepartemen[0].department_name;
+        this.pengeluaranDepartment = this.getTotalPengeluaranDepartemen(
+          this.getdataPengeluaranDepartemen
+        );
+      },
+    },
   },
   created() {
     this.actionGetAllDepartment();
   },
   methods: {
-    ...mapActions(["actionGetAllDepartment",  'pengeluaranDepartemenBulanan', 'pengeluaranDetailBulanan']),
+    ...mapActions([
+      "actionGetAllDepartment",
+      "pengeluaranDetail",
+      "pengeluaranDepartemen",
+    ]),
     formatPrice(value) {
       return formatPrice(value);
     },
     formatDateUtils(val) {
       return formatDate(val, "short-date");
     },
-    openDetail(pengeluaran){
-      console.log(pengeluaran)
-      const periode_awal = formatDate(pengeluaran.periode_start, 'input')
-      const periode_akhir = formatDate(pengeluaran.periode_end, 'input')
+    openDetail(pengeluaran) {
+      console.log(pengeluaran);
+      const periode_awal = formatDate(pengeluaran.periode_start, "input");
+      const periode_akhir = formatDate(pengeluaran.periode_end, "input");
       const param = {
-        departmentId : pengeluaran.department_id,
-        periodeAwal : periode_awal,
-        periodeAkhir :periode_akhir
-      }
-      this.pengeluaranDetailBulanan(param)
+        departmentId: pengeluaran.department_id,
+        periodeAwal: periode_awal,
+        periodeAkhir: periode_akhir,
+      };
+      this.pengeluaranDetail(param);
       // console.log(param)
     },
     getPengeluaranMonth() {
       console.log(this.getMonth);
       if (this.filterDepartmentId != null) {
         
-       
-        this.pengeluaranDepartemenBulanan({
-          bulantahun : this.getMonth,
-          departmentId : this.filterDepartmentId.id
-        })
+          this.pengeluaranDepartemen({
+            bulantahun: this.getMonth,
+            departmentId: this.filterDepartmentId.id,
+          });
+        
+          // this.pengeluaranDepartemenBulanan({
+          //   bulantahun: this.getMonth,
+          //   departmentId: this.filterDepartmentId.id,
+          // });
+        
       }
     },
     getDetailPengeluaran() {
-      const status = this.getStatusDetailPengeluaran
-      if(status.status == 200){
-        if(status.statusText == 'OK'){
+      const status = this.getStatusDetailPengeluaran;
+      if (status.status == 200) {
+        if (status.statusText == "OK") {
           this.$router.push("/detail_pengeluaran").catch(() => {});
         }
       }
     },
-    getTotalPengeluaranDepartemen(item){
-      const sum = item.reduce((accumulator, object)=>{
-        return accumulator + parseInt( object.pendapatan_gaji)
-      }, 0)
-      return sum
-    }
+    getTotalPengeluaranDepartemen(item) {
+      const sum = item.reduce((accumulator, object) => {
+        return accumulator + parseInt(object.pendapatan_gaji);
+      }, 0);
+      return sum;
+    },
   },
   computed: {
-    ...mapGetters(["getdataPengeluaranDepartemen", "getDataAllDepartement", "getStatusDetailPengeluaran"]),
+    ...mapGetters([
+      "getdataPengeluaranDepartemen",
+      "getDataAllDepartement",
+      "getStatusDetailPengeluaran",
+    ]),
     // getTotalPengeluaran() {},
     getPengeluaranDepartemen() {
-      
       return this.getdataPengeluaranDepartemen;
     },
   },

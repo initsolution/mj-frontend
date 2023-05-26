@@ -177,7 +177,7 @@ const actions = {
         console.log(res)
         commit('SET_CHECK_PAYSLIP', res)
     },
-    
+
     async updatePayslipOwnerWithBon({ commit, dispatch }, data) {
         // commit('SET_LOADING', true)
         const res = await httpCommons.patch(apiNameOwner + '/updatePayslipWithBon', data)
@@ -210,16 +210,45 @@ const actions = {
 
     async pengeluaranDepartemen({ commit }, param) {
         let link
-        if (param.departmentId == 1) {
-            link = apiNameProduksi
-        } else if (param.departmentId == 3) {
-            link = apiNameCs
+        if (param.departmentId == 1 || param.departmentId == 3) {
+            if (param.departmentId == 1) {
+                link = apiNameProduksi
+            } else if (param.departmentId == 3) {
+                link = apiNameCs
+            }
+            const res = await httpCommons.get(link + '/getTotalPengeluaran/' + param.bulantahun);
+            commit('SET_DATA_TOTAL_PENGELUARAN_DEPARTEMEN', res.data)
+        } else {
+            const res = await httpCommons.get(apiNameBulanan + '/getTotalPengeluaranBulanan/' + param.bulantahun + '/' + param.departmentId);
+            commit('SET_DATA_TOTAL_PENGELUARAN_DEPARTEMEN', res.data)
         }
-
-        const res = await httpCommons.get(link + '/getTotalPengeluaran/' + param.bulantahun);
-        commit('SET_DATA_TOTAL_PENGELUARAN_DEPARTEMEN', res.data)
     },
-    
+
+    async pengeluaranDetail({ commit }, param) {
+        let link
+        if (param.departmentId == 1 || param.departmentId == 3) {
+            if (param.departmentId == 1) {
+                link = apiNameProduksi
+            } else if (param.departmentId == 3) {
+                link = apiNameCs
+            }
+            const res = await httpCommons.get(link + '/getDetailPengeluaran/' + param.periodeAwal + '/' + param.periodeAkhir );
+            commit('STATUS_DETAIL_PENGELUARAN', {
+                status: res.status,
+                statusText: res.statusText
+            })
+            commit('SET_DATA_DETAIL_PENGELUARAN', res.data)
+        } else {
+            const res = await httpCommons.get(apiNameBulanan + '/getDetailPengeluaranBulanan/' + param.periodeAwal + '/' + param.periodeAkhir + '/' + param.departmentId);
+            commit('STATUS_DETAIL_PENGELUARAN', {
+                status: res.status,
+                statusText: res.statusText
+            })
+            commit('SET_DATA_DETAIL_PENGELUARAN', res.data)
+        }
+        
+    },
+
     async pengeluaranDepartemenBulanan({ commit }, param) {
         // let link
         // if (param.departmentId == 1) {
@@ -228,7 +257,7 @@ const actions = {
         //     link = apiNameCs
         // }
 
-        const res = await httpCommons.get(apiNameBulanan + '/getTotalPengeluaranBulanan/' + param.bulantahun+'/'+param.departmentId);
+        const res = await httpCommons.get(apiNameBulanan + '/getTotalPengeluaranBulanan/' + param.bulantahun + '/' + param.departmentId);
         commit('SET_DATA_TOTAL_PENGELUARAN_DEPARTEMEN', res.data)
     },
 
@@ -239,7 +268,7 @@ const actions = {
         // } else if (param.departmentId == 3) {
         //     link = apiNameCs
         // }
-        const res = await httpCommons.get(apiNameBulanan + '/getDetailPengeluaranBulanan/' + param.periodeAwal + '/' + param.periodeAkhir+'/'+param.departmentId);
+        const res = await httpCommons.get(apiNameBulanan + '/getDetailPengeluaranBulanan/' + param.periodeAwal + '/' + param.periodeAkhir + '/' + param.departmentId);
         // console.log(res)
         commit('STATUS_DETAIL_PENGELUARAN', {
             status: res.status,
