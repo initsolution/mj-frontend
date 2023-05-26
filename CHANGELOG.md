@@ -269,6 +269,10 @@
 - Modul Pengeluaran
     - pengeluaran untuk toko bulanan & office    
 
+# 0.0.1 (Update 22/05/2023)
+- Modul Kehadiran Bulanan, Office, Produksi
+    - fix issue trim data dari excel
+
 # 0.0.1 (Update 26/05/2023)
 - Modul Pengeluaran
     - solve pengeluaran untuk toko bulanan & office        
