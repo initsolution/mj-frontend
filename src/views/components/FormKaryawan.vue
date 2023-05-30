@@ -732,7 +732,7 @@ export default {
     employeeType: {
       type: Array,
       default() {
-        return ['REGULER', 'KHUSUS'];
+        return ['REGULER', 'KHUSUS', 'FLAT'];
       },
     },
     dialogForm: {
