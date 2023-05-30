@@ -561,6 +561,14 @@ export default {
             var _time_start_for_left = datarow[7] == '' ? null : datarow[7];
             var _time_end_for_left = datarow[8] == '' ? null : datarow[8];
 
+            if (_time_start_for_left != null) {
+              _time_start_for_left = _time_start_for_left.trim() == '' ? null : _time_start_for_left;
+            }
+
+            if (_time_end_for_left != null) {
+              _time_end_for_left = _time_end_for_left.trim() == '' ? null : _time_end_for_left;
+            }
+
             var data = {
               id: _nik,
               name: _name,

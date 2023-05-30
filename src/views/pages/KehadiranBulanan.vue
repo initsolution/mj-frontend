@@ -601,6 +601,38 @@ export default {
             var _time_start_for_left_3 = datarow[13] == "" ? null : datarow[13];
             var _time_end_for_left_3 = datarow[14] == "" ? null : datarow[14];
 
+            if (_time_start_for_break_2 != null) {
+              _time_start_for_break_2 = _time_start_for_break_2.trim() == '' ? null : _time_start_for_break_2;
+            }
+
+            if (_time_end_for_break_2 != null) {
+              _time_end_for_break_2 = _time_end_for_break_2.trim() == '' ? null : _time_end_for_break_2;
+            }
+
+            if (_time_start_for_left_1 != null) {
+              _time_start_for_left_1 = _time_start_for_left_1.trim() == '' ? null : _time_start_for_left_1;
+            }
+
+            if (_time_end_for_left_1 != null) {
+              _time_end_for_left_1 = _time_end_for_left_1.trim() == '' ? null : _time_end_for_left_1;
+            }
+
+            if (_time_start_for_left_2 != null) {
+              _time_start_for_left_2 = _time_start_for_left_2.trim() == '' ? null : _time_start_for_left_2;
+            }
+
+            if (_time_end_for_left_2 != null) {
+              _time_end_for_left_2 = _time_end_for_left_2.trim() == '' ? null : _time_end_for_left_2;
+            }
+
+            if (_time_start_for_left_3 != null) {
+              _time_start_for_left_3 = _time_start_for_left_3.trim() == '' ? null : _time_start_for_left_3;
+            }
+
+            if (_time_end_for_left_3 != null) {
+              _time_end_for_left_3 = _time_end_for_left_3.trim() == '' ? null : _time_end_for_left_3;
+            }
+
             var data = {
               id: _nik,
               name: _name,

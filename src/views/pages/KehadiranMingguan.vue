@@ -593,6 +593,18 @@ export default {
             var _time_start_for_left = datarow[8] == '' ? null : datarow[8];
             var _time_end_for_left = datarow[9] == '' ? null : datarow[9];
 
+            if (_time_arrive_home != null) {
+              _time_arrive_home = _time_arrive_home.trim() == '' ? null : _time_arrive_home;
+            }
+
+            if (_time_start_for_left != null) {
+              _time_start_for_left = _time_start_for_left.trim() == '' ? null : _time_start_for_left;
+            }
+
+            if (_time_end_for_left != null) {
+              _time_end_for_left = _time_end_for_left.trim() == '' ? null : _time_end_for_left;
+            }
+
             var data = {
               id: _nik,
               name: _name,
