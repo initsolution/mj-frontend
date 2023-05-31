@@ -233,11 +233,12 @@ export default {
       params.append('join', 'loan');
       params.append('join', 'department');
       params.append('sort', 'loan.created_at,DESC');
-      params.append('filter', 'loan.khusus||$eq||0');
+      // params.append('filter', 'loan.khusus||$eq||0');
+      params.append('filter', 'type||$ne||KHUSUS');
       // this.actionGetAllEmployee(params);
-      if (this.parsedToken.user.role != 'owner') {
-        params.append("filter", "department.name||$ne||Office");
-      }
+      // if (this.parsedToken.user.role != 'owner') {
+        // params.append("filter", "department.name||$ne||Office");
+      // }
       this.actionGetAllEmployeeByFilter(params);
       this.getTotalLoanPerDepartment();
     },
