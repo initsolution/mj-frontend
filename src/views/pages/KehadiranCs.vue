@@ -194,25 +194,29 @@
                 > -->
             </v-col>
           </v-row>
-          <div style="margin-bottom: 30px"></div>
-          <div class="py2" v-if="selected_items.length > 0">
-            <div class="d-flex flex-row align-center justify-space-between">
-              <div>
-                <span>Data yang ditandai</span>
-                <v-chip color="blue" class="ml-3" dark>
-                  <strong>Total: {{ selected_items.length }}</strong>
-                </v-chip>
+          <v-row>
+            <v-col>
+              <div class="py2" v-if="selected_items.length > 0">
+                <div class="d-flex flex-row align-center justify-space-between">
+                  <div>
+                    <span>Data yang ditandai</span>
+                    <v-chip color="blue" class="ml-3" dark>
+                      <strong>Total: {{ selected_items.length }}</strong>
+                    </v-chip>
+                  </div>
+                  <v-btn
+                    dark
+                    color="blue"
+                    class="mr-2 icon-box"
+                    @click="deleteAttendance"
+                  >
+                    <v-icon>mdi-delete</v-icon>Hapus data terpilih
+                  </v-btn>
+                </div>
               </div>
-              <v-btn
-                dark
-                color="blue"
-                class="mr-2 icon-box"
-                @click="deleteAttendance"
-              >
-                <v-icon>mdi-delete</v-icon>Hapus data terpilih
-              </v-btn>
-            </div>
-          </div>
+            </v-col>
+          </v-row>
+          <div style="margin-bottom: 20px"></div>
           <v-divider></v-divider>
           <v-card class="mx-auto" tile>
             <v-card-text>
@@ -562,11 +566,13 @@ export default {
             var _time_end_for_left = datarow[8] == '' ? null : datarow[8];
 
             if (_time_start_for_left != null) {
-              _time_start_for_left = _time_start_for_left.trim() == '' ? null : _time_start_for_left;
+              _time_start_for_left =
+                _time_start_for_left.trim() == '' ? null : _time_start_for_left;
             }
 
             if (_time_end_for_left != null) {
-              _time_end_for_left = _time_end_for_left.trim() == '' ? null : _time_end_for_left;
+              _time_end_for_left =
+                _time_end_for_left.trim() == '' ? null : _time_end_for_left;
             }
 
             var data = {

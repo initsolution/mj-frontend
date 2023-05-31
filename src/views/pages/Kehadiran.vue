@@ -72,24 +72,29 @@
             </v-col>
           </v-row>
           <v-divider></v-divider>
-          <div class="py2" v-if="selected_items.length > 0">
-            <div class="d-flex flex-row align-center justify-space-between">
-              <div>
-                <span>Data yang ditandai</span>
-                <v-chip color="blue" class="ml-3" dark>
-                  <strong>Total: {{ selected_items.length }}</strong>
-                </v-chip>
+          <v-row>
+            <v-col>
+              <div class="py2" v-if="selected_items.length > 0">
+                <div class="d-flex flex-row align-center justify-space-between">
+                  <div>
+                    <span>Data yang ditandai</span>
+                    <v-chip color="blue" class="ml-3" dark>
+                      <strong>Total: {{ selected_items.length }}</strong>
+                    </v-chip>
+                  </div>
+                  <v-btn
+                    dark
+                    color="blue"
+                    class="mr-2 icon-box"
+                    @click="deleteAttendance"
+                  >
+                    <v-icon>mdi-delete</v-icon>Hapus data terpilih
+                  </v-btn>
+                </div>
               </div>
-              <v-btn
-                dark
-                color="blue"
-                class="mr-2 icon-box"
-                @click="deleteAttendance"
-              >
-                <v-icon>mdi-delete</v-icon>Hapus data terpilih
-              </v-btn>
-            </div>
-          </div>
+            </v-col>
+          </v-row>
+          <div style="margin-bottom: 20px"></div>
           <v-divider></v-divider>
           <v-card class="mx-auto" tile>
             <v-card-text>
@@ -111,7 +116,7 @@
                         item.work_hours != null
                           ? item.work_hours.split('-')[0]
                           : null,
-                        'check_in'
+                        'check_in',
                       )
                     "
                     class="text-color"
@@ -127,7 +132,7 @@
                         item.work_hours != null
                           ? item.work_hours.split('-')[1]
                           : null,
-                        'check_out'
+                        'check_out',
                       ) && item.time_arrive_home == null
                     "
                     class="text-color"
@@ -151,7 +156,7 @@
                         item.break_hours != null
                           ? item.break_hours.split('-')[1]
                           : null,
-                        'end_break'
+                        'end_break',
                       )
                     "
                     class="text-color"
@@ -269,48 +274,48 @@
 </template>
   
   <script>
-import XLSX from "xlsx";
-import { mapActions, mapGetters } from "vuex";
-import EditAttendance from "@/components/EditAttendance.vue";
-import { formatPrice, formatDate } from "@/utils/utils";
-import TambahKehadiran from "@/views/components/TambahKehadiran.vue";
-import HapusKehadiran from "@/views/components/HapusKehadiran.vue";
-import CancelOvertime from "@/views/components/CancelOvertime.vue";
+import XLSX from 'xlsx';
+import { mapActions, mapGetters } from 'vuex';
+import EditAttendance from '@/components/EditAttendance.vue';
+import { formatPrice, formatDate } from '@/utils/utils';
+import TambahKehadiran from '@/views/components/TambahKehadiran.vue';
+import HapusKehadiran from '@/views/components/HapusKehadiran.vue';
+import CancelOvertime from '@/views/components/CancelOvertime.vue';
 export default {
-  name: "Kehadiran",
+  name: 'Kehadiran',
 
   data() {
     return {
       datalist: [],
       days_label: [
-        "Minggu",
-        "Senin",
-        "Selasa",
-        "Rabu",
-        "Kamis",
-        "Jumat",
-        "Sabtu",
+        'Minggu',
+        'Senin',
+        'Selasa',
+        'Rabu',
+        'Kamis',
+        'Jumat',
+        'Sabtu',
       ],
       selectXlsx: null,
       headers: [
         {
-          text: "Employee_ID",
-          align: "right",
+          text: 'Employee_ID',
+          align: 'right',
           sortable: false,
-          value: "employee.id",
+          value: 'employee.id',
         },
-        { text: "Nama", value: "employee.name", width: 200 },
-        { text: "Date", value: "attendance_date", width: 130 },
-        { text: "CheckIn", value: "time_check_in" },
-        { text: "CheckOut", value: "time_check_out" },
-        { text: "Start_break", value: "time_start_for_break" },
-        { text: "End_break", value: "time_end_for_break" },
-        { text: "Arrive_Home", value: "time_arrive_home" },
-        { text: "Start_Left", value: "time_start_for_left" },
-        { text: "End_Left", value: "time_end_for_left" },
-        { text: "OT", value: "overtime" },
-        { text: "Early_OT", value: "early_overtime" },
-        { text: "Total Leave", value: "total_leave" },
+        { text: 'Nama', value: 'employee.name', width: 200 },
+        { text: 'Date', value: 'attendance_date', width: 130 },
+        { text: 'CheckIn', value: 'time_check_in' },
+        { text: 'CheckOut', value: 'time_check_out' },
+        { text: 'Start_break', value: 'time_start_for_break' },
+        { text: 'End_break', value: 'time_end_for_break' },
+        { text: 'Arrive_Home', value: 'time_arrive_home' },
+        { text: 'Start_Left', value: 'time_start_for_left' },
+        { text: 'End_Left', value: 'time_end_for_left' },
+        { text: 'OT', value: 'overtime' },
+        { text: 'Early_OT', value: 'early_overtime' },
+        { text: 'Total Leave', value: 'total_leave' },
       ],
       dialogEditAttendancelocal: false,
       dialogCancelOvertime: false,
@@ -321,7 +326,7 @@ export default {
       type_overtime: null,
       multiLine: false,
       snackbar: false,
-      notif_text: "",
+      notif_text: '',
       selected_items: [],
     };
   },
@@ -335,11 +340,11 @@ export default {
 
   created() {
     var today = new Date();
-    var dd = String(today.getDate()).padStart(2, "0");
-    var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = today.getFullYear();
 
-    today = yyyy + "/" + mm + "/" + dd;
+    today = yyyy + '/' + mm + '/' + dd;
     // today = "18/11/2022"
     // console.log(today);
     this.actionGetAllAttendence(today);
@@ -347,10 +352,10 @@ export default {
 
   methods: {
     ...mapActions([
-      "saveAttendance",
-      "saveBulkAttendance",
-      "checkAttendance",
-      "actionGetAllAttendence",
+      'saveAttendance',
+      'saveBulkAttendance',
+      'checkAttendance',
+      'actionGetAllAttendence',
     ]),
 
     addAttendance() {
@@ -392,10 +397,10 @@ export default {
     },
 
     importAttendance(event) {
-      console.log("Upload");
+      console.log('Upload');
       if (!this.selectXlsx) {
-        console.log("Please upload a xlsx file");
-        this.notif_text = "Pilih file excel dahulu";
+        console.log('Please upload a xlsx file');
+        this.notif_text = 'Pilih file excel dahulu';
         this.snackbar = true;
         return;
       }
@@ -406,7 +411,7 @@ export default {
         reader.onload = (e) => {
           /* Parse data */
           const bstr = e.target.result;
-          const wb = XLSX.read(bstr, { type: "binary" });
+          const wb = XLSX.read(bstr, { type: 'binary' });
           /* Get first worksheet */
           const wsname = wb.SheetNames[0];
           const sheet = wb.Sheets[wsname];
@@ -425,27 +430,27 @@ export default {
 
             for (var col = 65; col <= 75; col++) {
               var c = String.fromCharCode(col); // get 'A', 'B', 'C' ...
-              var key = "" + c + row;
+              var key = '' + c + row;
               if (sheet[key] == null) {
                 //   console.log(key)
                 datarow.push(null); //jika row .. column .. = null
                 continue;
               }
-              datarow.push(sheet[key]["w"]);
+              datarow.push(sheet[key]['w']);
             }
 
             // var calculate_work_duration = this.diff(datarow[3],datarow[4],datarow[5],datarow[6],datarow[8],datarow[9]);
             // console.log(calculate_work_duration);
-            var _nik = datarow[0] == "" ? null : datarow[0];
-            var _name = datarow[1] == "" ? null : datarow[1];
-            var _attendance_date = datarow[2] == "" ? null : datarow[2];
-            var _time_check_in = datarow[3] == "" ? null : datarow[3];
-            var _time_start_for_break = datarow[4] == "" ? null : datarow[4];
-            var _time_end_for_break = datarow[5] == "" ? null : datarow[5];
-            var _time_check_out = datarow[6] == "" ? null : datarow[6];
-            var _time_arrive_home = datarow[7] == "" ? null : datarow[7];
-            var _time_start_for_left = datarow[8] == "" ? null : datarow[8];
-            var _time_end_for_left = datarow[9] == "" ? null : datarow[9];
+            var _nik = datarow[0] == '' ? null : datarow[0];
+            var _name = datarow[1] == '' ? null : datarow[1];
+            var _attendance_date = datarow[2] == '' ? null : datarow[2];
+            var _time_check_in = datarow[3] == '' ? null : datarow[3];
+            var _time_start_for_break = datarow[4] == '' ? null : datarow[4];
+            var _time_end_for_break = datarow[5] == '' ? null : datarow[5];
+            var _time_check_out = datarow[6] == '' ? null : datarow[6];
+            var _time_arrive_home = datarow[7] == '' ? null : datarow[7];
+            var _time_start_for_left = datarow[8] == '' ? null : datarow[8];
+            var _time_end_for_left = datarow[9] == '' ? null : datarow[9];
 
             var data = {
               id: _nik,
@@ -464,11 +469,11 @@ export default {
             };
 
             var result = this.checkFormatExcel(data, row);
-            if (result == "end_of_excel") {
-              console.log("End Of Excel " + row);
+            if (result == 'end_of_excel') {
+              console.log('End Of Excel ' + row);
               break;
             }
-            if (result != "sukses") {
+            if (result != 'sukses') {
               this.notif_text = result;
               this.snackbar = true;
               this.datalist = [];
@@ -480,7 +485,7 @@ export default {
         reader.readAsBinaryString(this.selectXlsx);
 
         reader.onloadend = (e) => {
-          console.log("datalist len = " + this.datalist.length);
+          console.log('datalist len = ' + this.datalist.length);
           if (this.datalist.length > 0) {
             this.uploadAttendance();
             this.datalist = [];
@@ -506,43 +511,43 @@ export default {
         data.time_start_for_left == null &&
         data.time_end_for_left == null
       ) {
-        return "end_of_excel";
+        return 'end_of_excel';
       }
       if (data.id == null) {
-        return "Gagal Import, Kolom A pada baris ke " + index + " kosong";
+        return 'Gagal Import, Kolom A pada baris ke ' + index + ' kosong';
       }
 
       if (data.name == null) {
-        return "Gagal Import, Kolom B pada baris ke " + index + " kosong";
+        return 'Gagal Import, Kolom B pada baris ke ' + index + ' kosong';
       }
 
       if (data.attendance_date == null) {
-        return "Gagal Import, Kolom C pada baris ke " + index + " kosong";
+        return 'Gagal Import, Kolom C pada baris ke ' + index + ' kosong';
       } else {
         // console.log(data.attendance_date);
-        var date = data.attendance_date.split("/");
+        var date = data.attendance_date.split('/');
         var year = date[2];
         var month = Number.parseInt(date[1]);
         var days = Number.parseInt(date[0]);
         if (year.length == 4) {
           //sementara di check year
-          date = month + "-" + days + "-" + year;
+          date = month + '-' + days + '-' + year;
           console.log(date);
           var result = this.formatDateUtils(date);
-          if (result == "Invalid date") {
+          if (result == 'Invalid date') {
             return (
-              "Gagal Import, Format C pada baris ke " + index + " tidak sesuai"
+              'Gagal Import, Format C pada baris ke ' + index + ' tidak sesuai'
             );
           } else {
             getDate = new Date(date);
             _week_of_day = getDate.getDay() + 1;
             data.week_of_day = _week_of_day;
-            var _date = year + "-" + month + "-" + days;
+            var _date = year + '-' + month + '-' + days;
             data.attendance_date = _date;
           }
         } else {
           return (
-            "Gagal Import, Format C pada baris ke " + index + " tidak sesuai"
+            'Gagal Import, Format C pada baris ke ' + index + ' tidak sesuai'
           );
         }
       }
@@ -550,30 +555,30 @@ export default {
       if (data.time_check_in != null) {
         if (_week_of_day != 7) {
           if (data.time_start_for_break == null) {
-            return "Gagal Import, Kolom E pada baris ke " + index + " kosong";
+            return 'Gagal Import, Kolom E pada baris ke ' + index + ' kosong';
           }
 
           if (data.time_end_for_break == null) {
-            return "Gagal Import, Kolom F pada baris ke " + index + " kosong";
+            return 'Gagal Import, Kolom F pada baris ke ' + index + ' kosong';
           }
         }
 
         if (data.time_check_out == null) {
-          return "Gagal Import, Kolom G pada baris ke " + index + " kosong";
+          return 'Gagal Import, Kolom G pada baris ke ' + index + ' kosong';
         }
 
         if (
           data.time_start_for_left != null &&
           data.time_end_for_left == null
         ) {
-          return "Gagal Import, Kolom J pada baris ke " + index + " kosong";
+          return 'Gagal Import, Kolom J pada baris ke ' + index + ' kosong';
         }
 
         if (
           data.time_start_for_left == null &&
           data.time_end_for_left != null
         ) {
-          return "Gagal Import, Kolom I pada baris ke " + index + " kosong";
+          return 'Gagal Import, Kolom I pada baris ke ' + index + ' kosong';
         }
       }
 
@@ -583,17 +588,17 @@ export default {
           data.time_end_for_break != null ||
           data.time_check_out
         ) {
-          return "Gagal Import, Kolom D pada baris ke " + index + " kosong";
+          return 'Gagal Import, Kolom D pada baris ke ' + index + ' kosong';
         }
       }
 
       // console.log(data);
       this.datalist.push(data);
-      return "sukses";
+      return 'sukses';
     },
 
     formatDateUtils(val) {
-      return formatDate(val, "short-date");
+      return formatDate(val, 'short-date');
     },
 
     convertDate(date) {
@@ -612,7 +617,7 @@ export default {
         return data;
       }
 
-      var tempData = data.split(",");
+      var tempData = data.split(',');
       var sum = 0;
       for (var i = 0; i < tempData.length; i++) {
         sum = parseInt(sum + tempData[i]);
@@ -627,17 +632,17 @@ export default {
       }
       // console.log("time1: "+time1);
       // console.log("time2: "+time2);
-      time1 = time1.split(":");
-      time2 = time2.split(":");
+      time1 = time1.split(':');
+      time2 = time2.split(':');
 
       var calculateTime1 = parseInt(time1[0] * 60) + parseInt(time1[1]);
       var calculateTime2 = parseInt(time2[0] * 60) + parseInt(time2[1]);
       // console.log(calculateTime2 +" == "+calculateTime1)
-      if (type == "check_in" || type == "end_break") {
+      if (type == 'check_in' || type == 'end_break') {
         if (calculateTime2 >= calculateTime1) {
           return false;
         }
-      } else if (type == "check_out" || type == "start_break") {
+      } else if (type == 'check_out' || type == 'start_break') {
         if (calculateTime2 <= calculateTime1) {
           return false;
         }
@@ -656,23 +661,23 @@ export default {
       time_start_for_break,
       time_end_for_break,
       time_start_for_left,
-      time_end_for_left
+      time_end_for_left,
     ) {
-      time_check_in = time_check_in == null ? "0:0" : time_check_in;
-      time_check_out = time_check_out == null ? "0:0" : time_check_out;
+      time_check_in = time_check_in == null ? '0:0' : time_check_in;
+      time_check_out = time_check_out == null ? '0:0' : time_check_out;
       time_start_for_break =
-        time_start_for_break == null ? "0:0" : time_start_for_break;
+        time_start_for_break == null ? '0:0' : time_start_for_break;
       time_end_for_break =
-        time_end_for_break == null ? "0:0" : time_end_for_break;
+        time_end_for_break == null ? '0:0' : time_end_for_break;
       time_start_for_left =
-        time_start_for_left == null ? "0:0" : time_start_for_left;
-      time_end_for_left = time_end_for_left == null ? "0:0" : time_end_for_left;
-      time_check_in = time_check_in.split(":");
-      time_check_out = time_check_out.split(":");
-      time_start_for_break = time_start_for_break.split(":");
-      time_end_for_break = time_end_for_break.split(":");
-      time_start_for_left = time_start_for_left.split(":");
-      time_end_for_left = time_end_for_left.split(":");
+        time_start_for_left == null ? '0:0' : time_start_for_left;
+      time_end_for_left = time_end_for_left == null ? '0:0' : time_end_for_left;
+      time_check_in = time_check_in.split(':');
+      time_check_out = time_check_out.split(':');
+      time_start_for_break = time_start_for_break.split(':');
+      time_end_for_break = time_end_for_break.split(':');
+      time_start_for_left = time_start_for_left.split(':');
+      time_end_for_left = time_end_for_left.split(':');
 
       var date_check_in = new Date(
         0,
@@ -680,7 +685,7 @@ export default {
         0,
         time_check_in[0],
         time_check_in[1],
-        0
+        0,
       );
       var date_check_out = new Date(
         0,
@@ -688,7 +693,7 @@ export default {
         0,
         time_check_out[0],
         time_check_out[1],
-        0
+        0,
       );
       var date_start_for_break = new Date(
         0,
@@ -696,7 +701,7 @@ export default {
         0,
         time_start_for_break[0],
         time_start_for_break[1],
-        0
+        0,
       );
       var date_end_for_break = new Date(
         0,
@@ -704,7 +709,7 @@ export default {
         0,
         time_end_for_break[0],
         time_end_for_break[1],
-        0
+        0,
       );
       var date_start_for_left = new Date(
         0,
@@ -712,7 +717,7 @@ export default {
         0,
         time_start_for_left[0],
         time_start_for_left[1],
-        0
+        0,
       );
       var date_end_for_left = new Date(
         0,
@@ -720,7 +725,7 @@ export default {
         0,
         time_end_for_left[0],
         time_end_for_left[1],
-        0
+        0,
       );
 
       //calculate work duration
@@ -750,12 +755,12 @@ export default {
     },
 
     getColor(total_leave) {
-      if (total_leave > 0) return "#ff0000";
-      else return "#00ff00";
+      if (total_leave > 0) return '#ff0000';
+      else return '#00ff00';
     },
 
     getTimeColor(time) {
-      return "#00ff00";
+      return '#00ff00';
     },
 
     confirmOvertime(item, type) {
@@ -796,7 +801,7 @@ export default {
         }
         console.log(item);
       });
-      console.log("isSelected " + isSelected);
+      console.log('isSelected ' + isSelected);
       // value.total_leave = 100;
       this.dialogEditAttendancelocal = true;
       this.dataAttendance = value.total_leave;
@@ -804,7 +809,7 @@ export default {
 
     getResAddAttendance() {
       const status = this.getBulkAttendance;
-      console.log("getResAddAttendance : " + status.data);
+      console.log('getResAddAttendance : ' + status.data);
       // if (status.actions == 201) {
       //   if (status.status == "Created") {
       //     title = "Sukses Update data";
@@ -831,9 +836,9 @@ export default {
 
   computed: {
     ...mapGetters([
-      "getStatusAttendance",
-      "getBulkAttendance",
-      "getDataAllAttendance",
+      'getStatusAttendance',
+      'getBulkAttendance',
+      'getDataAllAttendance',
     ]),
     // getCheckAttendance() {
     //   return this.getStatusAttendance.data;

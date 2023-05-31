@@ -2,10 +2,13 @@
   <v-layout row justify-center>
     <v-dialog v-model="dialogHapusKaryawan" persistent max-width="600px">
       <v-card>
-        <v-card-title>
+        <v-card-title
+          class="subheading px-8 d-flex flex-row grey lighten-5 align-center justify-space-between"
+        >
           <span class="headline">Hapus Karyawan</span>
+          <v-icon @click="close">mdi-close</v-icon>
         </v-card-title>
-
+        <v-divider></v-divider>
         <v-card-text>
           <v-container>
             <v-row>
@@ -18,13 +21,17 @@
             </v-row>
           </v-container>
         </v-card-text>
-        <v-card-actions>
-          <v-btn color="red darken-1" class="white--text" @click.native="close"
-            >Batal</v-btn
+        <v-divider></v-divider>
+        <v-card-actions class="grey lighten-4 px-8 py-4 d-flex flex-row">
+          <v-btn
+            min-width="100"
+            class="elevation-0"
+            color="primary"
+            dark
+            @click="deleteEmployee"
           >
-          <v-btn color="blue darken-1" class="white--text" @click="deleteEmployee"
-            >Hapus</v-btn
-          >
+            Hapus
+          </v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
