@@ -197,7 +197,7 @@
                 >Cek kembali kata kunci anda</span
               > -->
             </v-col>
-          </v-row>          
+          </v-row>
           <v-row>
             <v-col>
               <div class="py2" v-if="selected_items.length > 0">
@@ -228,6 +228,9 @@
                 v-model="selected_items"
                 :headers="this.headers"
                 :items="getDataAllAttendance"
+                :footer-props="{
+                  'items-per-page-options': [25,50,75,100],
+                }"
                 class="elevation-1"
                 show-select
               >
@@ -242,7 +245,7 @@
                         item.work_hours != null
                           ? item.work_hours.split('-')[0]
                           : null,
-                        'check_in',
+                        'check_in'
                       )
                     "
                     class="text-color"
@@ -258,7 +261,7 @@
                         item.work_hours != null
                           ? item.work_hours.split('-')[1]
                           : null,
-                        'check_out',
+                        'check_out'
                       ) && item.time_arrive_home == null
                     "
                     class="text-color"
@@ -282,7 +285,7 @@
                         item.break_hours != null
                           ? item.break_hours.split('-')[1]
                           : null,
-                        'end_break',
+                        'end_break'
                       )
                     "
                     class="text-color"
@@ -405,48 +408,48 @@
 </template>
     
     <script>
-import XLSX from 'xlsx';
-import { mapActions, mapGetters } from 'vuex';
-import EditAttendance from '@/components/EditAttendance.vue';
-import { formatPrice, formatDate, manipulateDate } from '@/utils/utils';
-import TambahKehadiran from '@/views/components/TambahKehadiran.vue';
-import HapusKehadiran from '@/views/components/HapusKehadiran.vue';
-import CancelOvertime from '@/views/components/CancelOvertime.vue';
+import XLSX from "xlsx";
+import { mapActions, mapGetters } from "vuex";
+import EditAttendance from "@/components/EditAttendance.vue";
+import { formatPrice, formatDate, manipulateDate } from "@/utils/utils";
+import TambahKehadiran from "@/views/components/TambahKehadiran.vue";
+import HapusKehadiran from "@/views/components/HapusKehadiran.vue";
+import CancelOvertime from "@/views/components/CancelOvertime.vue";
 export default {
-  name: 'KehadiranMingguan',
+  name: "KehadiranMingguan",
 
   data() {
     return {
       filter: false,
       datalist: [],
       days_label: [
-        'Minggu',
-        'Senin',
-        'Selasa',
-        'Rabu',
-        'Kamis',
-        'Jumat',
-        'Sabtu',
+        "Minggu",
+        "Senin",
+        "Selasa",
+        "Rabu",
+        "Kamis",
+        "Jumat",
+        "Sabtu",
       ],
       selectXlsx: null,
       headers: [
         {
-          text: 'Nik',
+          text: "Nik",
           sortable: false,
-          value: 'employee.id',
+          value: "employee.id",
         },
-        { text: 'Nama', value: 'employee.name', width: 200 },
-        { text: 'Tanggal Kehadiran', value: 'attendance_date', width: 130 },
-        { text: 'Masuk', value: 'time_check_in' },
-        { text: 'Mulai Istirahat', value: 'time_start_for_break' },
-        { text: 'Selesai Istirahat', value: 'time_end_for_break' },
-        { text: 'Pulang', value: 'time_check_out' },
-        { text: 'Tiba dirumah', value: 'time_arrive_home' },
-        { text: 'Mulai Ijin', value: 'time_start_for_left' },
-        { text: 'Selesai Ijin', value: 'time_end_for_left' },
-        { text: 'Lembur', value: 'overtime' },
-        { text: 'Lembur Awal', value: 'early_overtime' },
-        { text: 'Total Ijin', value: 'total_leave' },
+        { text: "Nama", value: "employee.name", width: 200 },
+        { text: "Tanggal Kehadiran", value: "attendance_date", width: 130 },
+        { text: "Masuk", value: "time_check_in" },
+        { text: "Mulai Istirahat", value: "time_start_for_break" },
+        { text: "Selesai Istirahat", value: "time_end_for_break" },
+        { text: "Pulang", value: "time_check_out" },
+        { text: "Tiba dirumah", value: "time_arrive_home" },
+        { text: "Mulai Ijin", value: "time_start_for_left" },
+        { text: "Selesai Ijin", value: "time_end_for_left" },
+        { text: "Lembur", value: "overtime" },
+        { text: "Lembur Awal", value: "early_overtime" },
+        { text: "Total Ijin", value: "total_leave" },
       ],
       departementId: 1,
       dialogEditAttendancelocal: false,
@@ -458,7 +461,7 @@ export default {
       type_overtime: null,
       multiLine: false,
       snackbar: false,
-      notif_text: '',
+      notif_text: "",
       selected_items: [],
       menuStartDate: false,
       menuEndDate: false,
@@ -491,12 +494,12 @@ export default {
 
   methods: {
     ...mapActions([
-      'saveAttendance',
-      'saveBulkAttendance',
-      'checkAttendance',
-      'actionGetAllAttendence',
-      'actionGetAllAttendenceByFilter',
-      'getAttendanceCustom',
+      "saveAttendance",
+      "saveBulkAttendance",
+      "checkAttendance",
+      "actionGetAllAttendence",
+      "actionGetAllAttendenceByFilter",
+      "getAttendanceCustom",
     ]),
     showFilter() {
       this.filter = !this.filter;
@@ -547,7 +550,7 @@ export default {
       // console.log("Upload");
       if (!this.selectXlsx) {
         // console.log("Please upload a xlsx file");
-        this.notif_text = 'Pilih file excel dahulu';
+        this.notif_text = "Pilih file excel dahulu";
         this.snackbar = true;
         return;
       }
@@ -558,7 +561,7 @@ export default {
         reader.onload = (e) => {
           /* Parse data */
           const bstr = e.target.result;
-          const wb = XLSX.read(bstr, { type: 'binary' });
+          const wb = XLSX.read(bstr, { type: "binary" });
           /* Get first worksheet */
           const wsname = wb.SheetNames[0];
           const sheet = wb.Sheets[wsname];
@@ -577,39 +580,39 @@ export default {
 
             for (var col = 65; col <= 75; col++) {
               var c = String.fromCharCode(col); // get 'A', 'B', 'C' ...
-              var key = '' + c + row;
+              var key = "" + c + row;
               if (sheet[key] == null) {
                 //   console.log(key)
                 datarow.push(null); //jika row .. column .. = null
                 continue;
               }
-              datarow.push(sheet[key]['w']);
+              datarow.push(sheet[key]["w"]);
             }
 
-            var _nik = datarow[0] == '' ? null : datarow[0];
-            var _name = datarow[1] == '' ? null : datarow[1];
-            var _attendance_date = datarow[2] == '' ? null : datarow[2];
-            var _time_check_in = datarow[3] == '' ? null : datarow[3];
-            var _time_start_for_break = datarow[4] == '' ? null : datarow[4];
-            var _time_end_for_break = datarow[5] == '' ? null : datarow[5];
-            var _time_check_out = datarow[6] == '' ? null : datarow[6];
-            var _time_arrive_home = datarow[7] == '' ? null : datarow[7];
-            var _time_start_for_left = datarow[8] == '' ? null : datarow[8];
-            var _time_end_for_left = datarow[9] == '' ? null : datarow[9];
+            var _nik = datarow[0] == "" ? null : datarow[0];
+            var _name = datarow[1] == "" ? null : datarow[1];
+            var _attendance_date = datarow[2] == "" ? null : datarow[2];
+            var _time_check_in = datarow[3] == "" ? null : datarow[3];
+            var _time_start_for_break = datarow[4] == "" ? null : datarow[4];
+            var _time_end_for_break = datarow[5] == "" ? null : datarow[5];
+            var _time_check_out = datarow[6] == "" ? null : datarow[6];
+            var _time_arrive_home = datarow[7] == "" ? null : datarow[7];
+            var _time_start_for_left = datarow[8] == "" ? null : datarow[8];
+            var _time_end_for_left = datarow[9] == "" ? null : datarow[9];
 
             if (_time_arrive_home != null) {
               _time_arrive_home =
-                _time_arrive_home.trim() == '' ? null : _time_arrive_home;
+                _time_arrive_home.trim() == "" ? null : _time_arrive_home;
             }
 
             if (_time_start_for_left != null) {
               _time_start_for_left =
-                _time_start_for_left.trim() == '' ? null : _time_start_for_left;
+                _time_start_for_left.trim() == "" ? null : _time_start_for_left;
             }
 
             if (_time_end_for_left != null) {
               _time_end_for_left =
-                _time_end_for_left.trim() == '' ? null : _time_end_for_left;
+                _time_end_for_left.trim() == "" ? null : _time_end_for_left;
             }
 
             var data = {
@@ -629,11 +632,11 @@ export default {
             };
 
             var result = this.checkFormatExcel(data, row);
-            if (result == 'end_of_excel') {
+            if (result == "end_of_excel") {
               // console.log("End Of Excel " + row);
               break;
             }
-            if (result != 'sukses') {
+            if (result != "sukses") {
               this.notif_text = result;
               this.snackbar = true;
               this.datalist = [];
@@ -671,43 +674,43 @@ export default {
         data.time_start_for_left == null &&
         data.time_end_for_left == null
       ) {
-        return 'end_of_excel';
+        return "end_of_excel";
       }
       if (data.id == null) {
-        return 'Gagal Import, Kolom A pada baris ke ' + index + ' kosong';
+        return "Gagal Import, Kolom A pada baris ke " + index + " kosong";
       }
 
       if (data.name == null) {
-        return 'Gagal Import, Kolom B pada baris ke ' + index + ' kosong';
+        return "Gagal Import, Kolom B pada baris ke " + index + " kosong";
       }
 
       if (data.attendance_date == null) {
-        return 'Gagal Import, Kolom C pada baris ke ' + index + ' kosong';
+        return "Gagal Import, Kolom C pada baris ke " + index + " kosong";
       } else {
         // console.log(data.attendance_date);
-        var date = data.attendance_date.split('/');
+        var date = data.attendance_date.split("/");
         var year = date[2];
         var month = Number.parseInt(date[1]);
         var days = Number.parseInt(date[0]);
         if (year.length == 4) {
           //sementara di check year
-          date = month + '-' + days + '-' + year;
+          date = month + "-" + days + "-" + year;
           // console.log(date);
           var result = this.formatDateUtils(date);
-          if (result == 'Invalid date') {
+          if (result == "Invalid date") {
             return (
-              'Gagal Import, Format C pada baris ke ' + index + ' tidak sesuai'
+              "Gagal Import, Format C pada baris ke " + index + " tidak sesuai"
             );
           } else {
             getDate = new Date(date);
             _week_of_day = getDate.getDay() + 1;
             data.week_of_day = _week_of_day;
-            var _date = year + '-' + month + '-' + days;
+            var _date = year + "-" + month + "-" + days;
             data.attendance_date = _date;
           }
         } else {
           return (
-            'Gagal Import, Format C pada baris ke ' + index + ' tidak sesuai'
+            "Gagal Import, Format C pada baris ke " + index + " tidak sesuai"
           );
         }
       }
@@ -715,30 +718,30 @@ export default {
       if (data.time_check_in != null) {
         if (_week_of_day != 7) {
           if (data.time_start_for_break == null) {
-            return 'Gagal Import, Kolom E pada baris ke ' + index + ' kosong';
+            return "Gagal Import, Kolom E pada baris ke " + index + " kosong";
           }
 
           if (data.time_end_for_break == null) {
-            return 'Gagal Import, Kolom F pada baris ke ' + index + ' kosong';
+            return "Gagal Import, Kolom F pada baris ke " + index + " kosong";
           }
         }
 
         if (data.time_check_out == null) {
-          return 'Gagal Import, Kolom G pada baris ke ' + index + ' kosong';
+          return "Gagal Import, Kolom G pada baris ke " + index + " kosong";
         }
 
         if (
           data.time_start_for_left != null &&
           data.time_end_for_left == null
         ) {
-          return 'Gagal Import, Kolom J pada baris ke ' + index + ' kosong';
+          return "Gagal Import, Kolom J pada baris ke " + index + " kosong";
         }
 
         if (
           data.time_start_for_left == null &&
           data.time_end_for_left != null
         ) {
-          return 'Gagal Import, Kolom I pada baris ke ' + index + ' kosong';
+          return "Gagal Import, Kolom I pada baris ke " + index + " kosong";
         }
       }
 
@@ -748,21 +751,21 @@ export default {
           data.time_end_for_break != null ||
           data.time_check_out
         ) {
-          return 'Gagal Import, Kolom D pada baris ke ' + index + ' kosong';
+          return "Gagal Import, Kolom D pada baris ke " + index + " kosong";
         }
       }
 
       // console.log(data);
       this.datalist.push(data);
-      return 'sukses';
+      return "sukses";
     },
 
     formatDateUtils(val) {
-      return formatDate(val, 'short-date');
+      return formatDate(val, "short-date");
     },
 
     convertDate(date) {
-      return formatDate(date.substring(0, 10), 'short-date');
+      return formatDate(date.substring(0, 10), "short-date");
     },
 
     convertTime(time) {
@@ -777,7 +780,7 @@ export default {
         return data;
       }
 
-      var tempData = data.split(',');
+      var tempData = data.split(",");
       var sum = 0;
       for (var i = 0; i < tempData.length; i++) {
         sum += parseInt(tempData[i]);
@@ -792,17 +795,17 @@ export default {
       }
       // console.log("time1: "+time1);
       // console.log("time2: "+time2);
-      time1 = time1.split(':');
-      time2 = time2.split(':');
+      time1 = time1.split(":");
+      time2 = time2.split(":");
 
       var calculateTime1 = parseInt(time1[0] * 60) + parseInt(time1[1]);
       var calculateTime2 = parseInt(time2[0] * 60) + parseInt(time2[1]);
       // console.log(calculateTime2 +" == "+calculateTime1)
-      if (type == 'check_in' || type == 'end_break') {
+      if (type == "check_in" || type == "end_break") {
         if (calculateTime2 >= calculateTime1) {
           return false;
         }
-      } else if (type == 'check_out' || type == 'start_break') {
+      } else if (type == "check_out" || type == "start_break") {
         if (calculateTime2 <= calculateTime1) {
           return false;
         }
@@ -816,8 +819,8 @@ export default {
     },
 
     getColor(total_leave) {
-      if (total_leave > 0) return '#FFa500';
-      else return '#77DD77';
+      if (total_leave > 0) return "#FFa500";
+      else return "#77DD77";
     },
 
     convertToHour(total_leave) {
@@ -825,7 +828,7 @@ export default {
     },
 
     getTimeColor(time) {
-      return '#00ff00';
+      return "#00ff00";
     },
 
     confirmOvertime(item, type) {
@@ -903,7 +906,7 @@ export default {
       const status = this.getStatusAttendance;
       // console.log("f");
       if (status.actions == 200) {
-        if (status.status == 'OK') {
+        if (status.status == "OK") {
           this.getDataAllAttendanceByFilter();
         }
       } else if (status.actions == 500) {
@@ -924,19 +927,19 @@ export default {
 
       if (this.keyword != null) {
         if (this.keyword.length > 0) {
-          param.append('filter', 'employee.name||$cont||' + this.keyword);
+          param.append("filter", "employee.name||$cont||" + this.keyword);
         }
       }
       if (this.startDate != null && this.endDate != null) {
-        var newdate = this.manipulasiDate(this.startDate, 'minus', 1);
+        var newdate = this.manipulasiDate(this.startDate, "minus", 1);
         param.append(
-          'filter',
-          'attendance_date||$between||' + newdate + ',' + this.endDate,
+          "filter",
+          "attendance_date||$between||" + newdate + "," + this.endDate
         );
       }
       if (this.keyword != null) {
         if (this.keyword.length > 0) {
-          param.append('join', 'employee');
+          param.append("join", "employee");
         }
       }
       this.actionGetAllAttendenceByFilter(param);
@@ -958,10 +961,10 @@ export default {
 
   computed: {
     ...mapGetters([
-      'getStatusAttendance',
-      'getBulkAttendance',
-      'getDataAllAttendance',
-      'getLoadingAttendance',
+      "getStatusAttendance",
+      "getBulkAttendance",
+      "getDataAllAttendance",
+      "getLoadingAttendance",
     ]),
     // getCheckAttendance() {
     //   return this.getStatusAttendance.data;
