@@ -238,6 +238,9 @@
                 v-model="selected_items"
                 :headers="this.headers"
                 :items="getDataAllAttendanceBulanan"
+                :footer-props="{
+                  'items-per-page-options': [25,50,75,100],
+                }"
                 class="elevation-1"
                 show-select
               >

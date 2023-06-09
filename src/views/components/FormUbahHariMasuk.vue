@@ -57,7 +57,7 @@ export default {
   methods: {
     ...mapActions(['ubahHariMasukOwner']),
     ubahHariMasuk() {
-      const totalHariMasuk = this.nHari + this.nJam / 8;
+      const totalHariMasuk = parseFloat(this.nHari) + parseFloat(this.nJam / 8);
       const data = {
         idPayslip: this.dataPayslip.id,
         total_hari_masuk: totalHariMasuk,

@@ -471,7 +471,7 @@
           };
         },
         methods: {
-          ...mapActions(['updatePayslipBulananWithBon', 'updatePayslipWithPotonganLain', 'updatePayslipBulananTambahanPendapatanLain']),
+          ...mapActions(['updatePayslipOwnerWithBon', 'updatePayslipWithPotonganLain', 'updatePayslipBulananTambahanPendapatanLain']),
           formatPrice(value) {
             return formatPrice(value);
           },
@@ -583,7 +583,7 @@
               note: this.loan.description,
               type: "bayar",
             };
-            this.updatePayslipBulananWithBon(data)
+            this.updatePayslipOwnerWithBon(data)
             // console.log(data)
             this.dismisDialog()
             // this.inputLoan(data);
