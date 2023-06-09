@@ -636,8 +636,9 @@
                 [
                   "Total Hari Kerja",
                   this.selected[i].total_hari_kerja + " Hari",
-                  "Total Hari Tidak Masuk",
-                  Math.floor(this.selected[i].total_hari_off)+" Hari "+((this.selected[i].total_hari_off % 1) * 8)  +" Jam",
+                  "",
+                  // Math.floor(this.selected[i].total_hari_off)+" Hari "+((this.selected[i].total_hari_off % 1) * 8)  +" Jam",
+                  "",
                 ],
                 [
                   "Total Hari Masuk",
