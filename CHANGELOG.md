@@ -280,3 +280,7 @@
 # 0.0.1 (Update 08/06/2023)
 - Modul Kehadiran Mingguan, Bulanan dan Office
     - custom pagination data table        
+    
+# 0.0.1 (Update 09/06/2023)
+- Modul User
+    - user management

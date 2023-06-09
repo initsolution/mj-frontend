@@ -16,7 +16,7 @@
         </v-list-item-avatar>
 
         <v-list-item-content>
-          <v-list-item-title>Halo, {{ email }}</v-list-item-title>
+          <v-list-item-title>Halo, {{ nama }}</v-list-item-title>
         </v-list-item-content>
       </v-list-item>
 
@@ -117,6 +117,7 @@ export default {
     const token = localStorage.getItem('token');
     const parsedToken = this.parsingJwt(token);
     this.email = parsedToken.user.email;
+    this.nama = parsedToken.user.nama
     if (parsedToken.user.role == 'owner') {
       this.items = [
         {
@@ -197,6 +198,11 @@ export default {
           title: 'Pengeluaran',
           icon: 'mdi-file-document-arrow-right-outline',
           to: '/pengeluaran',
+        },
+        {
+          title: 'User',
+          icon: 'mdi-account',
+          to: '/user',
         },
       ];
     } else if (parsedToken.user.role == 'admin') {
@@ -320,6 +326,7 @@ export default {
   data: () => ({
     items: [],
     email: '',
+    nama : '',
   }),
 };
 </script>

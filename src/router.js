@@ -172,6 +172,14 @@ const router = new Router({
           },
           component: () => import('./views/pages/PinjamanOwner.vue'),
         },
+        {
+          path: 'user',
+          name: 'user',
+          meta: {
+            auth: true,
+          },
+          component: () => import('./views/pages/User.vue'),
+        },
       ],
     },
   ],
