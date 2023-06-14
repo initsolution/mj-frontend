@@ -70,13 +70,15 @@
                   ></v-text-field>
                 </div>
               </v-col>
-              <v-col class="py-0" cols="5">
-                <v-select
-                  :items="userRole"
-                  v-model.trim="role"
-                  label="Role"
-                ></v-select>
-              </v-col>
+              <div v-if="isOwner">
+                <v-col class="py-0" cols="5">
+                  <v-select
+                    :items="userRole"
+                    v-model.trim="role"
+                    label="Role"
+                  ></v-select>
+                </v-col>
+              </div>
             </v-row>
           </v-form>
         </v-card-text>
@@ -114,7 +116,7 @@ import {
   maxLength,
   email,
 } from "vuelidate/lib/validators";
-import { mapActions } from 'vuex';
+import { mapActions } from "vuex";
 
 export default {
   data() {
@@ -140,20 +142,20 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['actionUpdateUsers', 'actionInsertUsers']),
+    ...mapActions(["actionUpdateUsers", "actionInsertUsers"]),
     closeForm() {
-      this.nama = null
-      this.password = null
-      this.role = null
-      this.email= null
-      this.$emit('update:dataUser', {});
+      this.nama = null;
+      this.password = null;
+      this.role = null;
+      this.email = null;
+      this.$emit("update:dataUser", {});
       this.$emit("update:dialogForm", false);
       this.$v.$reset();
     },
     save() {
       this.$v.$touch();
       if (this.$v.$invalid) {
-        console.log('invalid')
+        console.log("invalid");
         return;
       }
 
@@ -163,13 +165,13 @@ export default {
         role: this.role,
         email: this.email,
       };
-      if(this.dataUser.id != null){
+      if (this.dataUser.id != null) {
         //update
-        delete newUser.password
-        newUser.id = this.dataUser.id
-        this.actionUpdateUsers(newUser)
-      }else{
-        this.actionInsertUsers(newUser)
+        delete newUser.password;
+        newUser.id = this.dataUser.id;
+        this.actionUpdateUsers(newUser);
+      } else {
+        this.actionInsertUsers(newUser);
       }
       // console.log(newUser);
       // if (this.dataEmployee.id != null) {
@@ -216,6 +218,7 @@ export default {
       default: false,
     },
     dataUser: {},
+    isOwner: true,
   },
   watch: {
     dataUser: {
@@ -224,7 +227,7 @@ export default {
         this.nama = this.dataUser.nama;
         this.email = this.dataUser.email;
         this.role = this.dataUser.role;
-        this.password = '-';
+        this.password = "-";
       },
     },
   },

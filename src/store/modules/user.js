@@ -11,7 +11,6 @@ const state = {
 const actions = {
   async actionLogin({ commit, dispatch }, data) {
     try {
-      console.log('pass');
       const res = await httpCommons.post(apiName + '/login', data);
       const result = {
         message: res.data.message,

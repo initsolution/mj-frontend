@@ -3,6 +3,7 @@
     <form-user
       :dialogForm.sync="dialogForm"
       :dataUser.sync="user"
+      :isOwner="true"
     />
     <hapus-user
       :dialogHapusUser.sync="dialogHapusUser"

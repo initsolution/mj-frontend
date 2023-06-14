@@ -284,3 +284,7 @@
 # 0.0.1 (Update 09/06/2023)
 - Modul User
     - user management
+
+# 0.0.1 (Update 14/06/2023)
+- Modul User
+    - change password and detail for non owner    
