@@ -192,6 +192,11 @@ export default {
               icon: 'mdi-calendar-clock',
               to: '/pinjaman-owner',
             },
+            {
+              title: 'Pengeluaran Khusus',
+              icon: 'mdi-file-document-arrow-right-outline',
+              to: '/pengeluaran-owner',
+            },
           ],
         },
         {

@@ -140,6 +140,10 @@
                               >
                               <div v-else>
                                 {{ formatPrice(Math.round(item.potongan_bon)) }}
+                                <v-btn color="red darken-1"
+                                small
+                                class="mr-3 elevation-0"
+                                @click="openCancelPotonganBon(item)">X</v-btn>
                               </div>
                             </td>
                           </tr>
@@ -471,7 +475,10 @@
           };
         },
         methods: {
-          ...mapActions(['updatePayslipOwnerWithBon', 'updatePayslipWithPotonganLain', 'updatePayslipBulananTambahanPendapatanLain']),
+          ...mapActions(['updatePayslipOwnerWithBon',
+           'updatePayslipWithPotonganLain', 
+           'updatePayslipBulananTambahanPendapatanLain', 
+          'updatePayslipOwnerCancelBon']),
           formatPrice(value) {
             return formatPrice(value);
           },
@@ -546,6 +553,16 @@
             console.log(item)
             this.dataPayslip =item
             this.dialogPay = true
+          },
+          
+          openCancelPotonganBon(item){
+            console.log(item) 
+            const data = {
+              employeeId : item.employee.id,
+              idPayslip: item.id
+            };
+            console.log('dt' + data)
+            this.updatePayslipOwnerCancelBon(data)
           },
 
           ubahHariMasuk(item){

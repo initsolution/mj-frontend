@@ -232,7 +232,7 @@ const actions = {
             } else if (param.departmentId == 3) {
                 link = apiNameCs
             }
-            const res = await httpCommons.get(link + '/getDetailPengeluaran/' + param.periodeAwal + '/' + param.periodeAkhir );
+            const res = await httpCommons.get(link + '/getDetailPengeluaran/' + param.periodeAwal + '/' + param.periodeAkhir);
             commit('STATUS_DETAIL_PENGELUARAN', {
                 status: res.status,
                 statusText: res.statusText
@@ -246,7 +246,7 @@ const actions = {
             })
             commit('SET_DATA_DETAIL_PENGELUARAN', res.data)
         }
-        
+
     },
 
     async pengeluaranDepartemenBulanan({ commit }, param) {
@@ -276,7 +276,30 @@ const actions = {
         }
         )
         commit('SET_DATA_DETAIL_PENGELUARAN', res.data)
-    }
+    },
+
+    async pengeluaranDepartemenOfficeKhusus({ commit }, param) {
+
+        const res = await httpCommons.get(apiNameOwner + '/getTotalPengeluaran/' + param.bulantahun);
+        commit('SET_DATA_TOTAL_PENGELUARAN_DEPARTEMEN', res.data)
+
+    },
+
+    async pengeluaranDetailOfficeKhusus({ commit }, param) {
+        const res = await httpCommons.get(apiNameOwner + '/getDetailPengeluaran/' + param.periodeAwal + '/' + param.periodeAkhir);
+        commit('STATUS_DETAIL_PENGELUARAN', {
+            status: res.status,
+            statusText: res.statusText
+        })
+        commit('SET_DATA_DETAIL_PENGELUARAN', res.data)
+    },
+    async updatePayslipOwnerCancelBon({ commit, dispatch }, data) {
+        // commit('SET_LOADING', true)
+        console.log(data)
+        const res = await httpCommons.get(apiNameOwner + '/cancelPotonganBon/'+data.idPayslip+'/'+data.employeeId)
+        console.log(res)
+        commit('SET_CHECK_PAYSLIP', res)
+    },
 }
 
 const mutations = {

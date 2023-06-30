@@ -193,7 +193,7 @@ export default {
   },
   created() {
     this.getDataLoan();
-    this.actionGetAllDepartment();
+    // this.actionGetAllDepartment();
   },
   methods: {
     ...mapActions([

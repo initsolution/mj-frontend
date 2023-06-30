@@ -173,6 +173,14 @@ const router = new Router({
           component: () => import('./views/pages/PinjamanOwner.vue'),
         },
         {
+          path: 'pengeluaran-owner',
+          name: 'Pengeluaran-Owner',
+          meta: {
+            auth: true,
+          },
+          component: () => import('./views/pages/PengeluaranOwner.vue'),
+        },
+        {
           path: 'user',
           name: 'user',
           meta: {

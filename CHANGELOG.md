@@ -288,3 +288,7 @@
 # 0.0.1 (Update 14/06/2023)
 - Modul User
     - change password and detail for non owner    
+
+# 0.0.1 (Update 30/06/2023)
+- Modul Payslip Owner
+    - tambah detail pengeluaran dan batal bon        
