@@ -782,7 +782,7 @@
                 styles: {
                   textColor: "#000000",
                   fontStyle: "bold",
-                  fontSize: 8,
+                  fontSize: 10,
                   halign: "center",
                 },
                 willDrawCell: function (data) {

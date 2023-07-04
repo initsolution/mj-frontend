@@ -292,3 +292,7 @@
 # 0.0.1 (Update 30/06/2023)
 - Modul Payslip Owner
     - tambah detail pengeluaran dan batal bon        
+
+# 0.0.1 (Update 04/07/2023)
+- Modul All Payslip
+    - Change fontsize  
