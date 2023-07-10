@@ -576,7 +576,7 @@
               theme: "plain",
               styles: {
                 textColor: "#000000",
-                fontSize: 8,
+                fontSize: 9,
                 cellPadding: 1,
               },
               columnStyles: {
