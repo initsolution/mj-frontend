@@ -296,3 +296,8 @@
 # 0.0.1 (Update 04/07/2023)
 - Modul All Payslip
     - Change fontsize  
+
+# 0.0.1 (Update 04/07/2023)
+- Modul All Payslip - tb_karyawan fontsize
+    - Change fontsize from 8 to 9
+    - Change label Nik to NIK

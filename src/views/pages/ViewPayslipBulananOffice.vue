@@ -564,7 +564,7 @@
                   "Departemen",
                   this.selected[i].employee.department.name,
                 ],
-                ["Nik", this.selected[i].employee.id, "Area Skill / Jabatan", this.selected[i].employee.area.name+' / '+this.selected[i].employee.position.name],
+                ["NIK", this.selected[i].employee.id, "Area Skill / Jabatan", this.selected[i].employee.area.name+' / '+this.selected[i].employee.position.name],
                 
                 [
                   "Total Hari Kerja",
