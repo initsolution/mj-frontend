@@ -1,6 +1,10 @@
 <template>
   <v-container>
-    Hellow I'm Home    
+    <center>
+      .: Selamat Datang :.
+      <br><br>
+      <v-img :src="require('../../assets/mj-logo.png')" width="300"></v-img>
+    </center>
   </v-container>
 </template>
 <script>

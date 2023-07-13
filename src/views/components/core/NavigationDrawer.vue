@@ -12,7 +12,8 @@
     <v-list dense>
       <v-list-item>
         <v-list-item-avatar>
-          <v-img src="https://randomuser.me/api/portraits/men/8.jpg"></v-img>
+          <!-- <v-img src="https://randomuser.me/api/portraits/men/8.jpg"></v-img> -->
+          <v-img :src="require('../../../assets/user.png')"></v-img>
         </v-list-item-avatar>
 
         <v-list-item-content>
