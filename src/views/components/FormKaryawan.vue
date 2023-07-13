@@ -63,7 +63,7 @@
                           label="NIK*"
                           :error-messages="idErrors"
                           :counter="100"
-                          disabled
+                          v-bind:disabled="isDisabled"
                           @input="$v.id.$touch()"
                           @blur="$v.id.$touch()"
                           required
@@ -638,6 +638,7 @@ export default {
       position_id: null,
       shift_id: null,
       selectedShift: null,
+      isDisabled: false,
       // ------------------
 
       name_: null,
@@ -924,6 +925,11 @@ export default {
           this.position_id = this.dataEmployee.position.id;
         if (this.dataEmployee.shift != null)
           this.selectedShift = this.dataEmployee.shift;
+        if (this.dataEmployee.id == null) {
+          this.isDisabled = false;
+        } else {
+          this.isDisabled = true;
+        }
       },
     },
     getDataAllDepartement: {
