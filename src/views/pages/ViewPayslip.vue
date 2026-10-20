@@ -72,7 +72,7 @@
                             <td>
                               {{
                                 formatPrice(
-                                  Math.round(item.potongan_terlambat_ijin),
+                                  Math.round(item.potongan_terlambat_ijin)
                                 )
                               }}
                             </td>
@@ -108,7 +108,7 @@
                             <td>
                               {{
                                 formatPrice(
-                                  Math.round(item.total_tunjangan_kehadiran),
+                                  Math.round(item.total_tunjangan_kehadiran)
                                 )
                               }}
                             </td>
@@ -190,6 +190,26 @@
                             </td>
                             <td></td>
                             <td></td>
+                          </tr>
+                          <tr>
+                            <td>Pendapatan Lainnya</td>
+                            <td>
+                              <v-btn
+                                v-if="item.pendapatan_lain == 0"
+                                color="blue darken-1"
+                                small
+                                class="mr-3 elevation-0"
+                                @click="openDialogPendapatanLain(item)"
+                                >{{
+                                  formatPrice(Math.round(item.pendapatan_lain))
+                                }}</v-btn
+                              >
+                              <div v-else>
+                                {{
+                                  formatPrice(Math.round(item.pendapatan_lain))
+                                }}
+                              </div>
+                            </td>
                           </tr>
                         </tbody>
                       </template>
@@ -343,6 +363,35 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="dialogPendapatanLain" max-width="600">
+      <v-card>
+        <v-card-title>Tambahan Lainnya</v-card-title>
+        <v-card-text>
+          <v-currency-field
+            color="grey darken-2"
+            :decimal-length="0"
+            prefix="Rp"
+            filled
+            v-bind="currency_config"
+            v-model.trim="pendapatan_lain"
+            class="currency-input pa-0 ma-0 font-md"
+            label="Nominal Tambahan Lainnya"
+          />
+        </v-card-text>
+        <v-card-actions>
+          <div class="flex-grow-1"></div>
+          <v-btn
+            class="elevation-0 grey darken-2"
+            dark
+            @click="dismisDialogPendapatanLain"
+            >Batal</v-btn
+          >
+          <v-btn class="elevation-0 primary" @click.stop="saveTambahanLain"
+            >Simpan</v-btn
+          >
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
   
@@ -360,7 +409,9 @@
         selected: [],
         dialogPay : false,
         dialogPotonganLain : false,
+        dialogPendapatanLain : false,
         potongan_lain : 0,
+        pendapatan_lain : 0,
         loan : {},
         dataPayslip : {},
         headers: [
@@ -422,7 +473,7 @@
       };
     },
     methods: {
-      ...mapActions(['updatePayslipWithBon', 'updatePayslipWithPotonganLain']),
+      ...mapActions(['updatePayslipWithBon', 'updatePayslipWithPotonganLain', 'updatePayslipProduksiTambahanPendapatanLain']),
       formatPrice(value) {
         return formatPrice(value);
       },
@@ -449,6 +500,7 @@
       },
       dismisDialogPotonganLain() {
         this.dialogPotonganLain = false;
+        this.reset();
       },
       formatDateBulan(date) {
         date = new Date(date);
@@ -483,6 +535,7 @@
       },
       dismisDialog() {
         this.dialogPay = false;
+        this.reset();
       },
       saveLoan() {
         const data = {
@@ -497,7 +550,30 @@
         this.dismisDialog()
         // this.inputLoan(data);
       },
-  
+      openDialogPendapatanLain(item) {
+        this.dataPayslip = item
+        this.dialogPendapatanLain = true
+      },
+      dismisDialogPendapatanLain() {
+        this.reset();
+        this.dialogPendapatanLain = false;
+      },
+      saveTambahanLain(){
+        const data = {
+          idPayslip : this.dataPayslip.id, 
+          pendapatan_lain: this.pendapatan_lain,
+          department: "",
+        };
+        console.log(data);
+        this.updatePayslipProduksiTambahanPendapatanLain(data)
+        // console.log(data)
+        this.dismisDialogPendapatanLain()
+      },
+      reset() {
+        this.selected = [];
+        this.pendapatan_lain = 0;
+        this.potongan_lain = 0;
+      },
       print() {
         // console.log(this.selected);
         this.selected.sort((a, b)=> a.employee.name.localeCompare(b.employee.name))
@@ -626,6 +702,14 @@
               "Premi Hari Besar",
               "Rp",
               this.formatPrice(Math.round(this.selected[i].premi_hari_besar)),
+              "",
+              "",
+              "",
+            ],
+            [
+              "Pendapatan Lain",
+              "Rp",
+              this.formatPrice(Math.round(this.selected[i].pendapatan_lain)),
               "",
               "",
               "",
@@ -774,7 +858,7 @@
               },
             },
             didParseCell: function (HookData) {
-              if (HookData.row.index == 9) {
+              if (HookData.row.index == 10) {
                 HookData.cell.styles.fontStyle = "bold";
               }
             },
@@ -782,7 +866,7 @@
   
           doc.autoTable({
             body: tb_footer,
-            startY: 105,
+            startY: 110,
             theme: "plain",
             styles: {
               textColor: "#000000",

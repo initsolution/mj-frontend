@@ -99,35 +99,7 @@
                   </v-list>
                 </v-menu>
                 <div v-if="choosenDepartment != null">
-                  <div v-if="choosenDepartment.id == 1">
-                    <v-menu
-                      :close-on-content-click="false"
-                      :nudge-right="40"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-btn
-                          color="primary"
-                          dark
-                          v-on="on"
-                          large
-                          class="elevation-0 mr-3"
-                        >
-                          <span>Pilih Tanggal</span>
-                          <v-icon small class="ml-2">mdi-calendar</v-icon>
-                        </v-btn>
-                      </template>
-                      <v-date-picker
-                        v-model="picker"
-                        @input="getNewDate()"
-                        :allowed-dates="allowedDatesProduksi"
-                      >
-                      </v-date-picker>
-                    </v-menu>
-                  </div>
-                  <div v-else-if="choosenDepartment.id == 2 || choosenDepartment.id == 4">
+                  <div v-if="choosenDepartment.id == 1 || choosenDepartment.id == 2 || choosenDepartment.id == 4">
                     <v-menu
                       :close-on-content-click="false"
                       :nudge-right="40"
@@ -297,7 +269,7 @@ export default {
     ...mapActions(["savePayslip", "savePayslipCs", "actionGetAllDepartment"]),
 
     //enable hari Jumat saja
-    allowedDatesProduksi: (val) => [5].includes(new Date(val).getDay()),
+    // allowedDatesProduksi: (val) => [5].includes(new Date(val).getDay()),
     allowedDatesCs: (val) => [1].includes(new Date(val).getDay()),
 
     selectDepartment(item) {

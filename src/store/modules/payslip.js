@@ -192,6 +192,12 @@ const actions = {
         commit('SET_CHECK_PAYSLIP', res)
     },
 
+    async updatePayslipProduksiTambahanPendapatanLain({ commit, dispatch }, data) {
+        // commit('SET_LOADING', true)
+        const res = await httpCommons.patch(apiNameProduksi + '/updatePayslipPendapatanLain', data)
+        console.log(res)
+        commit('SET_CHECK_PAYSLIP', res)
+    },
 
     async updatePayslipWithPotonganLain({ commit, dispatch }, data) {
         // commit('SET_LOADING', true)

@@ -301,3 +301,9 @@
 - Modul All Payslip - tb_karyawan fontsize
     - Change fontsize from 8 to 9
     - Change label Nik to NIK
+
+# 0.0.2 (Update 20/10/2026)
+- Modul Payslip Produksi
+    - Ganti Payslip Produksi ke Bulanan
+    - Tambah dialog Pendapatan Lainnya
+    - Bug Fix Payslip Produksi
