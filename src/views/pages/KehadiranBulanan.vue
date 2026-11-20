@@ -1110,7 +1110,7 @@ export default {
         if (status.status == 'OK') {
           this.getDataAllAttendanceByFilter();
         }
-      } else if (status.actions == 500) {
+      } else if (status.actions == 500 || status.actions == 409) {
         // if (status.status == "duplicate") {
         this.notif_text = status.status;
         this.snackbar = true;
