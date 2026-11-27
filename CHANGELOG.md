@@ -307,3 +307,14 @@
     - Ganti Payslip Produksi ke Bulanan
     - Tambah dialog Pendapatan Lainnya
     - Bug Fix Payslip Produksi
+
+# 0.0.3 (Update 20/11/2026)
+- Modul Kehadiran Produksi
+    - Tambah status code 409 untuk menampilkan notifikasi error duplikat data
+    - Mengubah snackbar ke Dialog
+- Modul Kehadiran Cs
+    - Tambah status code 409 untuk menampilkan notifikasi error duplikat data
+    - Mengubah snackbar ke Dialog
+- Modul Kehadiran Bulanan
+    - Tambah status code 409 untuk menampilkan notifikasi error duplikat data
+    - Mengubah snackbar ke Dialog

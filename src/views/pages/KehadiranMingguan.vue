@@ -24,6 +24,26 @@
       :departementId="departementId"
     >
     </hapus-kehadiran>
+    <v-dialog v-model="dialogInformation" max-width="400">
+      <v-card>
+        <v-card-title class="px-6">
+          {{ dialogTitle }}
+        </v-card-title>
+        <v-divider></v-divider>
+        <v-card-text class="pt-4">
+          {{ notif_text }}
+        </v-card-text>
+        <v-card-actions class="justify-end">
+          <v-btn
+            color="primary"
+            text
+            @click="dialogInformation = false"
+          >
+            Tutup
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
 
     <v-row>
       <v-col>
@@ -69,26 +89,6 @@
               >
                 <v-icon color="white">mdi-plus</v-icon> Tambah
               </v-btn>
-
-              <v-snackbar
-                v-model="snackbar"
-                :multi-line="multiLine"
-                top
-                color="orange"
-              >
-                {{ notif_text }}
-
-                <template v-slot:action="{ attrs }">
-                  <v-btn
-                    color="white"
-                    text
-                    v-bind="attrs"
-                    @click="snackbar = false"
-                  >
-                    <v-icon>mdi-close</v-icon>
-                  </v-btn>
-                </template>
-              </v-snackbar>
             </v-col>
           </v-row>
           <v-row>
@@ -456,11 +456,11 @@ export default {
       dialogCancelOvertime: false,
       dialogTambahKehadiran: false,
       dialogHapusKehadiran: false,
+      dialogInformation: false,
+      dialogTitle: "Informasi",
       dataAttendance: null,
       // selectedItem: null,
       type_overtime: null,
-      multiLine: false,
-      snackbar: false,
       notif_text: "",
       selected_items: [],
       menuStartDate: false,
@@ -550,8 +550,9 @@ export default {
       // console.log("Upload");
       if (!this.selectXlsx) {
         // console.log("Please upload a xlsx file");
+        this.dialogTitle = "Informasi";
         this.notif_text = "Pilih file excel dahulu";
-        this.snackbar = true;
+        this.dialogInformation = true;
         return;
       }
       // this.file = event.target.files ? event.target.files[0] : null;
@@ -637,8 +638,9 @@ export default {
               break;
             }
             if (result != "sukses") {
+              this.dialogTitle = "Informasi";
               this.notif_text = result;
-              this.snackbar = true;
+              this.dialogInformation = true;
               this.datalist = [];
               this.selectXlsx = null;
               return;
@@ -868,7 +870,7 @@ export default {
 
     getResAddAttendance() {
       const status = this.getBulkAttendance;
-      // console.log("getResAddAttendance : " + status.data);
+      console.log("getResAddAttendance : " + status.actions);
       // if (status.actions == 201) {
       //   if (status.status == "Created") {
       //     title = "Sukses Update data";
@@ -907,12 +909,14 @@ export default {
       // console.log("f");
       if (status.actions == 200) {
         if (status.status == "OK") {
+          this.dialogTitle = "Success";
           this.getDataAllAttendanceByFilter();
         }
       } else if (status.actions == 500 || status.actions == 409) {
         // if (status.status == "duplicate") {
+        this.dialogTitle = "Error Upload";
         this.notif_text = status.status;
-        this.snackbar = true;
+        this.dialogInformation = true;
         // }
       }
     },
